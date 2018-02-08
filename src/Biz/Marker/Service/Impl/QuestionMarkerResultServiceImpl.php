@@ -7,6 +7,7 @@ use Biz\BaseService;
 use Biz\Marker\Dao\QuestionMarkerResultDao;
 use Biz\Marker\Service\QuestionMarkerResultService;
 use Biz\Marker\Service\QuestionMarkerService;
+use Codeages\Biz\Framework\Event\Event;
 
 class QuestionMarkerResultServiceImpl extends BaseService implements QuestionMarkerResultService
 {
@@ -34,13 +35,18 @@ class QuestionMarkerResultServiceImpl extends BaseService implements QuestionMar
         $questionConfig = $this->getQuestionConfig($questionMarker['type']);
 
         $questionMarker['score'] = 0;
+        $questionMarker['missScore'] = 0;
         $status = $questionConfig->judge($questionMarker, $fields['answer']);
 
         $fields['status'] = $status['status'];
         $fields['markerId'] = $questionMarker['markerId'];
         $fields['questionMarkerId'] = $questionMarker['id'];
 
-        return $this->addQuestionMarkerResult($fields);
+        $questionMarkerResult = $this->addQuestionMarkerResult($fields);
+
+        $this->dispatchEvent('question_marker.finish', new Event($questionMarkerResult));
+
+        return $questionMarkerResult;
     }
 
     public function deleteByQuestionMarkerId($questionMarkerId)
@@ -61,6 +67,11 @@ class QuestionMarkerResultServiceImpl extends BaseService implements QuestionMar
     public function findByTaskIdAndQuestionMarkerId($taskId, $questionMarkerId)
     {
         return $this->getQuestionMarkerResultDao()->findByTaskIdAndQuestionMarkerId($taskId, $questionMarkerId);
+    }
+
+    public function findResultsByIds($resultIds)
+    {
+        return $this->getQuestionMarkerResultDao()->findByIds($resultIds);
     }
 
     /**

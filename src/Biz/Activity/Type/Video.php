@@ -18,14 +18,11 @@ class Video extends Activity
 
     public function create($fields)
     {
-        if (empty($fields['ext'])) {
+        if (empty($fields['media'])) {
             throw $this->createInvalidArgumentException('参数不正确');
         }
 
-        $videoActivity = $fields['ext'];
-        if (empty($videoActivity['mediaId'])) {
-            $videoActivity['mediaId'] = 0;
-        }
+        $videoActivity = $this->handleFields($fields);
         $videoActivity = $this->getVideoActivityDao()->create($videoActivity);
 
         return $videoActivity;
@@ -60,17 +57,22 @@ class Video extends Activity
 
     public function update($activityId, &$fields, $activity)
     {
-        $video = $fields['ext'];
-        if ($video['finishType'] == 'time') {
-            if (empty($video['finishDetail'])) {
-                throw $this->createAccessDeniedException('finish time can not be emtpy');
+        if (empty($fields['media'])) {
+            throw $this->createInvalidArgumentException('参数不正确');
+        }
+
+        $video = $this->handleFields($fields);
+
+        if ('time' == $fields['finishType']) {
+            if (empty($fields['finishDetail'])) {
+                throw $this->createAccessDeniedException('finish time can not be empty');
             }
         }
-        $videoActivity = $this->getVideoActivityDao()->get($fields['mediaId']);
+        $videoActivity = $this->getVideoActivityDao()->get($activity['mediaId']);
         if (empty($videoActivity)) {
             throw new \Exception('教学活动不存在');
         }
-        $videoActivity = $this->getVideoActivityDao()->update($fields['mediaId'], $video);
+        $videoActivity = $this->getVideoActivityDao()->update($activity['mediaId'], $video);
 
         return $videoActivity;
     }
@@ -79,14 +81,14 @@ class Video extends Activity
     {
         $activity = $this->getActivityService()->getActivity($activityId);
         $video = $this->getVideoActivityDao()->get($activity['mediaId']);
-        if ($video['finishType'] === 'time') {
+        if ('time' === $video['finishType']) {
             $result = $this->getTaskResultService()->getMyLearnedTimeByActivityId($activityId);
             $result /= 60;
 
             return !empty($result) && $result >= $video['finishDetail'];
         }
 
-        if ($video['finishType'] === 'end') {
+        if ('end' === $video['finishType']) {
             $log = $this->getActivityLearnLogService()->getMyRecentFinishLogByActivityId($activityId);
 
             return !empty($log);
@@ -112,11 +114,13 @@ class Video extends Activity
     {
         $videoActivities = $this->getVideoActivityDao()->findByIds($ids);
         $mediaIds = ArrayToolkit::column($videoActivities, 'mediaId');
+        $groupMediaIds = array_chunk($mediaIds, 50);
+        $files = array();
         try {
-            $files = $this->getUploadFileService()->findFilesByIds(
-                $mediaIds,
-                $showCloud = 1
-            );
+            foreach ($groupMediaIds as $mediaIds) {
+                $chuckFiles = $this->getUploadFileService()->findFilesByIds($mediaIds, $showCloud = 1);
+                $files = array_merge($files, $chuckFiles);
+            }
         } catch (CloudAPIIOException $e) {
             $files = array();
         }
@@ -143,6 +147,20 @@ class Video extends Activity
     public function materialSupported()
     {
         return true;
+    }
+
+    private function handleFields($fields)
+    {
+        $result = json_decode($fields['media'], true);
+        $result['mediaId'] = empty($result['id']) ? 0 : $result['id'];
+        $result['mediaSource'] = empty($result['source']) ? '' : $result['source'];
+        $result['mediaUri'] = empty($result['uri']) ? '' : $result['uri'];
+
+        $finishInfo = ArrayToolkit::parts($fields, array('finishType', 'finishDetail'));
+        $result = array_merge($result, $finishInfo);
+        $result = ArrayToolkit::parts($result, array('mediaId', 'mediaUri', 'mediaSource', 'finishType', 'finishDetail'));
+
+        return $result;
     }
 
     /**

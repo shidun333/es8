@@ -60,13 +60,13 @@ class Testpaper extends Activity
     {
         $sourceExt = $this->getTestpaperActivityService()->getActivity($sourceActivity['mediaId']);
         $ext = $this->getTestpaperActivityService()->getActivity($activity['mediaId']);
-
         $testPaper = $this->getTestpaperService()->getTestpaperByCopyIdAndCourseSetId(
             $sourceExt['mediaId'],
             $activity['fromCourseSetId']
         );
 
         $ext['mediaId'] = $testPaper['id'];
+        $ext['doTimes'] = $sourceExt['doTimes'];
         $ext['redoInterval'] = $sourceExt['redoInterval'];
         $ext['limitedTime'] = $sourceExt['limitedTime'];
         $ext['checkType'] = $sourceExt['checkType'];
@@ -137,11 +137,6 @@ class Testpaper extends Activity
         }
 
         return false;
-    }
-
-    protected function getListeners()
-    {
-        return array();
     }
 
     protected function filterFields($fields)

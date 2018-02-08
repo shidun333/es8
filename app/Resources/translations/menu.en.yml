@@ -15,19 +15,20 @@ admin.tab.setting_tab: Setting
 admin.nav.user: User
 admin.nav.course: Course
 admin.nav.operation: Operation
-admin.nav.order: Order
-admin.nav.finance: Account
+admin.nav.finance: 交易
 admin.nav.cloud:  ES Cloud
 admin.nav.system: System
 
 #用户模块
 admin.user.basic_menu: Users
+admin.user.statistics_manage: 用户数据统计
 admin.user.teacher_menu: Teachers
 admin.user.approval_menu: Authentication
 admin.user.message_menu: Messages
 
 ##用户管理模块
 admin.user.basic.basic_tab: Users
+admin.user.basic.online: Online
 admin.user.basic.login_record_tab: System Log
 
 admin.user.basic.basic_tab.create_btn: 'Add'
@@ -135,6 +136,8 @@ admin.operation.content_menu: Customize pages
 admin.operation.mobile_menu: 'App contents'
 admin.operation.analysis_menu: Statistics
 admin.operation.sensitive_words_menu: Sensitive Words
+admin.operation.reward_point_menu:　Reward Point
+admin.operation.reward_point_mall_menu: Reward Point Mall
 
 ##咨询管理模块
 admin.operation.article.basic_tab: Articles
@@ -184,25 +187,26 @@ admin.operation.sensitive_words.banlogs_tab: Processing History
 
 admin.operation.sensitive_words.sensitive_words_list_tab.create_btn: Add Sensitive Word
 
-#订单管理模块
-admin.order.course_menu: Course Orders
-admin.order.coin_menu: Coin Orders
-admin.order.classroom_menu: Class Orders
+##积分管理模块
+admin.operation.reward_point.account_tab: Reward Point Account
+admin.operation.reward_point.operation_log_tab: Operation Log
+admin.reward_point.setting: Reward Point Setting
+admin.reward_point.course: Course Reward Point
 
-##课程订单模块
-admin.order.course.basic_tab: Course Orders
+admin.operation.reward_point.account_tab.grant_btn: Grant
+admin.operation.reward_point.account_tab.deduction_btn: Deduct
 
-##虚拟币订单模块
-admin.order.coin.basic_tab: Coin Orders
+##积分商城模块
+admin.operation.reward_point_mall.exchange_tab: Exchange Manage
+admin.operation.reward_point_mall.product_tab: Product Manage
 
-##班级订单模板
-admin.order.classroom.basic_tab: Class Orders
+admin.operation.reward_point_mall.product_tab.create_btn: Add Product
 
 #账务管理模块
+admin.finance.order_menu: Order
 admin.finance.bills_menu: Account
 admin.finance.coin_menu: Coins
-admin.finance.course_refunds_menu: Course Refunds
-admin.finance.classroom_refunds_menu: Class Refunds
+admin.finance.refunds_menu: Refunds
 
 ##账单管理模块
 admin.finance.bills.cash_records_tab: Cash bills
@@ -211,11 +215,8 @@ admin.finance.bills.coin_records_tab: Coin bills
 ##虚拟币管理
 admin.finance.coin.basic_tab: Coin
 
-##课程退款管理模块
-admin.finance.course_refunds.basic_tab: Course refunds
-
-##班级退款管理模块
-admin.finance.classroom_refunds.basic_tab: Class refunds
+##退款管理模块
+admin.finance.refunds.basic_tab: Course refunds
 
 #教育云模块
 admin.cloud.overview_menu: Overview
@@ -230,6 +231,8 @@ admin.cloud.attachment_setting_menu: Cloud Attachement Review
 admin.cloud.app_center_menu: ES App Center
 admin.cloud.attachment_menu: Cloud Attachement
 admin.cloud.consult_menu: Cloud Q&A
+admin.cloud.data_lab: 数据实验室
+admin.cloud.data_lab_setting: 设置
 admin.cloud.cloud_setting_menu: License
 
 ##概览模块
@@ -310,6 +313,7 @@ admin.system.operation.article_tab: Article
 admin.system.operation.group_tab: Group
 admin.system.operation.invite_tab: 'Invitation Setting'
 admin.system.operation.wap_tab: Mobile Site
+admin.system.operation.reward_point: Reward Point
 
 ##账务设置模块
 admin.system.finance.payment_tab: Payment
@@ -343,6 +347,10 @@ admin.system.logs.logs_prod_tab: Program Log
 
 ##组织机构管理模块
 admin.system.org.basic_tab: Organization
+
+##营销模块
+admin.marketing.menu: Marketing
+admin.distributor.menu: 分销
 
 #web模块
 web.course: Courses

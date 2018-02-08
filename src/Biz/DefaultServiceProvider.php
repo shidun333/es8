@@ -2,9 +2,12 @@
 
 namespace Biz;
 
+use Biz\Common\BizCaptcha;
+use Biz\Common\BizSms;
 use Biz\Task\Strategy\Impl\DefaultStrategy;
 use Biz\Task\Strategy\Impl\NormalStrategy;
 use Biz\Task\Strategy\StrategyContext;
+use Gregwar\Captcha\CaptchaBuilder;
 use Pimple\Container;
 use Biz\Common\HTMLHelper;
 use Pimple\ServiceProviderInterface;
@@ -14,7 +17,6 @@ use Biz\Importer\ClassroomMemberImporter;
 use Biz\Testpaper\Builder\ExerciseBuilder;
 use Biz\Testpaper\Builder\HomeworkBuilder;
 use Biz\Testpaper\Builder\TestpaperBuilder;
-use Biz\Sms\SmsProcessor\LessonSmsProcessor;
 use Biz\Article\Event\ArticleEventSubscriber;
 use Biz\Testpaper\Pattern\QuestionTypePattern;
 use Biz\Thread\Firewall\ArticleThreadFirewall;
@@ -24,9 +26,13 @@ use Biz\Sms\SmsProcessor\LiveOpenLessonSmsProcessor;
 use Biz\Classroom\Event\ClassroomThreadEventProcessor;
 use Biz\OpenCourse\Event\OpenCourseThreadEventProcessor;
 use Biz\Announcement\Processor\AnnouncementProcessorFactory;
-use Biz\RewardPoint\Processor\RewardPointFactory;
-use Biz\RewardPoint\Processor\CommonAcquireRewardPoint;
-use Biz\RewardPoint\Processor\CourseAcquireRewardPoint;
+use Biz\User\Register\RegisterFactory;
+use Biz\User\Register\Impl\EmailRegistDecoderImpl;
+use Biz\User\Register\Impl\MobileRegistDecoderImpl;
+use Biz\User\Register\Impl\BinderRegistDecoderImpl;
+use Biz\User\Register\Impl\DistributorRegistDecoderImpl;
+use Biz\Distributor\Service\Impl\SyncUserServiceImpl;
+use Biz\Distributor\Service\Impl\SyncOrderServiceImpl;
 
 class DefaultServiceProvider implements ServiceProviderInterface
 {
@@ -100,29 +106,57 @@ class DefaultServiceProvider implements ServiceProviderInterface
             return new ClassroomMemberImporter($biz);
         };
 
-        $biz['reward_point_factory'] = function ($biz) {
-            $rewardPointFactory = new RewardPointFactory();
-            $rewardPointFactory->setBiz($biz);
-
-            return $rewardPointFactory;
-        };
-
-        $biz['reward_point.common-acquire'] = function ($biz) {
-            return new CommonAcquireRewardPoint($biz);
-        };
-
-        $biz['reward_point.course-acquire'] = function ($biz) {
-            return new CourseAcquireRewardPoint($biz);
-        };
-
         $biz['course.strategy_context'] = function ($biz) {
-            return StrategyContext::getInstance($biz);
+            return new StrategyContext($biz);
         };
         $biz['course.default_strategy'] = function ($biz) {
             return new DefaultStrategy($biz);
         };
         $biz['course.normal_strategy'] = function ($biz) {
             return new NormalStrategy($biz);
+        };
+
+        $biz['user.register'] = function ($biz) {
+            return new RegisterFactory($biz);
+        };
+
+        $biz['user.register.email'] = function ($biz) {
+            return new EmailRegistDecoderImpl($biz);
+        };
+
+        $biz['user.register.mobile'] = function ($biz) {
+            return new MobileRegistDecoderImpl($biz);
+        };
+
+        $biz['user.register.binder'] = function ($biz) {
+            return new BinderRegistDecoderImpl($biz);
+        };
+
+        $biz['user.register.distributor'] = function ($biz) {
+            return new DistributorRegistDecoderImpl($biz);
+        };
+
+        $biz['distributor.sync.user'] = function ($biz) {
+            return new SyncUserServiceImpl($biz);
+        };
+
+        $biz['distributor.sync.order'] = function ($biz) {
+            return new SyncOrderServiceImpl($biz);
+        };
+
+        $biz['biz_captcha'] = $biz->factory(function ($biz) {
+            $bizCaptcha = new BizCaptcha();
+            $bizCaptcha->setBiz($biz);
+            $bizCaptcha->setCaptchaBuilder(new CaptchaBuilder());
+
+            return $bizCaptcha;
+        });
+
+        $biz['biz_sms'] = function ($biz) {
+            $bizSms = new BizSms();
+            $bizSms->setBiz($biz);
+
+            return $bizSms;
         };
     }
 }

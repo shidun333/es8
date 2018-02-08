@@ -6,6 +6,8 @@ interface TaskResultService
 {
     public function analysisCompletedTaskDataByTime($startTime, $endTime);
 
+    public function getTaskResult($resultId);
+
     public function createTaskResult($taskResult);
 
     public function updateTaskResult($id, $taskResult);
@@ -60,4 +62,8 @@ interface TaskResultService
     public function countFinishedTasksByUserIdAndCourseIdsGroupByCourseId($userId, $courseIds);
 
     public function countFinishedCompulsoryTasksByUserIdAndCourseId($userId, $courseId);
+
+    public function findTaskresultsByTaskId($taskId);
+
+    public function countTaskNumGroupByUserId($conditions);
 }

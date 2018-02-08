@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller\Activity;
 
-use AppBundle\Controller\BaseController;
 use AppBundle\Controller\LiveroomController;
 use AppBundle\Common\ArrayToolkit;
 use Biz\Activity\Service\ActivityService;
@@ -14,7 +13,7 @@ use Biz\Task\Service\TaskResultService;
 use Biz\Task\Service\TaskService;
 use Symfony\Component\HttpFoundation\Request;
 
-class LiveController extends BaseController implements ActivityActionInterface
+class LiveController extends BaseActivityController implements ActivityActionInterface
 {
     public function previewAction(Request $request, $task)
     {
@@ -128,9 +127,23 @@ class LiveController extends BaseController implements ActivityActionInterface
         $params['id'] = $user['id'];
         $params['nickname'] = $user['nickname'];
 
+        /**
+         * @var int
+         *          last record: 2017-12-12
+         *          '1'=>'vhall',
+         *          '2'=>'soooner',
+         *          '3'=>'sanmang',
+         *          '4'=>'gensee',
+         *          '5'=>'longinus',
+         *          '6'=>'training',
+         *          '7'=>'talkFun',
+         *          '8'=>'athena', //ES直播
+         */
+        $provider = empty($activity['ext']['liveProvider']) ? 0 : $activity['ext']['liveProvider'];
+
         return $this->forward('AppBundle:Liveroom:_entry', array(
             'roomId' => $activity['ext']['liveId'],
-            'params' => array('courseId' => $courseId, 'activityId' => $activityId),
+            'params' => array('courseId' => $courseId, 'activityId' => $activityId, 'provider' => $provider),
         ), $params);
     }
 
@@ -150,7 +163,7 @@ class LiveController extends BaseController implements ActivityActionInterface
         $this->getCourseService()->tryTakeCourse($courseId);
 
         $activity = $this->getActivityService()->getActivity($activityId);
-        if ($activity['mediaType'] !== 'live') {
+        if ('live' !== $activity['mediaType']) {
             return $this->createJsonResponse(array('success' => true, 'status' => 'not_live'));
         }
         $now = time();
@@ -162,18 +175,19 @@ class LiveController extends BaseController implements ActivityActionInterface
             //当前业务逻辑：看过即视为完成
             $task = $this->getTaskService()->getTaskByCourseIdAndActivityId($courseId, $activityId);
             $eventName = $request->query->get('eventName');
+            $data = $request->query->get('data');
             if (!empty($eventName)) {
-                $this->getTaskService()->trigger($task['id'], $eventName);
+                $this->getTaskService()->trigger($task['id'], $eventName, $data);
             }
             $taskResult = $this->getTaskResultService()->getUserTaskResultByTaskId($task['id']);
 
-            if ($taskResult['status'] == 'start') {
+            if ('start' == $taskResult['status']) {
                 $this->getActivityService()->trigger($activityId, 'finish', array('taskId' => $task['id']));
                 $this->getTaskService()->finishTaskResult($task['id']);
             }
         }
 
-        $status = $activity['endTime'] < $now ?  'live_end' : 'on_live';
+        $status = $activity['endTime'] < $now ? 'live_end' : 'on_live';
 
         return $this->createJsonResponse(array('success' => true, 'status' => $status));
     }
@@ -223,8 +237,9 @@ class LiveController extends BaseController implements ActivityActionInterface
         }
 
         return $this->createJsonResponse(array(
-            'url' => $result['url'],
+            'url' => empty($result['url']) ? '' : $result['url'],
             'param' => isset($result['param']) ? $result['param'] : null,
+            'error' => isset($result['error']) ? $result['error'] : null,
         ));
     }
 
@@ -294,10 +309,8 @@ class LiveController extends BaseController implements ActivityActionInterface
                 return !empty($replay) && !(bool) $replay['hidden'];
             });
 
-            $service = $this->getLiveReplayService();
-            $fileService = $this->getUploadFileService();
             $self = $this;
-            $replays = array_map(function ($replay) use ($service, $activity, $self, $fileService) {
+            $replays = array_map(function ($replay) use ($activity, $self) {
                 $replay['url'] = $self->generateUrl('live_activity_replay_entry', array(
                     'courseId' => $activity['fromCourseId'],
                     'activityId' => $activity['id'],

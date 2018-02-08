@@ -1,4 +1,5 @@
 site.alipay: Alipay
+site.trade.title: %name%Order
 site.online_school_name: 'Site Name'
 site.online_school_about: 'About Site'
 site.online_school_logo: 'Site Logo'
@@ -105,6 +106,15 @@ site.question.determine.true: 'True'
 site.question.determine.false: 'False'
 site.badge.try_watch: Preview
 site.badge.free: Free
+site.btn.detail: more
+site.setting.finished: Setting finished
+site.setting.unfinished: Setting unfinished
+site.verify.finished: Verify finished
+site.verify.unfinished: Verify unfinished
+site.bind.finished: 已绑定
+site.bind.unfinished: 未绑定
+site.setting.email_finished: Setting email finished
+site.bind.mobile_finished: Binding mobile finished
 
 site.twig.extension.smarttime.future: future
 site.twig.extension.smarttime.hardly: a moment ago
@@ -116,6 +126,7 @@ site.twig.extension.time_interval.minute: %diff% minute
 site.twig.extension.time_interval.hour_minute: '%diff_hour% hour %diff_minute% minute'
 site.twig.extension.time_interval.minute_second: '%diff_minute% minute %diff_second% second'
 site.media.import.input_placeholder: Open online course from Youku, Tencent, Netease is now suported
+site.user_password.error_tips: Bad credentials.
 
 email.password_reset: 'Dear %nickname%,Please click the verify link below to change your passowrd.%verifyurl%If your email progam does not support links, please copy the link above and paste it in the address field of your browser(eg. IE) to enter %sitename%.%sitename %siteurl(This is a system email. Plese don''t reply to this address.)'
 email.input_new_password: "Dear %nickname%,\nYour requirement of passowrd reset is verified. Please click the link below to enter your new password：\n\n  %verifyurl%\nIf your email progam does not support links, please copy the link above and paste it in the address field of your browser(eg. IE).\n\n %sitename %siteurl\n\n (This is a system email. Plese don't reply to this address.)\n"
@@ -157,10 +168,13 @@ or: Or
 size: Size
 file: File
 operation: Action
+file.download.start: File download
+file.download.finish: File download complete
 date.year: Year
 date.month: Month
 date.day: Day
 date.format: Y/m/d
+word.seperator: ','
 paginator.firstPage: 'First'
 paginator.endPage: 'End'
 paginator.nextPage: 'Next'
@@ -185,7 +199,9 @@ user.fileds.wechat: Wechat
 user.fileds.qq: QQ
 user.fields.gender.male: Male
 user.fields.gender.female: Female
-user.fields.idcard_label: 'ID'
+user.fields.idcard_label: Id card
+user.fields.idcard_front_title: Upload Id card front
+user.fields.idcard_back_title: Upload Id card back
 user.fields.mobile_label: 'Phone'
 user.fields.mobile_label.bind: Binded
 user.fields.mobile_label.no_bind: 'Not bind'
@@ -203,7 +219,6 @@ user.btn.send_message: Message
 user.btn.confirm_login_password: 'Confirm your passowrd'
 user.not_login.tips: 'You are not login now, <a href=''%login%''>log In</a> or<a href=''%register%''>register now</a>.'
 user.approve_tips: 'Tips： if your want to change your personal information, please change here.'
-user.email_tips: 'Please fill your email address to ensure your account safty.'
 user.approved: Verified
 user.approving: Verifying
 user.mobile_bind: Binded
@@ -227,6 +242,7 @@ form.btn.create: Add
 form.btn.back_to_homepage: 'Home'
 form.btn.register: Register
 form.btn.verify: Verify
+form.btn.verifying: Verifying
 form.btn.select: Select
 form.btn.modify: Edit
 form.btn.finish: Finish
@@ -238,6 +254,7 @@ form.btn.save_and_continue_add: 'Save and continue'
 form.btn.reset: Reset
 form.btn.view: View
 form.btn.bind: Bind
+form.btn.bind_account: 'Bind account'
 form.btn.search: Search
 form.btn.use: Use
 form.btn.reply: Publish
@@ -252,6 +269,7 @@ form.btn.cancel: Cancel
 form.btn.confirm: Confirm
 form.btn.insert: Insert
 form.btn.delete: Delete
+form.btn.not_delete: Not delete
 form.btn.import: Import
 form.btn.submit_disabled: Submitted
 form.btn.reset_password: 'Reset password'
@@ -294,11 +312,27 @@ form.radio_btn.pass: Agree
 form.radio_btn.unpass: Diagree
 form.btn.restore: Restore
 form.btn.back_to_list: 'Back to list'
+form.sms_code: Sms code
+form.input_sms_code: Input sms code
+form.get_sms_code: Get sms code
+form.captcha_code: Captcha code
+form.input_captcha_code: Input captcha code
+form.change_captcha_code: Can't see, click change one
+form.mobile: Mobile
+form.change_mobile: Change mobile
+form.input_mobile: Input mobile
+form.btn.yes: 'Yes'
+form.btn.no: 'No'
+
 finance.income: Income
+finance.total_incom: Total income
 finance.expense: Expense
+finance.recover: Recorvey
+finance.total_expense: Total expense
 finance.income_expense: 'Balance'
 finance.coin: 'Coin'
 finance.balance: Balance
+finance.net_income: 'Net Income'
 finance.use_deduction: 'For deduction'
 finance.user_currency: 'For marked price'
 finance.CNY_price: 'Price in CNY'
@@ -309,6 +343,7 @@ vip: VIP
 plugin.charge_coin.recharge: Recharge
 plugin.money_card: 'Recharge card'
 plugin.money_card.use: 'Use recharge card'
+plugin.discount: Discount
 plugin.coupon: Coupon
 plugin.coupon.minus: Deduction
 plugin.coupon.minus_tips: 'Coupon for deduct %rate% CNY'
@@ -318,6 +353,7 @@ plugin.coupon.change_btn: 'Change coupon'
 plugin.coupon.use_btn: 'Use coupon'
 plugin.coupon.choose_btn: 'Fill in coupon'
 plugin.coupon.use.input_placeholder: 'Please fill in the coupon code'
+plugin.coupon.use.input_display: 请输入优惠券码
 plugin.coupon.code: 'Coupon code'
 plugin.coupon.amount: 'Coupon price amount'
 coin.online_school_balance: Balance
@@ -340,19 +376,59 @@ coin.redirect_alipay_btn: 'Click to redirect to alipay'
 coin.pay.submit.request: 'Redirecting to payment gateway'
 order.charge: Charge
 order.name: 'Order name'
-order.createdTime: 'Create time'
+order.product_name: Product name
+order.product_price: Product Price
+order.price_amount: Price payable
+order.paid_amount: Paid price
+order.paid_coin_amount: Paid coin
+order.paid_cash_amount: Paid cash
+order.paid_time_none: None
+order.refund.deal_status: Deal status
+order.refund.deal_time: Deal Time
+order.refund.deal_persion: Deal persion
+order.refund_reason: Refund reason
+order.refund.detail: Refund detail
+order.refund_amount: Refund amount
+order.refund_coin_amount: Refund coin
+order.refund_cash_amount: Refund Cash
+order.refund_limit: Refund limit
+order.redund_deadline: Refund Deadline
+order.refund_deadline_none: None
+order.show_refund_detail: Show refund
+order.refunded_cash_amount: Refunded cash
+order.use_coupon: Use coupon
+order.refund_feedback: feedback
+order.refund.id: Refund id
+order.created_time: 'Create time'
 order.pay_time: 'Payment time'
+order.closed_time: 'Closed time'
 order.status: 'Order status'
+order.deduct: Order deduct
+order.item_type: Order type
+order.product_type: Product type
+order.source:  source
 order.status.created: Unfishined
 order.status.paid: Piad
 order.status.cancel: Closed
 order.status.refunding: Refund
 order.status.refunded: 'Refund succeed'
-order.real_pay: Paid(CNY)
+order.due_pay: duePay(CNY)
+order.price_amount: PriceAmount
+order.discount_amount: DiscountAmount
+order.real_pay: Paid
 order.buyers: Consumer
+order.deduct_amount: Deduct Amount
+order.coin_amount: Coin Amount
+order.cash_amount: Cash Amount
+order.buyer.username: Username
+order.buyer.true_name: True name
+order.buyer.email: Email
+order.buyer.contact: Contact
 order.id: 'Order'
 order.token_id: 'Order taken id'
 order.sn: 'SN'
+order.platform_sn: Platform SN
+order.use_coupon_tip: Use Coupon
 order.price: 'Price'
 order.paid_time: 'Paid time'
 order.bank_code: 'Bank code'
@@ -374,18 +450,35 @@ order.log: Log
 order.coin.empty_hint: 'Virtual coin order record is empty'
 order.export_btn: 'Export'
 order.confirm: 'Confirm'
-order.confirm.pay_rmb: 'Price:'
+order.confirm.pay_total: Total
+order.confirm.pay_rmb: 'Price'
 order.confirm.cal_formula: '%coin_name% / exchange rate (%cashRate%) ='
 order.confirm.submit_btn: 'Submit'
+order.confirm.submit_btn_loading: Submiting...
 order.confirm.coupon: Coupon
 order.confirm.coupon.empty: 'No coupon used'
+order.confirm.coupon.hint: 通过优惠券抵扣金额
+order.confirm.coupon.use_loading: 使用中
+order.confirm.coupon.expiry_date_hint: 有效期至
+order.confirm.coupon.select_existed: 选择已有优惠券
+order.confirm.coupon.used_coupon: 已使用优惠券
+order.confirm.coupon.deduction: 抵扣
+order.confirm.rate_change: 1 %coin_name% = %rmb_unit% 元
+order.confirm.current_account_cash_simple: 当前账户余额 %amount% %coin_name%
+order.confirm.current_account_cash: 当前账户余额 %amount% %coin_name%，可抵扣 %rmb% 元（1 %coin_name% = %rmb_unit% 元）
 order.confirm.exchange_rate: '1 CNY = %cashRate%%coin_name%）'
 order.confirm.use_tips: 'Used this time'
+order.confirm.price: Product price
+order.confirm.bought_course_deduction: 已购课程抵扣
+order.adjust_price_btn: 改价
+order.adjust_price_modal_title: 订单改价
+order.adjust_price_modal.hint: 请在折扣和金额框任意输入您想优惠的力度，系统会自动进行换算。
+
 order.confirm.account_cash: 'Account balance:'
 order.confirm.safety_tips: 'To ensure the safty of your account, please'
-order.confirm.setup_pay_password_tips: 'To ensure the safty of your account, please <a class="alert-link" href="javascript:;" data-toggle="modal" data-target="#modal" data-url="%setupUrl%">set your payment password</a>'
-order.confirm.setup_login_password_tips: 'To ensure the safty of your account, please <a class="alert-link" href="javascript:;" data-toggle="modal" data-target="#modal" data-url="%setupUrl%">set your login password</a>'
-order.confirm.forget_password_btn: 'Forget password？'
+order.confirm.setup_pay_password_tips: 'To ensure the safty of your account, please <a class="color-warning underline" href="javascript:;" data-toggle="modal" data-target="#modal" data-url="%setupUrl%" style="text-decoration:underline;">set your payment password</a>'
+order.confirm.setup_login_password_tips: 'To ensure the safty of your account, please <a class="color-warning underline" href="javascript:;" data-toggle="modal" data-target="#modal" data-url="%setupUrl%" style="text-decoration:underline;">set your login password</a>'
+order.confirm.forget_password_btn: 'Forget pay password？'
 order.confirm.forget_password_tips: 'Payment password '
 order.confirm.input_pay_password_tips: 'Please input your payment password'
 order.confirm.top_use_tips: 'The order can use up to '
@@ -396,14 +489,20 @@ order.confirm.sms_code.input_placeholder: 'Input message verification code'
 order.confirm.sms_code.get_code_btn: 'Get message verification code'
 order.confirm.sms_code.not_bind_mobile_tips: 'You did not bind phone number yet'
 order.confirm.sms_code.bind_btn: 'Bind'
-order.paid_course.content_title: 'You already bought:'
-order.paid_course.minus: 'Deduct:'
+order.paid_course.title: 已购买课程
+order.paid_course.content: 之前购买过的课程能够抵扣对应金额
+order.paid_course.minus: 'Deduct'
 order.refund: 'Quit the course'
+order.refund.item_type: item type
 order.refund.reason: 'Quit reason'
 order.refund.reason_tips: 'Please input your quit reason'
 order.refund.apply_for_btn: 'Apply for refund'
 order.refund.buy_price: '(you have paid：%amount% CNY）'
+order.refund.refund_is_not_supported: Refund is not supported
+# todo 文案更新
+order.refund.success_tips: You may apply for a refund within %maxRefundDays% days from the date of purchase
 order.refund.failed_tips: 'It''s behind the refund time %maxRefundDays% days. Refund application is refused.'
+
 order.refund.quit_study_btn: 'Quit the course'
 order.refund.quit_study_btn.submiting: Quiting...
 order.vip_order.total_months: Months
@@ -412,11 +511,21 @@ order.vip_order.renew_tips: '%level.name% renew vip x %duration%'
 order.vip_order.buy_tips: 'Buy %level.name% vip x %duration%'
 order.pay: 'Pay the order'
 order.success: 'Order finished'
+#TODO trans
+order.refund.notify_admin: '用户%nickname%申请退款 <a href="%targetUrl%">%title%</a>，请审核'
+
 pay_center: 'Payment'
 pay_center.confirm: 'Confirm the order'
 pay_center.pay: 'Pay the order'
+pay_center.pay.price: 订单价格
+pay_center.pay.coin.password_not_set.tips: 未设置支付密码前，不能使用%coin_name%抵扣
+pay_center.pay.set_pay_password: 设置支付密码
+pay_center.pay.coin_input_tips: 本次使用
+pay_center.pay.coin_input_placeholder: 请输入%coin_name%金额
+pay_center.pay.password_input_placeholder: 请输入支付密码
 pay_center.pay.submit_tips: 'Order submitted, please pay in 48 hours. Or the order will be cancelled.'
 pay_center.pay.mode: 'Payment methods'
+pay_center.pay.mode.tips: 选择合适的现金支付方式
 pay_center.pay.cash_card: 'Deposit card'
 pay_center.pay.credit_card: 'Credit card'
 pay_center.pay.use_new_card: 'Use new bank card'
@@ -425,6 +534,7 @@ pay_center.pay.online_banking_tips: 'If you want to pay through online banking s
 pay_center.pay.not_support_weixin_pay_tips: 'You are viewing through mobile browser, wechat pay is not supported.'
 pay_center.pay.pay_CNY: Price：q
 pay_center.pay.confirm_pay_btn: 'Confirm payment'
+pay_center.pay.confirm_pay_btn_loading: 'Paying'
 pay_center.pay.weixin_pay: 'Wechat pay'
 pay_center.pay.weixin_pay.content_title: 'Payment info'
 pay_center.pay.weixin_pay.pay_btn: 'Pay now'
@@ -432,8 +542,9 @@ pay_center.pay.weixin_pay.scan_qcode_pay_tips: 'Plase scan with wechat <br>scan 
 pay_center.pay.weixin_pay.press_qcode_pay_tips: 'Scan the QR code to pay'
 pay_center.pay.choose_other_way_btn: 'Choose other payment methods'
 pay_center.finish: 'Order finished'
+pay_center.finish_title: 'Order paid finished'
 pay_center.finish.jump_tips: 'Redirecting to payment gateway...'
-pay_center.finish_tips: 'Order paid successfully,redirecting in <span class="js-countdown">3</span> seconds</p>'
+pay_center.finish_tips: Redirecting in <span class="js-countdown">3</span> seconds
 pay_center.fee: Fee
 pay_center.remind: 'Click to enter alipay'
 pay_center.remind.content_title: 'Payment notification'
@@ -471,10 +582,14 @@ upload.video_quality_switcher.audio_quality.normal: Normal
 upload.video_quality_switcher.audio_quality.high: High
 import.step_one: 'Step 1: '
 import.check_datas: 'Start check datas'
+import.check_datas_loading: 校验数据中...
+import.finish: 完成导入
+import.finish_loading: 正在完成导入, 请稍等...
+import.import_warning_tips: 正在导入, 请勿关闭当前窗口...
 import.user_import: 'Import users'
 import.user_import.content_title: 'Import users'
 import.user_import.choose_file: 'Choose the file to import'
-import.user_import.browser_btn: Browse...
+import.user_import.browser_btn: Choose
 import.user_import.download_example_btn: 'Click to download the sample file'
 import.user_import.download_example_tips: 'Support Excel file'
 import.user_import.price: Price
@@ -638,7 +753,7 @@ course.create.setup_introduction: 'Set title and self introduction'
 course.create.finish: Finish
 course.create.unfinish: Unfinish
 course.create.user_avatar: 'User avatar'
-course.create.upload_tips: '<p class="help-block">you can upload image in jpg, gif or png format. Image size should not exceed <strong>2M</strong>.</p>'
+course.create.upload_tips: '<p class="help-block">you can upload image in jpg, gif or png format. Recommend size: 270×270px. Image size should not exceed <strong>2M</strong>.</p>'
 course.create.upload_btn: Upload
 course.create.rank: Title
 course.create.introduction: 'About me'
@@ -648,13 +763,15 @@ course.is_student_tips: 'You erolled this course program.'
 course.payments_disabled_tips: 'Payment is disabled. Failed to buy the course.'
 course.delete_from_classroom_tips: 'The course is removed from %classroomName%'
 course.not_member_in_classroom_tips: 'You are not member of %classroomName%, please <a href="%classroomUrl%">enroll %classroomName%</a>'
-course.approve_tips: 'You need to verify your id before buying this course.'
+buy.approve_tips: 'You need to verify your id before buying.'
 course.buy_failed_tips: 'Soory, the course is bought by someone earlier. Please check next time.'
 course.no_avatar_tips: 'You don''t have an avatar yet, please upload your avatar before enroll the course.<br/> It is more polite to have an avatar.'
 course.remove_students_tips: 'The course is closed. But students of the course can continue to study during course expiry date. Or you can remove students in student manage panel.'
 course.name: 'Course title'
 course.price: Price
 course.price.RMB: '%price% CNY'
+
+course.minimum_price.unit: 'from %price% %unit%'
 course.origin_price.CNY: '%originPrice% CNY'
 course.price.free: Free
 course.price.limited_time_free: 'Free in limited time'
@@ -732,7 +849,7 @@ course.marketing_setup.rule: 'Rules'
 course.marketing_setup.rule.expiry_date: 'Learn expiry date'
 course.marketing_setup.rule.expiry_date_tips: 'Students can Learn before the date'
 course.marketing_setup.rule.expiry_date.publish_tips: 'Students can Learn in several days since the enrollment.'
-course.marketing_setup.rule.expiry_date.first_publish_tips: 'Expiry date can not be edited since the plan being created'
+course.marketing_setup.rule.expiry_date.first_publish_tips: 'Expiry Mode can not be edited since the program was published, but expiry date can be edited while course or the program was closed.'
 course.marketing_setup.rule.watch_time_limit: 'Video watch time limit'
 course.marketing_setup.rule.watch_time_limit.watch_limit: 'Times of total video duration'
 course.marketing_setup.rule.watch_time_limit.watch_limit_tips: 'Eg.: The total video duration of the course is 100 minutes. If you set 5 times, then students can watch videos for 500 minutes. 0 means no limits.<br/>It only affect the video upload manually. It won''t affect record live or videos saved on third party live platform.'
@@ -741,13 +858,18 @@ course.marketing_setup.preview.set_task: 'Free tasks'
 course.marketing_setup.preview.set_task.task: Task
 course.marketing_setup.preview.set_task.task_name: 'Task %name%'
 course.marketing_setup.preview.set_task.free: Free
-course.marketing_setup.preview.set_task.free_tips: 'Free lesson task only support text, video, audio, flash, docs and ppt'
+course.marketing_setup.preview.set_task.free_tips: 'Free lesson task only support'
 course.marketing_setup.preview.try_watch: Preview
 course.marketing_setup.preview.try_watch_tips: 'It is usally used to let student preview the paid course'
 course.marketing_setup.services: 'Services setting'
 course.marketing_setup.services.show_services: 'Show to user'
 course.marketing_setup.services.provide_services: 'Services'
 course.marketing_setup.no_permission_tips: 'Sorry, you can not edit marketing settings. Contact site administrator for help.'
+course.marketing_setup.reward_point_setting: %name% setting
+course.marketing_setup.study_award:　Study Award
+course.marketing_setup.task_award: Task Award
+course.marketing_setup.course_award: Course Award
+
 course.teacher_setup: 'Teachers'
 course.teacher_setup.exist_teacher: 'Exist teachers'
 course.teacher_setup.exist_teacher.add_tips: 'You can only add users with teacher role.'
@@ -808,26 +930,43 @@ course.members_manage.official_student.add_expiry_day.days: Extend
 course.members_manage.official_student.add_expiry_day.failed_tips: 'Failed to extend'
 course.members_manage.official_student.add_expiry_day.publish_tips: 'Expiry date, please try after the course is published.'
 course.members_manage.quit_records: 'Quit history'
-course.members_manage.publish_btn: Publish
-course.members_manage.quit_records.content_title: 'Students'
-course.members_manage.quit_records.name: 'Student name'
+course.members_manage.quit_type: 退出类型
+course.members_manage.is_refunded: 是否退款
+course.members_manage.is_paid: 是否付费
+course.members_manage.records.name: 'Student name'
 course.members_manage.quit_records.reason: 'Quit reason'
 course.members_manage.quit_records.status: 'Refund status'
-course.members_manage.quit_records.cash_count: 'Refund amount'
 course.members_manage.quit_records.date: 'Quit time'
-course.members_manage.quit_records.tips: '<li class="mt10 mb10">only display refund records of students who paid by cash</li><li>please check the refund deatil of class teaching plan in class manage panel</li>'
 course.members_manage.quit_records.empty: 'No data'
 course.members_manage.quit_records.join_time: 'Enroll time:'
 course.members_manage.quit_records.success: 'Refund succeed'
-course.members_manage.quit_records.failed: 'Refund failed'
-course.members_manage.quit_records.cancel: 'Refund cancelled'
+
+course.members_manage.join_records: 加入记录
+course.members_manage.records.join_reason: 加入原因
+course.members_manage.records.join_reason_type: 加入类型
+course.members_manage.join_records.date: 加入日
+
 course.testpaper_check: 'Marking testpaper'
 course.testpaper_check.no_permission_tips: 'You are not teacher of this course and can not mark the testpaper.'
 course.testpaper_check.empty: 'No data'
-course.testpaper_check.start_date: 'Start date'
+course.testpaper_check.start_date: 'Start date:'
 course.testpaper_check.status.check: Checked
 course.testpaper_check.status.not_check: 'UnCheck'
 course.testpaper_check.status.not_submit: 'Uncommited'
+course.testpaper_check.optional_task_title: Optional Task:%title%
+course.testpaper_check.testpaper_delete: Exam was deleted
+course.testpaper_check.graph_avg_score: Average Score:%avgScore%
+course.testpaper_check.graph_max_score: Max Score:%maxScore% 分
+course.testpaper_check.graph_passed_percent: Percent Of Pass:%percent%%
+course.testpaper_check.btn_score_distribution: Score Distribution
+course.testpaper_check.btn_question_distribution: Question Distribution
+course.testpaper_check.btn_check: Check
+course.testpaper_check.first_answer: 初次答题
+course.testpaper_check.number: 人次
+course.testpaper_check.get_score: 得 %questonScore% 分
+course.testpaper_check.get_score_range: 得 0 - %questonScore% 分
+course.testpaper_check.testpaper_analysis: 试题分析
+
 course.homepage.re_try_btn: 'Try again'
 course.assignment_check: 'Review assignment'
 course.assignment_check.no_permission_tips: 'You are not teacher of this course and can not review the testpaper.'
@@ -889,6 +1028,17 @@ course.dashboard.finished_course_rate_tips: 'The students finished the teaching 
 course.dashboard.notes_numbers: Notes
 course.dashboard.questions_numbers: Questions
 course.dashboard.discussions_numbers: Discussions
+course.dashboard.free_view_numbers: Free view times
+course.dashboard.free_view_numbers_tips: Include free task and free view task,update at markets setting
+course.dashboard.student_trend: Student trend
+course.dashboard.student_trend_seven_days: week
+course.dashboard.student_trend_thirty_days: month
+course.dashboard.student_detail: Student detail
+course.dashboard.task_detail: Task detail
+course.dashboard.student_chart.time_select_all: all
+course.dashboard.student_chart.time_select_unFinished: unFinished
+course.dashboard.student_chart.time_select_seven_days: Seven days without school
+
 course.members_manage.add_btn: 'Add'
 course.members_manage.batch_import_btn: 'Import'
 course.members_manage.import_failed_tips: 'Import student failed, the course is not published'
@@ -921,7 +1071,7 @@ course.teach_plan_manage: 'Programs'
 course.cover: 'Course cover'
 course.cover_image: 'Cover'
 course.cover_image.content_title: 'Cover'
-course.cover_image.upload_tips: "You can upload jpg, gif, png files, suggest size could be 480x270。<br>The maxium size should less than <strong>2M</strong>。\n"
+course.cover_image.upload_tips: "You can upload jpg, gif, png files, suggest size could be 480x270px. <br>The maxium size should less than <strong>2M</strong>.\n"
 course.cover_image.upload_btn: 'Select the image to upload'
 course.expiry_date: 'Available'
 course.expiry_date.days_mode: "%expiryDays% day(s)\n"
@@ -949,6 +1099,7 @@ course.share: Share
 course.belong_to_classroom_tips: 'The course is belong to<a href="%classroomUrl%">%classroomTitle%</a>please enroll to learn'
 course.course_limited_tips: 'Limited access, please contact the customer service.'
 course.course_closed_tips: 'Sorry, this course %title% has been closed.'
+course.courseSet_closed_tips: 'Sorry, this courseSet %title% has been closed.'
 course.unbuyable.unpublished_tips: 'You are not allowed to enroll before the course published.'
 course.unbuyable.over_buy_expiry_time_tips: 'You are not allowded to enroll, since it‘s expired.'
 course.unbuyable.over_expiry_end_date_tips: 'You are not allowded to enroll, since it''s expired.'
@@ -987,6 +1138,9 @@ course.reviews.detail: 'Details of your review'
 course.reviews.success_tips: 'Your review has been saved'
 course.reviews.empty: 'No comment found'
 course.teacher: Tearcher：
+course.reward_point.award: Reward Point Award
+course.reward_point.task_award: Task Award
+course.reward_point.course_award: Course Award
 course.teacher.content_title: Teacher
 course.characteristic.content_title: 'Course features'
 course.newest_students.content_title: 'New students'
@@ -1000,6 +1154,8 @@ course.note.seq: Order
 course.note.latest: 'Latest note'
 course.note.not_latest: 'Most liked'
 course.task: Task
+course.task.progress: 'task progress'
+course.task.rate.finish: 'rate of finish'
 course.task.lock_tips: 'Unlock the prior task to continue.'
 course.task.learning: 'Task learning'
 course.task.learning.back_course_btn: 'Back'
@@ -1104,7 +1260,6 @@ course.detail.intended-students: Who should take the course
 course.question_manage: Questions
 course.question_manage.your_answer: 'Your answer'
 course.question_manage.you_no_answer: 'No answer'
-course.question_manage.you_no_answer_with_html: '<span class="color-gray">No answer</span>'
 course.question_manage.teacher_reviewing: Reviewing
 course.question_manage.finial_answer: Answer
 course.question_manage.right: 'You are right'
@@ -1114,7 +1269,6 @@ course.question_manage.answer: 'Correct is'
 course.question_manage.preview_btn: Preview
 course.question_manage.more_btn: More
 course.question_manage.content_title: Questions
-course.question_manage.bread_crumbs: '<li><a href="{{ %questionUrl% }}">Questions</a></li><li class="active">Questions from Material</li>'
 course.question_manage.filter.question_type: '--By Type--'
 course.question_manage.filter.course: 'By Course'
 course.question_manage.filter.keywords: Keywords
@@ -1246,6 +1400,14 @@ course.testpaper_manage.question.replace_modal.empty: 'There is no question, ple
 course.testpaper_manage.question.replace_modal.create_btn: 'Create question'
 course.testpaper_manage.question.replace_modal.select_all_btn: 'Select All'
 course.testpaper_manage.question.replace_modal.select_btn: Select
+course.testpaper_manage.analysis_card.course_total_person: 'Course Person:'
+course.testpaper_manage.analysis_card.classroom_total_person: 'Classroom Person:'
+course.testpaper_manage.analysis_card.join_person: 'Join Person:'
+course.testpaper_manage.analysis_card.complete_person: 'Completed Person:'
+course.testpaper_manage.analysis_card.total_score: 'Score:'
+course.testpaper_manage.analysis_card.avg_score: 'Avg Score:'
+course.testpaper_manage.analysis_card.avg_score_tip: Figure up first submited score
+
 course.course_files: 'Files'
 course.course_files.content_title: 'Files'
 course.course_files.create_btn: 'Add'
@@ -1269,6 +1431,10 @@ course.course_files.cloud_file: 'Cloud file'
 course.course_files.reconvert_btn: 'Re-Conversion (debug mode)'
 course.course_files.select_all_btn: 'Select All'
 course.course_files.record: 'File record'
+course.course_files.re_try_convert_video_to_audio: 'Re-Conversion To Audio'
+
+course.plan_overview: 'Tasks Overview'
+
 course.plan_task: Tasks
 course.plan_task.deadline_learn_tips: 'You can learn before<input class="form-control width-150" id="deadline" name="deadline" value="">.'
 course.plan_task.expiry_days_learn_tips: 'From the day of enrolled, you can learn within<input class="form-control mhs width-150" type="text" id="expiryDays" name="expiryDays"value="1">days'
@@ -1507,7 +1673,8 @@ course.live.replay_manage.lesson_edit_content_title: 'Edit playback video'
 course.live.replay_manage.lesson_add_content_title: 'Add playback video'
 course.live.replay_manage.lesson_add_btn: Add
 course.liveroom.content_title: 'Live'
-course.liveroom.open_liveroom_tips: 'Live entering, pleas wait ...'
+course.liveroom.open_liveroom_tips: 'Live entering, please wait ...'
+activity.live.not_created_notice: Live classroom not yet created!
 course.note.save_btn: Save
 course.note.share_btn: Share
 file_chooser.empty: 'No resources'
@@ -1548,8 +1715,8 @@ testpaper.answer.answer_card: 'Answer card'
 testpaper.answer.answer_card.do_agagin_tips: '%itemCount% more questions'
 testpaper.answer.answer_card.one_chance_tips: 'Only one chance for the test'
 testpaper.answer.answer_card.exam_tips: "<div>The exam has total <span class=\"color-primary\">%itemCount% questions</span>，total score is <span class=\"color-primary\">%score% points</span>.\n"
-testpaper.answer.answer_card.exam_with_pass_score_tips: "<div>The exam has total <span class=\"color-primary\">%itemCount% questions</span>，total score is <span class=\"color-primary\">%score% points</span>，pass score is <span class=\"color-primary\">%finishScore%</span>points\n"
-testpaper.answer.answer_card.limited_time_tips: 'Please answer in <span class="color-primary">%limitedTime% minutes</span>.'
+testpaper.answer.answer_card.exam_with_pass_score_tips: ",pass score is <span class=\"color-primary\">%finishScore%</span>points\n"
+testpaper.answer.answer_card.limited_time_tips: ',Please answer in <span class="color-primary">%limitedTime%</span>.'
 testpaper.answer.answer_card.submit_btn: Submit
 testpaper.answer.student: 'Answerer: '
 testpaper.answer.endtime: 'Submit time: '
@@ -1616,6 +1783,7 @@ open_course.unpublish_success_hint: Lesson unpublished!
 open_course.lesson.create_success: Lesson create success
 open_course.lesson.create_error:  Lesson create error
 classroom: Class
+classroom.name: Class Name
 classroom.buy_classroom.purchase_timeout_tips: 'Please complete the payment within 30 minutes, otherwise the order will be expired.'
 classroom.buy_classroom.no_avatar_tips: 'You have no avatar,please set an avatar to enroll courses<br />An unique avatar makes it easier to draw attentions from your teachers or classmates. <a href="%avatarSettingUrl%" class="alert-link" target="_blank">Click to set</a>'
 classroom.buy_classroom.classroom_free_tips: 'The %name% %classroomName% is free，you can study without purchase。'
@@ -1795,7 +1963,7 @@ classroom.thread.create.event_time: 'Activity Time'
 classroom.thread.create.event_start_time: 'Activity start time'
 classroom.thread.create.event_location: 'Activity Location'
 classroom.thread.create.cover_image: 'Cover'
-classroom.thread.create.cover_image.placeholder: 'Recommended image size 200*112'
+classroom.thread.create.cover_image.placeholder: 'Recommended image size 200×112px'
 classroom.thread.create.views_btn: View...
 classroom.thread.create.maxUsers: 'Maximum people'
 classroom.thread.create.maxUsers.placeholder: Unlimited
@@ -1901,6 +2069,7 @@ classroom.expiry_mode_end_date: 'Expired on'
 classroom.expiry_mode_days: 'Effective days'
 classroom.expiry_mode_forever: Forever
 classroom.edit_expiry_mode: 'Update student expiry'
+classroom.expiry_mode.first_publish_tips: 'Expiry mode can not be edited since the classroom was published'
 classroom.not_edit: 'Cannot update class'
 classroom.publish_tips: 'Expiry, please extends it after publish'
 classroom.title_label: 'Class name'
@@ -1911,7 +2080,7 @@ classroom.category: Category
 classroom.price_label: Price(CNY)
 classroom.price_tips: "Total %courseNum% courses, original %price% CNY.\n"
 classroom.amount: "Equals to%price%\n"
-classroom.picture_tips: "File format could be jpg/gif/png. Suggested size is 525 * 350 px.<br> The file limits  to <strong>2M</strong>.\n"
+classroom.picture_tips: "File format could be jpg/gif/png. Suggested size is 525×350px. <br> The file limits to <strong>2M</strong>.\n"
 classroom.commitment_service_label: Commitment
 classroom.activiy: Activity
 classroom.activity_tips: "Arrange online and offline %name% activities, make the learning with more fun and keep closer relationships with your classmates.\n"
@@ -1970,7 +2139,6 @@ classroom.student_username: 'Student name'
 classroom.student_exit_reason: 'Quit reason'
 classroom.student_exit_date: 'Quit date'
 classroom.refund_status: 'Refund Status'
-classroom.refund_money: 'Refund Amount'
 classroom.refund_record_tips: 'Only show refund history of students who enrolled via cash'
 classroom.join_time: 'Enroll date'
 classroom.refund_success: 'Refund succeeded'
@@ -1995,10 +2163,15 @@ classroom.manage_btn: Config
 classroom.remove: Delete
 classroom.create.congratulation_message: 'Congratulation!A classroom had been created successfully!'
 classroom.create.title_not_unique: 'Class title was not unique, please change it.'
+#TODO trans
+classroom.set_assistant_tip: 仅能添加本班级学员
+
 form.btn.login.submiting: Login...
 form.btn.reply_publish.submiting: Publishing...
 form.placeholder.search_keyword: 'Input keywords ...'
 form.checkbox.batch_select: 'Select all'
+form.btn.continue: Continue
+
 user.login.account_type_label: 'Emails/Phone numbers/Username'
 user.login.content_title: Login
 user.login.page_title: 'Log In'
@@ -2056,6 +2229,9 @@ user.register.not_receive_email_tips: "<h5>Not received a confirmation letter?</
 user.register.verify_success_tips: "after verification, you can： <ul>\n  <li><a href=\"%path%\">Back</a></li>\n  <li><a href=\"%homepage%\">Home</a></li>\n</ul>\n"
 user.register.emaill_not_useful_tips: "<h5>original mailbox is invalid?</h5> <a class=\"btn btn-primary\" href=\"%resetEmail%\">Rebind</a>\n"
 user.register.service_protocol: 'Service Agreements'
+user.register.agree_terms: 同意服务协议并注册
+user.register.read_detail: 请详细阅读
+user.register.user_service_protocol: 用户服务协议
 user.register.reset_email: 'Reset email'
 user.register.reset_email.origin_email: 'Previous email address:'
 user.register.reset_email.school_login_password: 'Network school password：'
@@ -2091,10 +2267,41 @@ user.register.email_label: Email
 user.register.get_user_avatar_tips: 'Fail to auto load avatar, please upload your avatar later'
 user.register.avatar_label: Avatar
 user.register.invite_register_tips: 'Registering under %inviteUser%</span>`s invitation by <span class="color-gray mhs">'
+
+user.oauth.login_by_email: 邮箱
+user.oauth.login_by_mobile: 手机
+user.oauth.login_by_mobile_or_email: 手机/邮箱
+user.oauth.login_by_mobile_or_email_tip: 手机或邮箱
+user.oauth.bind_account: 绑定帐号
+user.oauth.bind_account.tip: 为获取更优质服务，请绑定您的%accountType%帐号
+user.oauth.validate_password: 验证密码
+user.oauth.bind_success: 帐号绑定成功
+user.oauth.bind_account_success: 绑定成功
+user.oauth.web_account_password: 网校帐号密码
+user.oauth.binding_web_user: 正在绑定网校用户
+user.oauth.bind_account_and_go_continue: 绑定并继续
+user.oauth.bind_other_account: 绑定其他帐号？
+user.oauth.bind_existed_account: 绑定已有帐号？
+user.oauth.register.nickname_placeholder: 最长 18 个英文或 9 个汉字
+user.oauth.register.password__placeholder: 5-20 位英文、数字、符号
+user.oauth.register_account_by_ways: 使用%accountType%创建帐号
+user.oauth.register.confirm_password_label: 确认密码
+user.oauth.register.confirm_password_placeholder: 再次输入密码
+user.oauth.register.input_sms_code_tips: 输入验证码
+user.oauth.register.input_sms_code_placeholder: 请输入短信验证码
+user.oauth.register.send_sms: 发送验证
+user.oauth.register.input_captcha_code_placeholder: 请输入右侧图形验证码
+user.oauth.register_account: 创建帐号
+user.oauth.register_success: 注册成功
+user.oauth.register_account_success: 帐号注册成功
+user.oauth.page.closed: 秒后该页面自动关闭
+user.oauth.register.closed: 注册已关闭，请联系管理员
+
 user.settings: 'My Profile'
 user.settings.basic.page_title: 'Basic Info'
 user.settings.menu_heading: 'My Profile'
 user.settings.basic_info_menu: 'Basic Info'
+user.settings.personal_info_menu: Personal info
 user.settings.avatar_menu: Avatar
 user.settings.verification_menu: 'Real-name authentication'
 user.settings.security_menu: Security
@@ -2105,6 +2312,9 @@ user.settings.avatar: "<strong>No avatar yet</strong>。Own an avatar to get mor
 user.settings.profile.no_bind_mobile_tips: 'You are not bind with mobile'
 user.settings.profile.bind_mobile_btn: 'Go to bind'
 user.settings.profile.unable_change_bind_mobile: Unable to change the binding mobile.
+user.settings.profile.change_avatar: Modify picture
+user.settings.profile.choose_again: Choose again
+user.settings.profile.save_avatar: Save picture
 user.settings.security.setup_account: Account
 user.settings.security.save_username_tips: 'Username cannot be modified when it is saved'
 user.settings.security.setup_login_password: 'Set password'
@@ -2123,27 +2333,33 @@ user.settings.security.content_title: 'Security Setting'
 user.settings.security.reset_pay_password: 'Payment password resetting'
 user.settings.security.reset_pay_password_success: 'Payment password resetting successfully'
 user.settings.security.set_pay_password_success: 'New payment password setting successfully。'
+user.settings.security.set_pay_password_success.closed_automatically: 5秒后该页面自动关闭
 user.settings.security.return_btn: 'Back to security setting'
 user.settings.security.scene_not_open: 'Scene unopened'
 user.settings.security.use_scene_not_open: 'This usage scenario is unopened'
-user.settings.security.high_level: 'Security level: High'
-user.settings.security.middle_level: 'Security level: Medium'
-user.settings.security.low_level: 'Security level: Low'
+user.settings.security.level: Security level
+user.settings.security.high_level: 'High'
+user.settings.security.middle_level: 'Medium'
+user.settings.security.low_level: 'Low'
 user.settings.security.login_password_tips: 'The password used to login the system.'
 user.settings.security.pay_password_tips: 'The password to perform a payment.'
 user.settings.security.questions: 'Security questions'
 user.settings.security.questions_tips: 'To protect your account by setting up securtiy quesions.'
 user.settings.security.mobile_bind: 'Bound phone number'
 user.settings.security.mobile_bind_tips: 'To increasing the securtiy of loging account and buyting course, and find the log in password, payment password.'
+user.settings.security.email_setting_tips: Can be used to retrieve the login password
 user.settings.security.password_modify: 'Update password'
 user.settings.security.password_modify.content_title: 'Security Setting'
 user.settings.security.password_modify.bread_crumbs: "<li><a href=\"%settingSecurityUrl%\">Security Setting</a></li> <li class=\"active\">Login password modification</li>\n"
 user.settings.security.password_modify.current_password: 'Current Password'
+user.settings.security.password_modify.current_password_placeholder: Please input current password
 user.settings.security.password_modify.new_password: 'New Password'
+user.settings.security.password_modify.new_password_placeholder: Please input new password
 user.settings.security.password_modify.confirm_password: 'Confirm Password'
+user.settings.security.password_modify.confirm_password_placeholder: Please input new password again
 user.settings.security.password_modify.input_password_tips: 'Re-enter your password'
 user.settings.security.password_modify.incorrect_password: Incorrect password
-user.settings.security.no_password_tips: "<p>Current account is created from a third party directly hasn''t set a password。</p> <p>For the safety of account, please find the password by email and reset the password！！</p> <p><a href=\"%passwordResetUrl%\" class='btn btn-primary'>reset the password now</a></p>\n"
+user.settings.security.no_password_tips: "<p>Current account is created from a third party directly hasn''t set a password。</p> <p>For the safety of account, please find the password by email and reset the password！！</p> <p><a href=\"%passwordResetUrl%\" class='btn cd-btn cd-btn-primary'>reset the password now</a></p>\n"
 user.settings.security.password_reset: 'Reset password'
 user.settings.security.password_reset.content_title: 'Reset password'
 user.settings.security.password_reset.email: Email
@@ -2164,22 +2380,32 @@ user.settings.security.pay_password_set.content_title: 'Security setting'
 user.settings.security.pay_password_set.bread_crumbs: "<li><a href=\"%settingSecurityUrl%\">Security setting</a></li> <li class=\"active\">set payment password</li>\n"
 user.settings.security.pay_password_set.input_login_password: 'Please enter the login password'
 user.settings.security.pay_password_set.new_pay_password: 'New Payment Password'
+user.settings.security.pay_password_set.new_pay_password_placeholder: Please input new payment password
 user.settings.security.pay_password_set.user_login_password: 'Login Password'
 user.settings.security.pay_password_set.confirm_pay_password: 'Confirm Payment Password'
 user.settings.security.pay_password_set.old_pay_password: 'Old Payment Password'
+user.settings.security.pay_password_set.old_pay_password_placeholder: Please input old payment password
 user.settings.security.pay_password_set.input_pay_password_again: 'Please enter the payment password again'
-user.settings.security.pay_password_set.success: New pay password had set successfully, you can reset it here next time.
+user.settings.security.pay_password_set.success: New pay password had set successfully
 user.settings.security.pay_password_set.incorrect_login_password: Incorrect login password
 user.settings.security.pay_password_set.incorrect_pay_password: Incorrect pay password
 user.settings.security.pay_password_set.reset_success: Rest pay password successfully
 user.settings.security.pay_password_set.twice_pay_password_mismatch: Your input pay password mismatch.
 user.settings.security.pay_password_find.content_title: 'Security Setting'
 user.settings.security.pay_password_find.bread_crumbs: "<li><a href=\"%settingSecurityUrl%\">Security Setting</a></li> <li class=\"active\">Find payment password</li>\n"
+user.settings.security.pay_password_find.way: 选择找回方式
+user.settings.security.pay_password.validate_info: 验证信息
 user.settings.security.pay_password_find.by_question: 'Find password by security question'
 user.settings.security.pay_password_find.by_question.answer: 'Security question answer'
+user.settings.security.pay_password_find.by_mobile.unbound: 未绑定手机？
+user.settings.security.pay_password_find.by_mobile.immediately_bind: 立即绑定
 user.settings.security.pay_password_find.by_mobile: 'Find password by phone'
+user.settings.security.pay_password_find.by_mobile_current: 当前手机
+user.settings.security.pay_password_find.by_mobile_phone: 通过手机号码找回
 user.settings.security.pay_password_find.by_mobile.change: 'Change phone number'
+user.settings.security.pay_password_find.current_empty: 未设置安全问题？
 user.settings.security.pay_password_find.empty: 'Change mobile phone number'
+user.settings.security.pay_password_find.start_set: 立即设置
 user.settings.security.pay_password_find.wrong_answer: Wrong answer
 user.settings.security.pay_password_find.correct_answer: Correct answer, you can change your pay password now.
 user.settings.security.pay_password_find.unbind_mobile: No bind mobile, please bind first.
@@ -2213,10 +2439,13 @@ user.settings.basic_info.occupation: Occupation
 user.settings.basic_info.rank: Title
 user.settings.basic_info.personal_signature: 'Personal signature'
 user.settings.basic_info.personal_space: 'Personal space'
+user.settings.basic_info.public: 微博、微信、QQ信息将会展示在您的个人主页
 user.settings.basic_info.self_introduction: 'About me'
 user.settings.basic_info.alter_description: 'You can create a course after setting till and self-introduction.'
 user.settings.basic_info.illegal_nickname: 'Nickname has illegal words'
 user.settings.basic_info.nickname_change_successfully: 'Nickname had changed successfully'
+user.settings.basic_info.shange_avatar: 修改头像
+
 user.settings.verification: 'Real-name authentication'
 user.settings.verification.username_modify: 'Update username'
 user.settings.verification.content_title: 'Real-name authentication'
@@ -2224,10 +2453,20 @@ user.settings.verification.photo_require: 'Photo Requirements'
 user.settings.verification.photo_require_tips: 'Pictures must be clear and in color. The format can be jpg, gif or png. Size of each image should be no larger than 2 M.'
 user.settings.verification.idcard_front_photo: 'Front Side'
 user.settings.verification.idcard_back_photo: 'Back Side'
-user.settings.verification.approving_tips: 'Real name is being verified，administrator will reply soon'
-user.settings.verification.approved_tips: 'Congratulations, real name has been verified！'
-user.settings.verification.unapprove_tips: 'Your real name has not been verified'
-user.settings.verification.approve_failed_tips: 'Real name verification not passed, please update according to the advice and try again.'
+
+user.settings.verification.approving_title_tips: 审核中
+user.settings.verification.approving_content_tips: 申请已提交，请耐心等待审核结果
+user.settings.verification.approved_title_tips: 已实名认证
+user.settings.verification.approved_content_tips: 认证通过后实名信息无法修改
+
+user.settings.verification.unapprove_tips: 为保护您的帐号安全、获得更好的服务，请尽快完成实名认证。
+user.settings.verification.unapprove_tips: Real-name certification can boost your personal information and the security level of virtual property, but also better able to experience various services
+user.settings.verification.approve_failed_tips: Audit failed, please upload id photos again and make sure the picture is clear
+user.settings.verification.approve_failed_reason_tips: 审核未通过，原因是：%reason%。请修改信息后重新认证。
+
+user.settings.verification.notice: 认证须知
+user.settings.verification.notice_content: "<p>1、请确保身份证照片清晰可认，严禁PS，否则将由您本人承担相应的法律后果。<br> 2、实名认证成功后，将无法修改和删除实名信息，请谨慎填写。<br> 3、我们将尽快审核您提交的信息，处理完成后您将会收到系统通知。</p>"
+
 user.settings.avatar.page_title: 'Avatar Setting'
 user.settings.avatar.crop: Avatar
 user.settings.avatar.reselect: 'Reselect an image'
@@ -2238,13 +2477,17 @@ user.settings.avatar.upload_hint: "you can upload the file of JPG,GIF,PNG，and 
 user.settings.avatar.upload_btn: 'Upload New Photo'
 user.settings.avatar.using_current_avatar: 'Set as avatar'
 user.settings.avatar.setup_hint: 'Please set custom profile photo。'
-user.settings.avatar.crop_hint: 'Tip:Please select an image crop area'
+user.settings.avatar.crop_hint: 'Please select an image crop area'
 user.settings.avatar.fetch_form_partner_error: Fetch your avatar from partner encountered an error.
 user.settings.email: 'Email setting'
 user.settings.email.content_title: 'Email setting'
 user.settings.email.no_change_email_tips: 'Mail server has not been set by administrator, can not change email'
 user.settings.email.current_email: 'Current Email'
 user.settings.email.verified: Verified
+user.settings.email.verifiy: 邮箱验证
+user.settings.email.verifiy_send: 验证邮件已发送
+user.settings.email.not_verifiy: 暂不验证
+user.settings.email.goto_verifiy: 前往验证
 user.settings.email.unverified_tips: 'Mail address hasn''t been verified.'
 user.settings.email.verify_btn: Verify
 user.settings.email.setup_email_tips: 'You haven''t set your email, please set your new email below.'
@@ -2267,20 +2510,25 @@ user.account_center: 'Account Center'
 user.menu_heading: 'Account'
 user.account_menu: 'My Bills'
 user.order_menu: 'My Order'
-user.cards_menu: 'My Wallet'
+user.cards_menu: 'My Coupons'
 user.vip_history_menu: 'VIP Record'
 user.account.empty: 'No record'
 user.account.coin_introductions: '%coin_name% introductions'
 user.account.coin_image: 'Virtual coin icon'
-user.account.my_coin: 'My %coin_name%'
+user.account.my_coin: '%coin_name% coin'
+user.account.my_coin.pay_coin: %coin_name% paid
+user.account.my_coin.refunded_coin: %coin_name% refunded
 user.account.my_coin.inflow: 'Recharge Records'
 user.account.my_coin.outflow: 'Payment Records'
 user.account.my_coin.recharge: 'Learning card recharge'
 user.account.my_bill: 'Bills'
+user.account.invite_code: 'Invitation code'
 user.account.my_invite_code: 'My invitation code'
 user.account.my_invite_code.invite: 'Invite a friend'
+user.account.my_invite_code.invited: 'Has invited friends'
 user.account.my_invite_code.invite.modal_title: 'Share invitation link'
 user.account.my_invite_code.invite.copy_btn: 'Copy to clipboard'
+user.account.my_invite_code.has_received_coupons: 'Has received coupons'
 user.account.other_invite_code: 'Invitation code'
 user.account.other_invite_code.modal_title: 'Input invitation code'
 user.account.other_invite_code.invite_code: 'Invitation code'
@@ -2300,8 +2548,14 @@ user.account.my_invite_code.close: 'Invitation code feature is off'
 user.orders: 'My Order'
 user.orders.content_title: 'My Order'
 user.orders.all_orders: 'All Orders'
+user.order.order_list: Order List
+user.order.refund_list: Refund Manage
 user.orders.created_status: Unpaid
 user.orders.paid_status: Paid
+user.orders.refunding_status: Refunding
+user.orders.closed_status: Closed
+user.orders.refunded_status: Refunded
+user.orders.no_paid_status: Unpaid
 user.orders.operation: Action
 user.orders.order_id: 'Order number：%sn%'
 user.orders.target_course: 'Related course'
@@ -2313,6 +2567,7 @@ user.orders.detail.modal_title: 'Order Details'
 user.orders.detail.special_operations: 'Special operation'
 user.orders.detail.log_info: 'Log info'
 user.orders.detail.operator: Operator
+user.orders.detail.Ip: IP
 user.orders.detail.log_createdTime: 'Created at'
 user.orders.detail.empty: 'No transaction log'
 user.orders.refund_record_title: 'Refund record'
@@ -2321,6 +2576,8 @@ user.orders.refund_apply_time: 'Request time of refund'
 user.orders.refund_status: 'Refund Status'
 user.orders.refund_id: 'Refund number：%sn%'
 user.orders.refund_empty: 'No refund record'
+user.orders.placeholder_order_name: 'Input order name'
+user.orders.placeholder_product_name: 'Input product name'
 user.cards: 'My Wallet'
 user.cards.content_title: 'My Wallet'
 user.cards.all: All
@@ -2386,13 +2643,20 @@ homepage.header.register: Sign Up
 homepage.header.my_course: 'My Courses'
 homepage.header.my_learning: 'My Courses'
 homepage.header.notice: Notification
+homepage.header.check_all_notifications: 查看全部通知
+homepage.header.no_new_notifications: 暂无新的通知～
 homepage.header.message: Message
+homepage.header.check_all_messages: 查看全部私信
+homepage.header.no_new_messages: 暂无新的私信～
 homepage.header.personal_menu: 'My Home'
 homepage.header.settings_menu: 'Profile Setting'
 homepage.header.my_teaching_menu: 'Teaching'
 homepage.header.my_learning_menu: 'Learning'
 homepage.header.account_menu: 'Account'
+homepage.header.reward: 积分
 homepage.header.admin_menu: 'Admin'
+homepage.header.switch_pc: Switch PC
+homepage.header.switch_mobile: Switch Mobile
 homepage.friend-link.content_title: Links：
 homepage.live_course.living: 'On live'
 homepage.live_course.expect: 'Stay tuned'
@@ -2444,7 +2708,7 @@ cloud_file.process_status.waiting: Converting
 cloud_file.process_status.error: 'Convert failed'
 cloud_file.transcoding_tips: 'Video transcoding is not completed, please wait ...'
 my.teaching.open_course.title: Name
-cloud_file.material_thumbnail_generate: 'Producing screenshots, please wait ...'
+cloud_file.material_thumbnail_generate: 'Producing screenshots...'
 cloud_file.screen_shot_btn: Screenshots
 cloud_file.search_empty: 'Sorry,no rescouce found'
 cloud_file.use_status: 'Using'
@@ -2610,11 +2874,11 @@ group.detail.group_settings.group_edit.name: 'Group name'
 group.detail.group_settings.group_edit.introduction: 'Group Info'
 group.detail.group_settings.logo_setup: 'Image setting'
 group.detail.group_settings.logo_setup.current_logo: 'Current image'
-group.detail.group_settings.logo_setup.tips: "You can upload .JPG, .GIF, and .PNG files, size should less than <strong>2M</strong>.\n"
+group.detail.group_settings.logo_setup.tips: "You can upload .JPG, .GIF, and .PNG files, size should less than <strong>2M</strong>. Recommend size: 180×180px. \n"
 group.detail.group_settings.logo_setup.upload_btn: 'Upload new image'
 group.detail.group_settings.background_image_setup: 'Background setting'
 group.detail.group_settings.background_image_setup.current_image: 'Current background'
-group.detail.group_settings.background_image_setup.tips: "You can upload .JPG, .GIF, and .PNG files, size should less than <strong>2M</strong>. Recommend size（1140*150）\n"
+group.detail.group_settings.background_image_setup.tips: "You can upload .JPG, .GIF, and .PNG files, size should less than <strong>2M</strong>. Recommend size: 1140×150px. \n"
 group.detail.new_group_members: 'New member'
 group.detail.new_group_members.empty: 'No member'
 group.detail.hot_group: 'Popular group'
@@ -2632,7 +2896,6 @@ group.buy_attach.content_title: 'Download accessaries'
 group.buy_attach.require_coin_name: 'Need %name%'
 group.buy_attach.purchased_tips: 'You have already purchased this attachement'
 article: Article
-article.channel: 'Channel %article_name%'
 article.banner_tips: "headlines banner need to set thumbnail and add headlines attribute in infomation management page first <a class=\"mls alert-link\" href=\"%articleUrl%\">setting</a>\n"
 article.empty: 'No article'
 article.popular_article: 'Popular article'
@@ -2796,6 +3059,9 @@ customer_service.time: 'Service time'
 customer_service.send_message: 'Click here to send me message'
 my.teaching.menu_heading: 'My teaching'
 my.teaching.course_set_menu: Courses
+my.teaching.live_schedule_menu: Teaching Schedules
+my.teaching.hints_block: Only live courses are shown currently
+my.teaching.today_courses: 今日课程数
 my.teaching.classroom_menu: Class
 my.teaching.question_menu: 'Q&A'
 my.teaching.discussion_menu: Discussions
@@ -2807,6 +3073,7 @@ my.teaching.course_set.live: 'Live'
 my.teaching.course_set.classroom: '%classroom% courses'
 my.teaching.open_course.normal: 'Recorded Open Course'
 my.teaching.open_course.live: 'Live Open Courses'
+my.teaching.open_course.live_remind: 'Live remind'
 my.teaching.threads_discussion: 'Student discussion'
 my.teaching.classroom.threads_discussion: '%classroom% discussion'
 my.teaching.classroom.threads_discussion.nickname: 'Discussion owner'
@@ -2894,7 +3161,7 @@ my.teaching.open_course.Basic_Info.category: Category
 my.teaching.open_course.Basic_Info.about: About
 my.teaching.open_course.Basic_Info.about.help_block: 'Please config the IFrame whitelist in [admin center] - [system] - [site setting] - [security] if you need'
 my.teaching.open_course.course_picture.title: 'Course Cover'
-my.teaching.open_course.course_picture.title.help_block: "You could upload jpg, gif and png with optimum dimension 480x270. <br>File size shouldn't larger than ##你可以上传jpg, gif, png格式的文件, 图片建议尺寸至少为480x270。<br>文件大小不能超过\n"
+my.teaching.open_course.course_picture.title.help_block: "You could upload jpg, gif and png with optimum dimension 480x270px. <br>File size shouldn't larger than ##你可以上传jpg, gif, png格式的文件, 图片建议尺寸至少为480x270。<br>文件大小不能超过\n"
 my.teaching.open_course.lesson.add_btn: 'Add lesson'
 my.teaching.open_course.lesson.tips: 'Open course can only add one lesson'
 my.teaching.open_course.lesson.manage: 'Lessons'
@@ -2910,6 +3177,7 @@ my.teaching.open_course.lesson.mediaStatus.error: '(format conversion of %mediaT
 my.teaching.open_course.lesson.status.unpublished: Unpublished
 my.teaching.open_course.lesson.material: Material
 my.teaching.open_course.lesson.add_material_btn: 'Add Material'
+my.teaching.open_course.lesson.add_material.title: 添加资料
 my.teaching.open_course.lesson.edit_btn: Edit
 my.teaching.open_course.lesson.more_btn: More
 my.teaching.open_course.lesson.modal.edit: 'Edit Lesson'
@@ -3056,6 +3324,7 @@ my.teaching.open_course.material.upload_time: 'Uploaded At'
 
 my.learning.menu_heading: 'My Learning'
 my.learning.course_set_menu: 'Courses'
+my.learning.live_schedule_menu: Live Schedule
 my.learning.classroom_menu: '%classroom%'
 my.learning.live_menu: 'Lives'
 my.learning.question_menu: 'Q&A'
@@ -3133,6 +3402,8 @@ my.learning.course.learning_empty: 'No record'
 my.learning.course.lesson_num: 'Lesson %num%'
 my.learning.course.total_learn_time: 'Learned Duration In Total'
 my.learning.course.watch: View
+my.learning.course.click_loading_more: 'Click to load more'
+my.learning.course.loading: 'loading...'
 my.learning.live: 'My Live'
 my.learning.live.course_updating: Updating
 my.learning.live.course_finished: Finished
@@ -3247,6 +3518,15 @@ admin.course.popular_course.name: 'Course Name'
 admin.course.popular_course.add_student_num: 'New Student Num'
 admin.course.popular_course.total_student_num: 'Student Num In Total'
 admin.course.popular_course.add_income: 'New Income'
+
+admin.course_copy.title: Course copy
+admin.course_copy.course_title_label: New Course Title
+admin.course_copy.course_copy.btn: Copy
+admin.course_copy.course_copying.btn: Copying
+admin.course_copy.success.notify: Your new course《%newTitle%》is copied success from origin course《%originTitle%》！
+admin.course_copy.failure.notify: Your new course《%newTitle%》is copied failed from origin course《%originTitle%》！
+
+
 change_log.edusoho_title: 'EduSoho changelog'
 change_log: Changelog
 common.courseStatus.draft: Draft
@@ -3291,6 +3571,8 @@ contetn.article_list.category: Category
 contetn.article_list.contentCategory: "<span class=\"color-gray\">published at %publishedTime%</span>, belong to <a href=\"#\" class=\"color-gray\">%contentCategoryname%</a> category</span>\n"
 course.block_grid.view_course_btn: View
 course.block_grid.countinue_learn_btn: Continue
+course.block_grid.from_classroom: 'From classroom '
+
 course.block_grid.DRAFT_STATUS: Draft
 course.block_grid.CLOSE_STATUS: Closed
 course.block_grid.SERIALIZE_SERIALIZE_MODE: Serial
@@ -3314,6 +3596,10 @@ course.member.classroom.tips: 'Your purchased class was expired and you have no 
 course.member.course.tips: 'Your purchased course was expired and you have no permission to learn courses and ask questions now. Please contact your teacher for help.'
 course.member.course.allow_buy.tips: 'Your purchased course was expired and you have no permission to learn courses and ask questions now. Please contact your teacher for help or click Rejoin.'
 course.member.course.join_btn: 'Exit and re-Enroll'
+course.member.operation.quit_deadline_reach: 达到有效期，用户自己退出
+course.member.operation.admin_remove_course_student: 管理员手动移除
+course.member.operation.reason.remove_teachers: 删除老师角色时，退出课程
+
 course.widgets.belong_classroom.title: 'Belong to %name%'
 course.widgets.classroom_price.price: Price
 course.widgets.classroom_price.not_free: "Price : %price% CNY \n"
@@ -3465,7 +3751,7 @@ admin.course_manage.manage.name: Name
 admin.course_manage.manage.price: Price
 admin.course_manage.manage.serialize_mode: 'Serialize Status'
 admin.course_manage.manage.status: Status
-admin.course_manage.manage.creator: Creator
+admin.course_manage.manage.creator: Creator/Date
 admin.course_manage.manage.manage_btn: Config
 admin.course_manage.manage.empty: 'No record'
 admin.course_manage.manage.category: Category
@@ -3564,6 +3850,24 @@ admin.course_manage.statistics.data_detail.study_days: 'Learning Days'
 admin.course_manage.statistics.data_detail.study_time: 'Course Learned Time(mins)'
 admin.course_manage.statistics.data_detail.question_number: 'Number of questions'
 admin.course_manage.statistics.data_detail.note_number: 'Number of Notes'
+
+## 用户数据统计
+admin.user.statistics.data_detail.note_number: Note Number
+admin.user.statistics.data_detail.learning_course_sets: Learning CourseSet
+admin.user.statistics.data_detail.learning_courses: Learning Course
+admin.user.statistics.data_detail.average_process: Average Process
+admin.user.statistics.data_detail.task_rate: TaskRate
+admin.user.statistics.data_detail.thread_number: Thread Number
+admin.user.statistics.data_detail.review_number: Review Number
+admin.user.statistics.data_detail.active_chart: Active
+admin.user.statistics.data_detail.learn_detail: Learn Detail
+admin.user.statistics.data_detail.teaching_plan_name: 计划名
+admin.user.statistics.data_detail.student_trend_ninety_days: 90天
+admin.user.statistics.data_detail.plan_progress_tip: 平均计划进度为所有计划的平均数
+admin.user.statistics.data_detail.task_progress_tip: 任务完成比为已完成任务数比总任务数
+admin.user.statistics.data_detail.from_classroom: From Class
+
+
 admin.comment_manage.title: 'Comments'
 admin.comment_manage.monitor: 'Comment monitor'
 admin.comment_manage.id: ID
@@ -3662,7 +3966,7 @@ admin.live_manage.status: Status
 admin.live_manage.logo: 'Live LOGO'
 admin.live_manage.live_student_limit: 'Max Online Student Number'
 admin.live_manage.live_student_limit_tips: 'To extend the limitation, please contact：4008041114'
-admin.live_manage.logo_tips: "<b>Only For New Live Strategy.</b><br> Please upload file with png, gif, jpg format。LOGO should not exceed 100*23。\n"
+admin.live_manage.logo_tips: "<b>Only For New Live Strategy.</b><br> Please upload file with png, gif, jpg format。LOGO should not exceed 100×23px。\n"
 admin.live_manage.edu_cloud_closed: 'Edu cloud is not enabled，you cannot use live service.'
 admin.live_manage.show_detail: 'View Detail'
 admin.live_manage.cloud_live_closed: 'Edu cloud is not enabled，you cannot create live course.'
@@ -3694,6 +3998,10 @@ admin.iap_product.empty: 'No Record'
 admin.performance_setting.content_title: 'Static Pages'
 admin.classroom_manage.manage.name_placeholder: '%name% Title'
 admin.classroom_manage.manage.describe_tips: "<div style='width:250px;'>\n  <span style='color:blue;'>Class Instruction</span><br>\n  1. Id and sequence cannot be changed；<br>\n  2. Class url format：domain/classroom/id；\n</div>\n"
+admin.classroom_manage.manage.count: "Classrooms：<strong class=\"inflow-num\">%courseNum%</strong>\n"
+admin.classroom_manage.manage.published_count: "Published：<strong class=\"inflow-num\">%publishedNum%</strong>个 \n"
+admin.classroom_manage.manage.closed_count: "Closed：<strong class=\"inflow-num\">%closedNum%</strong> \n"
+admin.classroom_manage.manage.unpublish_count: "Unpublished：<strong class=\"inflow-num\">%unPublishedNum%</strong>\n"
 admin.classroom_manage.manage.number_th: '%title% ID'
 admin.classroom_manage.manage.name_th: '%name% Title'
 admin.classroom_manage.manage.course_number_th: 'Course Number'
@@ -3828,12 +4136,48 @@ admin.homepage.status_bar.mobile_app_title: 'Mobile APP'
 admin.homepage.status_bar.mobile_app_status.open: Enabled
 admin.homepage.status_bar.mobile_app_status.not_open: 'Not Enabled'
 admin.homepage.todays_data_title: 'Today''s Data Statistics'
-admin.homepage.todays_data.tooltips: "<div class=\"popover-content hidden\">\n  <div class=\"popover-item\">\n    <div class=\"title\">Login User</div>\n    <div class=\"content\">Users who have login and been active in last 15 mins.</div>\n  </div>\n  <div class=\"popover-item\">\n    <div class=\"title\">Online Number</div>\n    <div class=\"content\">Users who are active in last 15 mins, include user who is not login.</div>\n  </div>\n  <div class=\"popover-item\">\n    <div class=\"title\">New Registered Numbers</div>\n    <div class=\"content\">New user include self-registered、3rd part account registered or imported</div>\n  </div>\n  <div class=\"popover-item\">\n    <div class=\"title\">New Students</div>\n    <div class=\"content\">Total times that enrolled course or classroom today</div>\n  </div>\n  <div class=\"popover-item\">\n    <div class=\"title\">New Vip Number</div>\n    <div class=\"content\">New Vip enroll number today.</div>\n  </div>\n  <div class=\"popover-item\">\n    <div class=\"title\">Question without answer number</div>\n    <div class=\"content\">Number of new created question without answer today</div>\n  </div>\n  <div class=\"popover-item\">\n    <div class=\"title\">Not Answer Question Number</div>\n    <div class=\"content\">Current not answer Question Number</div>\n  </div>\n</div>\n"
+admin.homepage.todays_data.tooltips: >
+  <div class="popover-content hidden">
+    <div class="popover-item">
+      <div class="title">Login User</div>
+      <div class="content">Users who have login and been active in last 15 mins.</div>
+    </div>
+    <div class="popover-item">
+      <div class="title">Online Number</div>
+      <div class="content">Users who are active in last 15 mins, include user who is not login.</div>
+    </div>
+    <div class="popover-item">
+      <div class="title">New Registered Numbers</div>
+      <div class="content">New user include self-registered、3rd part account registered or imported</div>
+    </div>
+    <div class="popover-item">
+      <div class="title">New course members</div>
+      <div class="content">The course relation count that members joined course or classroom today</div>
+    </div>
+    <div class="popover-item">
+      <div class="title">New classroom members</div>
+      <div class="content">The classroom relation count that members joined classroom today</div>
+    </div>
+    <div class="popover-item">
+      <div class="title">New Vip Number</div>
+      <div class="content">New Vip enroll number today.</div>
+    </div>
+    <div class="popover-item">
+      <div class="title">Question without answer number</div>
+      <div class="content">Number of new created question without answer today</div>
+    </div>
+    <div class="popover-item">
+      <div class="title">Not Answer Question Number</div>
+      <div class="content">Current not answer Question Number</div>
+    </div>
+  </div>
 admin.homepage.todays_data.login_users: 'Login Users'
 admin.homepage.todays_data.login_users.online_total: 'Total Online Number'
 admin.homepage.todays_data.new_registration: 'New Registers'
 admin.homepage.todays_data.total: Total
 admin.homepage.todays_data.new_students: 'New Students'
+admin.homepage.todays_data.new_course_members: 'New Course Members'
+admin.homepage.todays_data.new_classroom_members: 'New Classroom Members'
 admin.homepage.todays_data.total_number: 'Total'
 admin.homepage.todays_data.new_vip_members: 'New VIPs'
 admin.homepage.todays_data.thread_un_answer: 'Not Answered'
@@ -3871,10 +4215,10 @@ admin.setting.site.slogan: 'Site Subhead'
 admin.setting.site.url: 'Site Domain'
 admin.setting.site.url.help_block: 'Start with "%http%://"'
 admin.setting.site.logo: 'Site LOGO'
-admin.setting.site.logo.help_block: 'Please upload images with format of PNG,GIF,JPG. Image size for the LOGO should be smaller than 100*23 '
+admin.setting.site.logo.help_block: 'Please upload images with format of PNG,GIF,JPG. Image size for the LOGO should be smaller than 250×50px.'
 admin.setting.site.logo.view_btn: 'Click To View'
 admin.setting.site.favicon: 'Browser Icon'
-admin.setting.site.favicon.help_block: 'Please upload images with format of ICO. Recommended image size is 16*16 or 32*32。'
+admin.setting.site.favicon.help_block: 'Please upload images with format of ICO. Recommended image size is 16×16px or 32×32px.'
 admin.setting.site.seo_keywords: 'SEO Keyword'
 admin.setting.site.seo_keywords.help_block: 'Please use "," to separate multiple Keywords'
 admin.setting.site.seo_description: 'SEO Description'
@@ -3892,7 +4236,6 @@ admin.setting.site.closed_note: 'Announcement of website shutdown'
 admin.setting.site.closed_note.help_block: 'Users will see this announcement when the website is shutdown'
 admin.setting.theme.name: Name
 admin.setting.theme.version: Version
-admin.setting.theme.support_version: Suppert Version
 admin.setting.theme.author: Author
 admin.setting.theme.operation: Action
 admin.setting.theme.setting_btn: Setting
@@ -3901,6 +4244,7 @@ admin.setting.theme.use_btn: Apply
 admin.setting.theme.manage_btn: Config
 admin.setting.theme.manage.title: 'EduSoho Theme Edit'
 admin.setting.theme.manage.theme_edit: 'Theme edit'
+admin.setting.theme.manage: manage
 admin.setting.theme.manage.theme_cancel: Cancel
 admin.setting.theme.manage.theme_ok: Apply
 admin.setting.theme.manage.components: Component
@@ -3916,6 +4260,7 @@ admin.setting.theme.manage.modal.edit: Edit
 admin.setting.theme.manage.modal.subname: Subtitle
 admin.setting.theme.manage.modal.setting_course_num: 'Coures Number Setting'
 admin.setting.theme.manage.modal.setting_custom_category_count: 'Course Category Number Setting'
+admin.setting.theme.manage.modal.setting_count: Count
 admin.setting.theme.manage.modal.setting_custom_orderby: 'Sort Setting'
 admin.setting.theme.manage.modal.setting_ustom_background_color: 'Background Color Setting'
 admin.setting.theme.manage.modal.color_gray: Gray
@@ -3928,6 +4273,11 @@ admin.setting.theme.manage.modal.student_comment: 'Student Comments'
 admin.setting.theme.manage.modal.student_dynamic: 'Latest updates'
 admin.setting.theme.manage.modal.setting_custom_classroom_count: 'Class Capacity Setting'
 admin.setting.theme.manage.modal.setting_custom_teacher_count: 'Teacher Count Setting'
+admin.setting.theme.manage.top: 顶部
+admin.setting.theme.manage.setting_navigation: 导航栏设置
+admin.setting.theme.manage.navigation_num_tips: >
+  导航个数超过 <input type="text" id="topNavNum" class="form-control" style="display:inline;width: auto;" value="%value%"/> 个时，会通过"..." 收起，避免导航错位。
+
 admin.setting.mailer.is_trial.tips: "You are running on the trail version which cannot set the Email service.If you want to buy the verified version ,please contact our sales agent Tel：4008041114 or\n"
 admin.setting.mailer.cloud_email_crm: 'Cloud Email'
 admin.setting.mailer.cloud_email_crm.status.open: Enabled
@@ -4094,6 +4444,7 @@ admin.block_manage.visual_edit_history.user_deleted: 'User has been deleted'
 admin.block_manage.visual_edit_history.preview: Preview
 admin.block_manage.visual_edit_history.recovery_content: 'Recover Content'
 admin.block_manage.visual_edit_history.empty: 'No Record'
+admin.block_manage.visual_edit_img_compress_url: 图片优化教程
 admin.custom_page_manage.top_button: Add
 admin.custom_page_manage.all_status_placeholder: 'All Status'
 admin.custom_page_manage.keyword_placeholder: Keywords
@@ -4127,12 +4478,8 @@ admin.custom_page_manage.custom_page_template: Template
 admin.custom_page_manage.custom_page_default_template: 'Default Template'
 admin.custom_page_manage.custom_page_no_nav_template: 'No Navigation'
 admin.mobile_manage.open_tips: "Mobile not enabled，please enable in <a href=\"%openUrl%\">System-Course Setting-Mobile Setting</a>\n"
-admin.mobile_manage.head_tips: 'Slider images for clients should be no more than 5 images and the recommended size is 750*300 in JPG or PNG format'
-admin.mobile_manage.banner_one_label: 'Slider Image 1'
-admin.mobile_manage.banner_two_label: 'Slider Image 2'
-admin.mobile_manage.banner_three_label: 'Slider Image 3'
-admin.mobile_manage.banner_four_label: 'Slider Image 4'
-admin.mobile_manage.banner_five_label: 'Slider Image 5'
+admin.mobile_manage.head_tips: 'Slider images for clients should be no more than 5 images and the recommended size is 750×300px in JPG or PNG format'
+admin.mobile_manage.banner_label: 'Slider Image'
 admin.mobile_manage.upload_btn: Upload
 admin.mobile_manage.delete_btn: Delete
 admin.mobile_manage.img_tips: 'Upload the picture with format png,gif,jpg'
@@ -4383,6 +4730,8 @@ admin.operation_invite.coupon.useTime_th: UseTime
 admin.operation_invite.coupon.order_title_th: 'Order Detail'
 admin.operation_invite.register_coupon: 'Register Award'
 admin.operation_invite.invite_coupon: 'Invite Award'
+admin.operation_invite.invite_code_owner: 'inviter'
+admin.operation_invite.register_user: 'registered user'
 admin.money_records.content_title: 'Account Details'
 admin.money_records.transaction_no.input_placeholder: 'Transaction No.'
 admin.money_records.nickname.input_placeholder: Username
@@ -4474,7 +4823,7 @@ admin.user.manage.user_edit.fields.heading_title: 'Edit user info'
 admin.user.manage.user_role.fields.heading_title: 'Set user group'
 admin.user.manage.user_avatar.fields.heading_title: 'Set avatar'
 admin.user.manage.user_avatar.fields.current_avatar: 'Current Avatar'
-admin.user.manage.user_avatar.upload_hint: 'You can upload JPG, GIF or PNG format files, the file size can not be exceeded'
+admin.user.manage.user_avatar.upload_hint: 'You can upload JPG, GIF or PNG format files, recommend size: 270×270px, the file size can not be exceeded'
 admin.user.manage.user_avatar.upload_btn: 'Upload New Photo'
 admin.user.manage.user_avatar.fields.partner_avatar: 'Forum Avatar'
 admin.user.manage.user_avatar.using_current_avatar_btn: 'Use This Avatar'
@@ -4614,6 +4963,7 @@ admin.edu_cloud.account.arrears_tips: 'Your account is overdue for %arrearageDay
 admin.edu_cloud.account.balance_not_enough: 'Your account balance is less than 50 CNY. Please recharge as soon as possilbe to avoid outage.'
 admin.edu_cloud.overview.locked_tips: 'Your education cloud service has been locked, please contact customer service'
 admin.edu_cloud.overview.disabled_tips: 'Your educational cloud service has been disabled'
+admin.edu_cloud.overview.disabled_recharge_tips: 您可以直接<a href="%rechargeUrl%" target="_blank">充值</a>，或到<a href="%accountUrl%" target="_blank">费用中心</a>查看近期收支明细
 admin.edu_cloud.overview.disabled_contact_tips: 'If you have any questions, please contact customer service 4008041114.'
 admin.edu_cloud.overview.balance: Balance
 admin.edu_cloud.overview.recharge: Recharge
@@ -4667,10 +5017,15 @@ admin.edu_cloud.edu_video.open_btn: Enabled
 admin.edu_cloud.edu_video.close_btn: Disable
 admin.edu_cloud.edu_video.switch_tips: "Cloud Video provides you with a safe, cost-effective, and high-quality audio-visual experience that allows you to easily create online video lessons. Click <a href=\"%cloudShow%\" target=\"_blank\"> here </a> for more information.\n"
 admin.edu_cloud.edu_video.base_setting: 'Base Setting'
-admin.edu_cloud.edu_video.support_mobile: 'Mobile browser MP4 video'
+admin.edu_cloud.edu_video.support_mobile: 'Mobile browser security'
+admin.edu_cloud.edu_video.normal_mode: Normal
+admin.edu_cloud.edu_video.encryption_mode: Encryption
 admin.edu_cloud.edu_video.open_radio: Enable
 admin.edu_cloud.edu_video.close_radio: Close
-admin.edu_cloud.edu_video.support_mobile_tips: "MP4 files are more suitable for different phone models under the use of different phone browser for video playback; open, the new upload video files will generate a MP4 format video,  and in the mobile browser under the default use of MP4 player; \n <Span style = \"color: ## red\"> Note: MP4 video anti-theft is poor, and has generated MP4 file will be closed after the closure, please carefully consider. </ Span>\n"
+#TODO trans
+admin.edu_cloud.edu_video.normal_mode_tips: '选择普通模式，<span class="text-success">新上传</span>的视频文件在手机浏览器下默认使用通用格式播放，增强了视频课时对手机浏览器的兼容性；<br/><span class="text-danger">但普通模式的视频在某些情况下有被盗的风险，请谨慎开启。</span>'
+admin.edu_cloud.edu_video.encryption_mode_tips: '选择加密模式，能极大的提升视频的安全性，但可能导致视频课时在某些陈旧的手机浏览器上无法正常播放。'
+
 admin.edu_cloud.edu_video.transcode_quality: 'Transcode quality'
 admin.edu_cloud.edu_video.transcode_quality_low: "Smooth <span class = \"text-muted\"> (for PPT) </ span>\n"
 admin.edu_cloud.edu_video.transcode_quality_normal: "Standard <span class = \"text-muted\"> (for screen recording, camera capture) </ span>\n"
@@ -4692,11 +5047,11 @@ admin.edu_cloud.edu_video.play_water_mark_tips: 'The watermark will be broadcast
 admin.edu_cloud.edu_video.open_embed_watermark: 'Open embedded watermark'
 admin.edu_cloud.edu_video.open_embed_watermark_tips: 'Can better protect the video copyright; upload the watermark embedded in the video encoding, can not be deleted; not embedded in the watermark video will play the player when the watermark.'
 admin.edu_cloud.edu_video.play_water_mark_picture: 'Player Watermark Image'
-admin.edu_cloud.edu_video.play_water_mark_picture_tips: 'Support png, gif, jpg format pictures, it is recommended to use translucent png picture, the recommended size 150 × 50.'
+admin.edu_cloud.edu_video.play_water_mark_picture_tips: 'Support png, gif, jpg format pictures, it is recommended to use translucent png picture, the recommended size 150×50px.'
 admin.edu_cloud.edu_video.picture_upload_btn: 'Upload Picture'
 admin.edu_cloud.edu_video.picture_delete_btn: Delete
 admin.edu_cloud.edu_video.play_embed_watermark: 'Video embedded watermark image'
-admin.edu_cloud.edu_video.play_embed_watermark_picture_tips: 'Support png, gif, jpg format pictures, it is recommended to use translucent png picture, the recommended size 270 × 90.'
+admin.edu_cloud.edu_video.play_embed_watermark_picture_tips: 'Support png, gif, jpg format pictures, it is recommended to use translucent png picture, the recommended size 270×90px.'
 admin.edu_cloud.edu_video.video_embed_watermark_picture: 'Video embedded watermark image'
 admin.edu_cloud.edu_video.video_embed_watermark_picture_tips: 'When turned on, the current website domain name and student username will be displayed randomly at random time in the video playback.'
 admin.edu_cloud.edu_video.finger_print_time_label: 'Cloud video fingerprint display duration'
@@ -4724,6 +5079,20 @@ admin.edu_cloud.edu_video.month_flow: 'Traffic this month'
 admin.edu_cloud.edu_video.no_enable: 'Cloud video is not enabled yet'
 admin.edu_cloud.edu_video.enable: 'Enable Immediately'
 admin.edu_cloud.edu_video.enable_tips: "<P> 1. Focus on education - to provide video with practice, video subtitles, video barrage and many other online education for video teaching methods, so that video teaching more fun. </ P> <P> 2. Stable security - to provide video watermark, video fingerprints and many other security measures to prevent video theft, effectively prevent video piracy and malicious download. Stable and reliable video cloud storage services to protect data security, to prevent physical loss. </ P> <P> 3. Cost-effective - for online education video transcoding technology, as well as browser cache playback, mobile off-line playback and many other features, greatly compressed video traffic costs. </ P> <P> 4. Quality audio-visual experience - using CDN (content distribution network) technology, more than 200 high-quality domestic and foreign nodes, to ensure high-definition smooth audio-visual experience. A variety of clarity free to switch, different network environment can be smooth to watch. Multi-terminal full platform perfect support, anytime, anywhere to watch the wonderful video. </ P> <P> 5. Price ¥ 0.8 / GB, buy cloud video packs to enjoy more offers, and immediately <a href=\"%url%\" target=\"_blank\"> learn more </a>. </ P>\n"
+admin.edu_cloud.edu_video_setting.delete_modal_title: Is delete MP4 videos
+#TODO trans
+admin.edu_cloud.edu_video_setting.delete_modal_content: 您选择了加密模式，删除普通格式视频能增强视频安全性，降低网校视频被下载的风险。不会影响加密视频正常播放。
+admin.edu_cloud.edu_video_setting.change_normal_title: 转换为普通模式
+admin.edu_cloud.edu_video_setting.change_normal_content: 转换为普通模式能增强视频对手机浏览器的兼容性；但<span class="text-danger">可能降低网校视频的安全性</span>，是否继续？
+admin.edu_cloud.edu_video.delete_btn: Delete MP4 videos
+admin.edu_cloud.edu_video.delete_success: Congratulations
+admin.edu_cloud.edu_video.delete_ok_confirm: Congratulations,your cloud videos are all security.
+admin.edu_cloud.edu_video.delete_ok_btn: OK
+#TOFO trans
+admin.edu_cloud.edu_video.delete_confirm_title: 删除普通视频
+admin.edu_cloud.edu_video.delete_confirm_content: 删除普通格式视频能增强视频安全性，降低网校视频被下载的风险。不会影响加密视频正常播放。
+
+
 admin.edu_cloud.edu_live.student_num: 'Number of live participants (last 7 days)'
 admin.edu_cloud.edu_live.locked_tips: 'Your education cloud service has been locked, please contact customer service 4008041114.'
 admin.edu_cloud.edu_live.service_suspend: 'Your cloud live service has been suspended, can not be used, please contact customer service 4008041114.'
@@ -4731,11 +5100,16 @@ admin.edu_cloud.edu_live.edu_live_enable: 'Enable Cloud Live'
 admin.edu_cloud.edu_live.edu_live_enable_btn: Enabled
 admin.edu_cloud.edu_live.edu_live_close_btn: Disable
 admin.edu_cloud.edu_live.edu_live_tips: 'G class, small class, one to one counseling class, cloud live to live classroom more exciting. <a href="%showUrl%" target="_blank"> click here </a> for more information.'
-admin.edu_cloud.edu_live.base_setting: 'Base Setting'
-admin.edu_cloud.edu_live.live_logo: 'Live Logo'
+admin.edu_cloud.edu_live.base_setting: 'Live Logo Setting'
+admin.edu_cloud.edu_live.live_logo_web: 'Live Logo web'
+admin.edu_cloud.edu_live.live_logo_app: 'Live Logo Huantuo client'
 admin.edu_cloud.edu_live.upload_btn: Upload
 admin.edu_cloud.edu_live.delete_btn: Delete
-admin.edu_cloud.edu_live.upload_tips: '<B> Only for live new programs. </ B> <br> Please upload png, gif, jpg format image file. LOGO pictures suggest not to exceed 100 * 23.'
+admin.edu_cloud.edu_live.upload_web_tips: 'Please upload png format and transparent image file. LOGO pictures need 280×60px.'
+admin.edu_cloud.edu_live.upload_app_tips: 'Please upload png format and transparent image file. LOGO pictures need 280×40px.'
+#TODO trans
+admin.edu_cloud.edu_live.logo_url: 'LOGO链接'
+admin.edu_cloud.edu_live.logo_url_tips: '以http://或https://开头，设置此项后，用户点击logo图将会跳转到您指定的链接。'
 admin.edu_cloud.edu_live.upgrade: Upgrade
 admin.edu_cloud.edu_live.renew: Renew
 admin.edu_cloud.edu_live.renewed: Renewed
@@ -5109,8 +5483,6 @@ admin.login_connect.other.qq.data_content: '1. Your QQ account open platform cer
 admin.login_connect.type.weixinweb.help_block: 'APP ID and APP Secret can be found at <a target="_blank" href="https://open.weixin.qq.com"> wechat oepn platform </a> - create Web applications'
 admin.login_connect.type.weixinmob.help_block: 'APP ID APP Secret can be found at <a target="_blank" href="https://mp.weixin.qq.com/"> wechat public platform </a> - your services account, check the left column "development" - "Basic configuration" - "Developer ID ".'
 admin.login_connect.type.weixinmob.MP_verify.help_block: 'Please fill in the content of the MP_verify Contents from wechat'
-admin.login_connect.required_email: 'Email required while login'
-admin.login_connect.required_email.help_block: 'Do not turn on this option before %admin_name% aprroved your access application, or your application may be refused.'
 admin.login_connect.type.weibo.help_block: 'The final step , please enter the login interface validation code at the bottom'
 admin.login_connect.verifcation_loging_interface: 'Login interface validation code'
 admin.login_connect.verifcation_code: 'Validation code'
@@ -5142,6 +5514,7 @@ admin.user_fields.Personal_info_configiration.open: 'Turn on'
 admin.user_fields.Personal_info_configiration.closed: Close
 admin.user_fields.Personal_info_configiration.help_block: 'If turned on,student must fill in personal information when purchase course'
 admin.user_fields.Formart_verifcation: 'Format checkout'
+admin.user_fields.Formart_mobile_verifcation: 'Format and sms code checkout,open cloud SMS first'
 admin.user_fields.Formart_verifcation.help_block: 'Drag ato djustment order. Check the field that needs to collect. And if you need a new field, add in the [custom fields] .'
 admin.user_fields.Formart_verifcation.hide: Hide
 admin.user_fields.Require_personal_information: 'Fill in personal information required when login'
@@ -5149,6 +5522,8 @@ admin.user_fields.Require_personal_information.help_block: 'If turned on, studen
 admin.user_fields.other_setting: 'Other settings'
 admin.user_fields.other_setting.avatar: 'Avatar required when enroll in free course'
 admin.user_fields.other_setting.edit_user_name: 'Users to update username'
+admin.user_fields.verified_mobile_tip: With SMS code validate
+
 admin.user_fields.modal.delete_field: 'Delete field'
 admin.user_fields.modal.delete_field_tips: 'Determined to delete <b style="color:red;" >%title%</b> field? <br><b style="color:red;" > All the history field  data will be deleted! </b><br> If you want to retain history data, hide the field.'
 admin.user_fields.modal.confirm_delete_btn: 'Determine to delete'
@@ -5175,7 +5550,7 @@ admin.user_fields.modal.date_fields.tips: 'You can add %5-dateCount% field'
 admin.user_avatar.customer_default_avatar: 'Customize default avatar'
 admin.user_avatar.customer_default_avatar.help_block: 'You can upload JPG, GIF or PNG files'
 admin.user_avatar.system_default_avatar: 'System default avatar'
-admin.user_avatar.avatar.tips: 'User who does not upload avatar will display with the default avatar. Recommended size (270*270px)'
+admin.user_avatar.avatar.tips: 'User who does not upload avatar will display with the default avatar. Recommended size: 270×270px.'
 admin.role_manage.keyword_type: '-- Keyword type--'
 admin.role_manage.nameLike: 'Role name'
 admin.role_manage.codeLike: Coding
@@ -5236,7 +5611,7 @@ admin.setting_course.questions_setting.reviewed: 'Display all grading'
 admin.setting_course.questions_setting.submitted: 'Papers show the answer and resolve'
 admin.setting_course.course_avatar.customer_default_avatar: 'Customize the default course pictures'
 admin.setting_course.course_avatar.system_default_avatar: 'System default course pictures'
-admin.setting_course.course_avatar.tips: 'Support jpg、gif、png format, Suggested size: 480*270px.'
+admin.setting_course.course_avatar.tips: 'Support jpg、gif、png format, Suggested size: 480×270px.'
 admin.setting_course.classroom.setting_classroom_name: 'Class''s name'
 admin.setting_course.classroom.setting_classroom_name.help_block: 'Users will see is the class''s name'
 admin.setting_course.classroom.setting_classroom_name.tips: 'Please note: The following settings related to the basic mode of class operation, be care or your settings, and do not change it often!'
@@ -5248,11 +5623,13 @@ admin.setting_course.classroom.classroom_list_default_seq.help_block: 'Address: 
 admin.developer_setting.content_title: 'Developer settings'
 admin.developer_setting.debug_label: Debugging
 admin.developer_setting.app_center_api_address: 'Application Center API address'
+admin.developer_xapi_address: XAPI address
 admin.developer_setting.cloud_api_server_address: 'Cloud services API address'
 admin.developer_setting.address: Address
 admin.developer_setting.im_api_address: 'IMAPI Address'
 admin.developer_setting.cloud_sdk_cdn_address: 'EduSoho Education Cloud SDK CDN address'
 admin.developer_setting.hls_encrypted: 'HLS Encrypt videos'
+admin.developer_setting.market_address: 'Marketing platform address'
 admin.developer_setting.without_outer_network: 'Not connet to the internet'
 admin.developer_setting.tips: '<h4> Attention </h4><ul><li> Settings in this page is for debugging purposes only. Please use it carefully, or it will cause unpredictable errors to your system. </li><li> Please keep: <br>"Debugging": Closed <br>"Application Center API address ": Empty <br>"Cloud services API address ": Http://api.edusoho.net Or empty <br>"IMAPI address": Http://imapi.edusoho.net/v1/ Or empty <br>"HLS Encrypted video": Turn on</li></ul>'
 admin.magic_setting.need_careful_tips: Attention
@@ -5272,6 +5649,13 @@ admin.magic_setting.enable_org: 'Turn on organization settings'
 admin.magic_setting.quick_pay: 'Turn on quick pay'
 admin.magic_setting.uc_phpwind: 'Turn on phpwind settings'
 admin.magic_setting.login_limit: 'Account and log off the set'
+admin.magic_setting.file_single_size_limit: Single file set upload size
+admin.magic_setting.file_single_size_limit_tip: MByte,be used by editor upload only
+admin.magic_setting.learn_time_sec: learn time report cycle
+admin.magic_setting.learn_time_sec_tip: second
+admin.magic_setting.watch_time_sec: watch time report cycle
+admin.magic_setting.watch_time_sec_tip: second
+
 admin.magic_setting.one_for_open: '1 To enable'
 admin.magic_setting.one_for_close: '1 Is off'
 admin.magic_setting.zero_for_open: '0 To enable'
@@ -5414,7 +5798,8 @@ admin.cdn.status.close: Close
 admin.cdn.input_placeholder: 'If leave empty, then it will be default URL'
 admin.order.paid_time_range.input_placeholder: 'Payment time'
 admin.order.keyword: Keywords
-admin.order.buyer: 'Buyer''s user name'
+admin.order.buyer: 'Buyer'
+admin.order.title: Order title
 admin.order.screen_condition: 'Filter criteria'
 admin.order.target_name: Name
 admin.order.buyer_mobile: 'Buyer''s phone number'
@@ -5434,6 +5819,9 @@ admin.bill.time_option.last_three_month: 'Last 90 days'
 admin.coin.type_option.default: 'All records'
 admin.coin.type_option.inflow: 'Recharges'
 admin.coin.type_option.outflow: 'Consumers'
+admin.coin.school_out_amount: School total out amount
+admin.coin.school_in_amount: School total in amount
+admin.coin.school_wait_in_amount: School total wait in amount
 admin.coin.created_time_option.all: 'All records'
 admin.coin.created_time_option.oneWeek: 'Last 7 days'
 admin.coin.created_time_option.oneMonth: 'Last 30 days'
@@ -5446,6 +5834,7 @@ admin.coin.datagrid.filter.oneMonth: 'This month'
 admin.coin.datagrid.filter.threeMonths: 'Three months'
 admin.coin.datagrid.filter.all_history: 'All history'
 admin.coin.datagrid.filter.default: Default
+admin.coin.datagrid.filter.balance: Balance
 admin.coin.datagrid.filter.consume: Consumption
 admin.coin.datagrid.filter.recharge: Recharge
 admin.coin.datagrid.filter.asc: 'In ascending order'
@@ -5471,7 +5860,7 @@ admin.coin_setting.description: Description
 admin.coin_setting.description_hint: 'Virtual coin can be usd as payment in the site'
 admin.coin_setting.promotion_proposal: 'Promotion recommendation'
 admin.coin_setting.promotion_proposal_hint: '1 Virtual coin can be used to price the courses; <br>2 Virtual coin recharge can enhance customer loyalty; <br>3 Virtual coin is recommended to use with recharge cards (business applications); <br>'
-admin.coin_setting.upload_hint: 'Please upload png, gif, jpg pictures that greater or equal to 50*50. Or the picture will not be able to upload'
+admin.coin_setting.upload_hint: 'Please upload png, gif, jpg pictures that greater or equal to 50×50px. Or the picture will not be able to upload'
 admin.coin_setting.coin_description: 'Virtual coin Description'
 admin.coin_setting.content_hint: 'It can be used to describe virtual coin''s usage, access methods and other related content'
 admin.coin_setting.update_submit_btn: 'Submit updates'
@@ -5501,7 +5890,6 @@ admin.article_setting.category.publish: Enable
 admin.article_setting.category.publish.tips: 'Turn on when the content is ready'
 admin.article_setting.category.edit: 'Edit Column'
 admin.article_setting.category.create: 'Add column'
-admin.article_setting.choose_category: 'Choose column'
 admin.article_setting.tag: 'TAG tag'
 admin.article_setting.content: Content
 admin.article_setting.property: 'Article property'
@@ -5511,13 +5899,13 @@ admin.article_setting.source_name: Source
 admin.article_setting.source_address: 'Source address'
 admin.article_setting.thumb_setting: 'Set thumbnail'
 admin.article_setting.thumb_setting.upload_btn: Upload
-admin.article_setting.thumb_setting.upload_tips: "<p class=\"help-block\">请上传png, gif, jpg格式的图片文件</p> <p class=\"help-block mbs\">请推荐尺寸754*424px。\n"
+admin.article_setting.thumb_setting.upload_tips: "<p class=\"help-block\">Please upload pictures in png, gif, jpg format</p> <p class=\"help-block mbs\">Recommend size: 754×424px. \n"
 admin.article_setting.publish_time: 'Publish time'
 admin.article_setting.publish_time_tips: 'Content show in chronological order'
 admin.article_setting.image.content_title: 'Set thumbnail'
 admin.article_setting.image: Thumbnail
 admin.article_setting.image.tips: 'Tip: Select the crop area.'
-admin.article_setting.image.upload_tips: 'You can upload JPG, GIF or PNG files,the recommended size is 754*424px, and the files size could not exceed 2M.'
+admin.article_setting.image.upload_tips: 'You can upload JPG, GIF or PNG files,the recommended size is 754×424px, and the files size could not exceed 2M.'
 admin.article_setting.image.choose_btn: 'Select upload file'
 admin.group_settings.homepage_show_group: 'Display group'
 admin.group_settings.homepage_show_group_hint: 'This switch is only for the default theme, default theme B and Autumn theme.'
@@ -5552,10 +5940,13 @@ admin.payment_setting.heepay: 'Heepay-online bank payments'
 admin.payment_setting.heepay_api_application_word: 'Download interface application documentation'
 admin.payment_setting.heepay_secret: 'Business platform Key'
 admin.payment_setting.heepay_tips: 'Heepay application is suspended. Sorry for the inconvenience. if you have any questions, please contact EduSoho Official'
-admin.payment_setting.llpay: 'Lianlian Pay'
+admin.payment_setting.llpay: 'Lianlian Pay-RSA encryption'
 admin.payment_setting.llpay_api_application_word: 'Download interface application documentation'
 admin.payment_setting.llpay_key: 'Merchant account'
 admin.payment_setting.llpay_secret: 'Business platform Key'
+admin.payment_setting.llpay_public_key: Public Key
+admin.payment_setting.llpay_private_key: Private Key
+admin.payment_setting.llpay_application_tips: ''
 admin.payment_setting.quickpay: 'Meeting fubao-quick pay'
 admin.payment_setting.quickpay_api_application_word: 'Download interface application documentation'
 admin.payment_setting.quickpay_tips: 'Heepay application is suspended. Sorry for the inconvenience. if you have any questions, please contact EduSoho Official'
@@ -5592,27 +5983,24 @@ admin.mobile_setting.app_custom_setting_option: 'Custom APP Set'
 admin.mobile_setting.app_custom_name: 'APP name'
 admin.mobile_setting.app_custom_about: 'APP Profile'
 admin.mobile_setting.app_custom_logo: 'APP Icon'
-admin.mobile_setting.app_custom_logo_hint: 'Please upload pictures in png, gif, jpg format. Recommended dimensions for 120*120.'
+admin.mobile_setting.app_custom_logo_hint: 'Please upload pictures in png, gif, jpg format. Recommended dimensions for 120×120px.'
 admin.mobile_setting.app_custom_cover: 'APP Cover Image'
-admin.mobile_setting.app_custom_cover_hint: 'Please upload pictures in png, gif or jpg format. Recommend size 225*400px.'
+admin.mobile_setting.app_custom_cover_hint: 'Please upload pictures in png, gif or jpg format. Recommend size 225×400px.'
 admin.mobile_setting.splash_setting: 'Setup launch pictures'
-admin.mobile_setting.splash_setting_hint: 'Maximum 5 launch pictures(size 640*960px). Users will see the launch pictures when enter the site in App for first time.admin.mobile_setting.splash1: Launch picture 1admin.mobile_setting.splash2: Launch picture 2admin.mobile_setting.splash3: Launch picture 3admin.mobile_setting.splash4: Launch picture 4admin.mobile_setting.splash5: Launch picture 5'
-admin.mobile_setting.splash1: 'Launch image 1'
-admin.mobile_setting.splash2: 'Launch image 2'
-admin.mobile_setting.splash3: 'Launch image 3'
-admin.mobile_setting.splash4: 'Launch image 4'
-admin.mobile_setting.splash5: 'Launch image 5'
+admin.mobile_setting.splash_setting_hint: 'Maximum 5 launch pictures, recommend size: 640×960px. Users will see the launch pictures when enter the site in App for first time.admin.mobile_setting.splash1: Launch picture 1admin.mobile_setting.splash2: Launch picture 2admin.mobile_setting.splash3: Launch picture 3admin.mobile_setting.splash4: Launch picture 4admin.mobile_setting.splash5: Launch picture 5'
+admin.mobile_setting.splash: 'Launch image %splashNum%'
 admin.coin_model.currency_tips: "1, Could not manually update the user's virtual coin  balance.<br> 2, To recharge, please install plugin <a href=\"%appCenterUrl%\">study card </a>or<a href=\"%appCenterUrl%\">account recharge</a><br> 3、Virtual currency for the price: site to virtual currency as a payment currency, courses and members to virtual currency price and settlement <br> 4、Virtual currency for the price, the mobile side still shows the price of CNY (mobile side does not support virtual currency payment) <br> 5、Once you use the method (use and exchange rate), please do not change <br> 6、The use of the switch will make the course price will change according to the exchange rate<br> 7、If you participate in the promotional activities of the course, update the price will have a corresponding discount\n"
 admin.coin_course_set.tips: '1 CNY CNY exchanged to <strong class="text-info">%cashRate%</strong>%coinName%'
 admin.coin_setting.price_set_tips: 'Please set a valid price'
 admin.order_refund.status.default: 'Refund status'
+admin.order_refund.title.placeholder: Product name
 admin.order_refund.nickname.input_placeholder: 'Refund user''s nickname'
-admin.order_refund.title.type_course_input_placeholder: 'Course title'
-admin.order_refund.title.type_classroom_input_placeholder: 'Class title'
 admin.order_refund.title: 'Refund order'
+admin.order_refund.sn: sn
 admin.order_refund.order_amount: 'Order price'
 admin.order_refund.refund_person: 'Refund user'
 admin.order_refund.refund_status: 'Refund status'
+admin.order_refund.refund_created_time: 申请时间
 admin.order_refund.operator: Operator
 admin.order_refund.operation: Action
 admin.order_refund.reason: 'Refund reason'
@@ -5623,14 +6011,20 @@ admin.order_refund.approve.content_title: 'Approve refund application'
 admin.order_refund.audit_refund_btn: Approve
 admin.order_refund.audit.content_title: 'Review refund requests'
 admin.order_refund.audit.result: 'Review result'
-admin.order_refund.audit.refund_actual_amount: 'Actual refund amount'
 admin.order_refund.audit.description: 'Review comment'
-admin.order_refund.audit.tips: 'System dosen''t support automatic refund,please contact the student to acquire relevant account and process the refund mannualy.'
+admin.order_cash_refund.audit.tips: 'System dosen''t support automatic refund,please contact the student to acquire relevant account and process the refund mannualy.'
+admin.order_cash_coin_refund.audit.tips: Virtual currency money will be automatically refunded after clicking "submit". Payments online do not support automatic refund. If you agree to refund, it is recommended that you first process the refund online and then submit it.
 admin.order.logs.content_title: 'Order detail'
 admin.order.logs.info: Log
 admin.order.logs.operator: Operator
 admin.order.logs.created_time: 'Create time'
 admin.order.logs.empty_hint: 'No transaction log'
+admin.order_coin.refund.success.tips: Automatic refund after submission
+admin.order_cash.refund.success.tips: Manual refund under line
+admin.order_refund_handle.success: Successful refund request operation
+#TODO trans
+admin.order_refund.audit.tip: 用户支付的虚拟币实时返回账户，支付的现金需线下人工联系退款，此处仅作为记录。
+
 admin.cloud_setting.trial_hint: 'You are using a trail version and cannot proceed with this operation. Please contact our business manager to purchase a licence.'
 admin.cloud_setting.package_info: 'Package info'
 admin.cloud_setting.package_name: 'Package name'
@@ -5691,6 +6085,7 @@ admin.app_center.buy_btn: Purchase
 admin.app_center.price: Price：
 admin.app_center.free: Free
 admin.app_center.ontrial_btn: Trial
+admin.app_center.expired_btn: Expired Trial
 admin.app_center.buyed_btn: Bought
 admin.app_center.tria_btn: Trial
 admin.app_center.show_detail_btn: 'View Detail'
@@ -5769,6 +6164,7 @@ admin.cloud.app.upgrades.upgrade: Upgrade
 admin.cloud.app.upgrades.install: Install
 admin.cloud.app.upgrades.app: Application
 admin.cloud.app.upgrades.tips: 'During the upgrading, your site will be temporary not available for about 2 minutes, please schedule to upgrade accordingly ,sorry for any Inconvenience.'
+admin.cloud.app.upgrades_danger.tips: Warning! you are currently using the test channel to upgrade this application, it is highly recommended that you give up to rise your current operation, other wise, site collapse and so on can't unexpected consequences, you need to take the consequences yourself.
 admin.cloud.app.upgrades.app_name: 'Application Name'
 admin.cloud.app.upgrades.app_version: 'Application Name'
 admin.cloud.app.upgrades.backupDB: 'Backup Database'
@@ -5933,6 +6329,10 @@ course.homework_check.finish_check: 'Complete the approval'
 course.homework_check.finish_check_submiting: 'Submitting, Please wait'
 course.homework_check.teacher_say.input_placeholder: 'Please enter a comment'
 course.homework_check.need_check_item: "Waiting to check  <small class=\"color-gray\">Total %itemCount% questions</small>\n"
+
+
+course.question_marker_statistics: PopQuestion Statistics
+
 course.plan_task.exercise.question_numbers: 'Number'
 course.plan_task.exercise.question_sourse: 'Source'
 course.plan_task.exercise.question_sourse.course: 'By course'
@@ -5973,6 +6373,7 @@ testpaper.do_gagin: 'Test again'
 testpaper.redo_countdown: 'Redo countdown'
 question_task.empty_tips: 'There is no problem with this task'
 payment.useless_tips: 'The payment method is not open. Please contact the administrator'
+payment.unusable_tips: 暂无可用的支付的支付方式,请尝试在微信外支付。
 open_course.live_label: Live
 open_course.lesson_num: 'The course No.%num%'
 open_course.student_num: '%num% peoples learning'
@@ -5991,6 +6392,8 @@ site.add.success: Add successfully
 site.modify.success: Modify successfully
 site.reset.success: Reset successfully
 site.incorrect.password: Incorrect password
+site.register.sensitive_words: Your nickname contains sensitive word
+site.register.time_limit: Try again later please, as you have registered for too many times
 site.incorrect.username_or_password: Incorrect username or password.
 site.illegal.request: Illegal request
 site.third_party.login.way.no_choose: Please choose a third party login way at least.
@@ -6003,11 +6406,10 @@ admin.cloud.license.activate_fail: Activate fail
 admin.cloud.license.activate_success: Activate successfully
 admin.cloud.license.has_no_license: Please activate your license first.
 
-
 # 通知
-notification.cash_account.recharge: You have successfully recharged %value%%coin_name%, <a href="%url%">check now</a>.
-notification.cash_account.deduction: You are deducted%value%%coin_name%, <a href="%url%">check now</a>.
-notification.cash_account.exchange: You have successfully redeemed%value%%coin_name%, <a href="%url%">check now</a>.
+notification.cash_account.recharge: You have successfully recharged %value% %coin_name%, <a href="%url%">check now</a>.
+notification.cash_account.deduction: You are deducted %value% %coin_name%, <a href="%url%">check now</a>.
+notification.cash_account.exchange: You have successfully redeemed %value% %coin_name%, <a href="%url%">check now</a>.
 notification.classroom-deadline: The %classroom% you are joining will expire at %deadline%.
 notification.course-deadline: The %course% you are joining will expire at %deadline%.
 notification.classroom-student.add: You were added to the %classroom% by %who%.
@@ -6077,6 +6479,10 @@ notification.vip.add_by_admin: You have been added as a %vipName% member by the 
 notification.vip.remove_by_admin: You have been canceled %vipName%, please contact the administrator if in doubt.
 notification.materialLib.share: %who% has shared the data to you, %do%.
 notification.materialLib.click_to_view: click to view
+#TODO trans
+notification.delete-cloud-mp4: 您的普通视频已删除成功，现有的全部云视频为加密格式。
+notification.distributor-reward: 恭喜您获得注册成功奖励：%money%元面值抵价优惠券一张，可用于全站消费，已发至%where%。
+
 status.become_auditor.simple: became an auditor
 status.become_student.course.simple: Enroll to learn
 status.become_student.classroom.simple: Enroll to learn
@@ -6101,3 +6507,457 @@ message_response.upload_pic_format_error.message: Upload image format is wrong, 
 
 classroom.manage.side_nav.setting: %classroom% setting
 classroom.manage.side_nav.manage: %classroom% config
+
+
+#积分
+admin.reward_point: Reward Point
+admin.reward_point.setting.enable: Enable Reward Point
+admin.reward_point.setting.course: Course Reward Point Setting
+admin.reward_point.setting.open_reward_point: Enable
+admin.reward_point.setting.close_reward_point: Not Enable
+admin.reward_point.setting.custom_name: Custom Name
+admin.reward_point.setting.get_rules: Get Rules
+admin.reward_point.setting.course_reward_rules: Course Reward Rules
+admin.reward_point.setting.interaction: Interaction
+admin.reward_point.setting.active: Active
+admin.reward_point.setting.behavior: Behavior
+admin.reward_point.setting.switch: Switch
+admin.reward_point.setting.daily_limit: Daily Limit
+admin.reward_point.setting.teacher_set_reward_setting: Allow the teacher to set reward point in the course
+admin.reward_point.setting.rule.create_question: Ask a question in the course or classroom
+admin.reward_point.setting.rule.reply_question: Reply a question in the course or classroom
+admin.reward_point.setting.rule.create_discussion: Publish a topic in the course or classroom
+admin.reward_point.setting.rule.reply_discussion: Reply a topic in the course or classroom
+admin.reward_point.setting.rule.elite_thread: add this question or topic to digest in the course or classroom
+admin.reward_point.setting.rule.appraise_course_classroom: rate a course or classroom
+admin.reward_point.setting.rule.daily_login: Daily Login
+admin.reward_point.setting.course_reward_list: Course Reward List
+admin.reward_point.setting.task_reward: Task Reward
+admin.reward_point.setting.course_reward: Course Reward
+admin.reward_point.setting.course_id: Course ID
+
+
+admin.reward_point_product.product: Product
+admin.reward_point_product.select_status: --Select Status--
+admin.reward_point_product.undeliver: UnDeliver
+admin.reward_point_product.btn.modify: Edit
+admin.reward_point_product.exchange_price: Exchange Price(%name%)
+admin.reward_point_product.product_name: %name%Name
+admin.reward_point_product.empty: No Product Record
+admin.reward_point_product.edit_delivery_message: Edit Delivery Message
+admin.reward_point_product.Confirm_delivery: Confirm Delivery
+admin.reward_point_product.delivery_message_hint: Maximum 50 characters
+admin.reward_point_product.title_hint: Maximum 20 chinese characters
+admin.reward_point_product.product_down_shelves: Down Shelves
+admin.reward_point_product.product_up_shelves: Up Shelves
+admin.reward_point_product.edit_btn: Edit
+admin.reward_point_product.product_title: Product Title
+admin.reward_point_product.product_img: Product Picture
+admin.reward_point_product.product_price: Product Price
+admin.reward_point_product.product_introduction: Product Introduction
+admin.reward_point_product.product_delivery_information: Delivery Information
+admin.reward_point_product.cover_message: You may upload JPG/GIF/PNG image, pictures recommended size of at least 360x360px with file size no more than 2M.
+admin.reward_point_product.edit_product: Edit Product
+admin.reward_point_product.add_product: Add Product
+admin.reward_point_product.cover_crop: Image cropping
+
+
+admin.reward_point_account: Account
+admin.reward_point_account.deduction: %name% Deduction
+admin.reward_point_account.grant: %name% Grant
+admin.reward_point_account.balance: Balance
+admin.reward_point_account.amount: Amount
+admin.reward_point_account.detail: %name% Detail
+admin.reward_point_account.search_hint: Search nickName/trueName
+admin.reward_point_account.current_balance: Balance
+admin.reward_point_account.consumption: Consumption
+admin.reward_point_account.empty: No account information!
+admin.reward_point_account.tr_detail: Detail
+admin.reward_point_account.log_grant: Grant %amount% %name% to
+admin.reward_point_account.log_deduction: Deduction %amount% %name%
+admin.reward_point_account.note_empty: No Note
+admin.reward_point_account.log_deduction_by: From
+
+
+reward_point_product.pending: Pending
+reward_point_product.delivered: Delivered
+reward_point_product.delivery_message: Delivery Message
+reward_point_product.consignee_information: Consignee Information
+reward_point_product.exchange_time: Exchange Time
+reward_point_product.consignee: Consignee
+reward_point_product.telephone: Telephone
+reward_point_product.address: Address
+reward_point_product.email: Email
+reward_point_account.behavior_record: Behavior Record
+reward_point_account.reward_record: %name% Record
+reward_point.create_question: Ask a Question
+reward_point.reply_question: Reply a Question
+reward_point.elite_thread: Featured
+reward_point.admin_grant: Grant
+reward_point.admin_deduction: Deduction
+reward_point.macro.task_reward_point: Finish The Task
+reward_point.macro.course_reward_point: Finish The Course
+reward_point.daily_login: Daily Login
+reward_point.exchange: Exchange Product
+reward_point_account.note: Note
+reward_point.reward: %name% reward
+reward_point.reply_question_get: 'Reply a question can get '
+reward_point.reply_discussion: 'Reply a topic can get '
+reward_point.create_question_get: 'Ask a question can get '
+reward_point.create_discussion: 'Publish a topic can get '
+reward_point.appraise: 'First appraise can get '
+reward_point.course_set: %name% Setting
+reward_point.study_reward: Study Reward
+reward_point.task_reward: Finish The Task
+reward_point.course_reward: Finish The Course
+reward_point.task_reward_point: Finish The Task Reward
+reward_point.course_reward_point: Finish The Course Reward
+
+
+reward_point.notify.create_question: %name% %amount% [Ask a Question]
+reward_point.notify.reply_question: %name% %amount% [Reply a Question]
+reward_point.notify.create_discussion: %name% %amount% [Publish a Topic]
+reward_point.notify.reply_discussion: %name% %amount% [Reply a Topic]
+reward_point.notify.elite_thread: %name% %amount% 【Topic Be Elited】
+reward_point.notify.appraise_course_classroom: %name% %amount% 【Publish a Review】
+reward_point.notify.daily_login: %name% %amount% 【Daily Login】
+reward_point.notify.task_reward_point: %name% %amount% 【Finish a Task】
+
+
+reward_point.mall.search_empty: Don't search the relevant merchandise, please try to change the key words!
+reward_point.exchange.permissions: Sorry, you have no right to exchange, please contact the webmaster if necessary!
+reward_point.permissions: Sorry, you have no right to view the current page, please contact the webmaster if necessary!
+my.reward_point.product_detail_permissions: Sorry, you do not have permission to view the %name% product details page. If necessary, please contact the webmaster!
+my.reward_point.record.permissions: Sorry, you do not have permission to view the %name% exchange records page. If necessary, please contact the webmaster!
+my.reward_point.rule.permissions: Sorry, you do not have permission to view the %name% rule page. If necessary, please contact the webmaster!
+my.reward_point.mall.permissions: Sorry, you do not have permission to view %name% mall, please contact the webmaster if necessary!
+reward_point.reply_discussion_hint: >
+  Get %name% can be viewed in My Account and can be used to redeem merchandise at %name%. Reply to topic get %name% limit: %daily_limit% %name% / day
+reward_point.reply_discussion_hint_unlimited: >
+  Get %name% can be viewed in My Account and can be used to redeem merchandise at %name%. Reply to topic get %name% limit: unlimited / day
+reward_point.reply_question_hint: >
+  Get %name% can be viewed in My Account and can be used to redeem merchandise at %name%. Reply to question get %name% limit: %daily_limit% %name% / day
+reward_point.reply_question_hint_unlimited:  >
+  Get %name% can be viewed in My Account and can be used to redeem merchandise at %name%. Reply to question get %name% limit: unlimited / day
+reward_point.create_question_hint: >
+  Get %name% can be viewed in My Account and can be used to redeem merchandise at %name%. Asked to get %name% cap: %daily_limit% %name% / day
+reward_point.create_question_hint_unlimited:  >
+  Get %name% can be viewed in My Account and can be used to redeem merchandise at %name%. Asked to get %name% cap: unlimited / day
+reward_point.create_discussion_hint: >
+  Get %name% can be viewed in My Account and can be used to redeem merchandise at %name%. Publish topic get %name% cap: %daily_limit% %name% / day
+reward_point.create_discussion_hint_unlimited: >
+  Get %name% can be viewed in My Account and can be used to redeem merchandise at %name%. Publish topic get %name% cap: unlimited / day
+reward_point.appraise_hint: >
+  Get %name% can be viewed in My Account and can be used to redeem merchandise at %name%. Only the first evaluation can be obtained.
+
+
+
+
+
+my.reward_point.mall: %name% Mall
+my.reward_point.exchange_record: Exchange Record
+my.reward_point.rule: %name% Rule
+my.reward_point.exchange.consume: Consume
+my.reward_point.balance: %name% Balance
+my.reward_point.record_time: Record Time
+my.reward_point.exchange: Exchange
+my.reward_point.product_introduction: Product Introduction
+my.reward_point.product_introduction_empty: In the editorial, please look forward to.
+my.reward_point.rule_daily_limit: Daily Limit
+my.reward_point.rule_reward: reward
+my.reward_point.rule_reward_behavior: Reward Behavior
+my.reward_point.mall.search: Found in total
+my.reward_point.mall.search_product: related products
+my.reward_point.mall.search_hint: Enter the title keyword
+
+task.learn_data_detail.nickname: name
+task.learn_data_detail.createdTime: Join Time
+task.learn_data_detail.finishedTime: Finished Time
+task.learn_data_detail.testpaper_firstUsedTime: First Used Time(minute)
+task.learn_data_detail.testpaper_firstScore: First Score
+task.learn_data_detail.testpaper_maxScore: Max Score
+task.learn_data_detail.learnTime: Learn Time(minute)
+task.learn_data_detail.video_and_audio_learnTime: Video&Audio Learn Time(minute)
+task.learn_data_detail.contact_information: contact information 
+task.learn_data_detail.task_title: Task Title
+task.learn_data_detail.completed_number: completed number
+task.learn_data_detail.unfinished_number: unfinished number
+task.learn_data_detail.unstarted_number: unstarted number
+join.time: 'Join Time'
+
+register.userinfo_fill_tips: Mobile not matching SMS code, please resubmit.
+
+
+cashier.order.status.changed_tips: The order status has been changed, please reorder.
+cashflow.title: Name
+cashflow.sn: sn
+cashflow.user_name: username
+cashflow.created_time: createdTime
+cashflow.amount: amount
+cashflow.number: number
+cashflow.inflow: 收入
+cashflow.platform: platform
+cashflow.trade_sn: 交易号
+cashflow.user_truename: truename
+cashflow.user_email: emial
+cashflow.user_mobile: mobile
+cashflow.refund: 网校退款
+
+admin.cashflow.keyword: keyword
+
+order.pay_check_msg.parameters_error: parameters_error
+order.pay_check_msg.coupon_had_been_used: Coupon had been used.
+order.pay_check_msg.unpurchasable_product: Unpurchasable Product
+order.pay_check_msg.order_not_exist: Order not exist
+order.pay_check_msg.user_not_login: User not login
+order.pay_check_msg.not_same_user: Not your order
+order.pay_check_msg.missing_pay_password: Missing payPassword
+order.pay_check_msg.incorrect_pay_password: Incorrect payPassword
+order.pay_check_msg.balance_not_enough: Your balance is insufficient
+order.pay_check_msg.pay_password_not_set: Pay password not set
+order.pay_check_msg.out_of_max_coin: Out of max allow pay coin amount
+
+site.join_by_free: Join by free
+site.join_by_purchase: Join by purchase
+site.remove_by_manual: Manual remove
+site.join_to_learn: Join to learn
+site.fill_user_info_tip: Fill user info
+
+site.join_by_import: 导入课程
+site.join_by_vip: 会员加入
+site.join_by_auditor: 旁听生加入
+site.join_by_assistant: 助教加入
+site.avatar.set_before_learning: Please set avatar first
+site_yes: 'Yes'
+site_no: 'No'
+admin.cloud_live.manage.logo_set.modal_title: Crop Live LOGO
+
+
+
+log.module.user: 用户
+log.module.course: 课程
+log.module.classroom: 班级
+log.module.group: 小组话题
+log.module.upload_file: 文件
+log.module.order: 订单
+log.module.article: 资讯
+log.module.category: 栏目
+log.module.content: 资讯内容
+log.module.notify: 通知
+log.module.sms: 短信
+log.module.tag: 标签
+log.module.system: 系统设置
+log.module.crontab: 定时任务
+log.module.marker: 驻点
+log.module.vip: 会员
+log.module.coin: 虚拟币
+log.module.coupon: 优惠码
+log.module.money_card: 学习卡
+log.module.discount: 打折活动
+log.module.exercise: 练习
+log.module.homework: 作业
+log.module.question_plus: 题库增强版
+log.module.announcement: 公告
+log.module.open_course: 公开课
+log.module.live: 直播
+
+log.action.course.create: 创建课程
+log.action.course.update: 修改课程
+log.action.course.update_picture: 更新课程图片
+log.action.course.publish: 发布课程
+log.action.course.close: 关闭课程
+log.action.course.delete: 删除课程
+log.action.course.add_task: 添加学习任务
+log.action.course.update_task: 更新学习任务
+log.action.course.delete_task: 删除学习任务
+log.action.course.add_student: 添加课程学员
+log.action.course.remove_student: 移除课程学员
+log.action.course.update_teacher: 更新课程教师
+log.action.course.cancel_teachers_all: 取消用户的教师身份
+log.action.course.delete_taskLearn: 删除任务学习记录
+log.action.course.delete_chapter: 删除章节
+log.action.course.delete_favorite: 删除收藏
+log.action.course.delete_note: 删除笔记
+log.action.course.delete_thread: 删除话题
+log.action.course.delete_review: 删除评价
+log.action.course.delete_announcement: 删除公告
+log.action.course.delete_status: 删除动态
+log.action.course.recommend: 课程推荐
+log.action.course.cancel_recommend: 取消课程推荐
+log.action.course.delete_material: 移除资料
+log.action.course.add_testpaper: 新增试卷
+log.action.course.publish_testpaper: 发布试卷
+log.action.course.close_testpaper: 关闭试卷
+log.action.course.delete_testpaper: 删除试卷
+log.action.course.add_question: 新增题目
+log.action.course.delete_question: 删除题目
+log.action.course.refresh_learning_progress: 刷新学习进度
+log.action.course.sync_when_task_create: 同步创建任务
+log.action.course.sync_when_task_update: 同步更新任务
+log.action.course.sync_when_task_delete: 同步删除任务
+log.action.course.clone_course_set: 复制课程
+log.action.course.unlock_course: 解除课程同步
+log.action.user.exportCsv: 导出
+log.action.user.add: 新增
+log.action.user.edit: 修改
+log.action.user.send_email_verify: 邮箱验证
+log.action.user.nickname_change: 修改昵称
+log.action.user.password-changed: 重置密码
+log.action.user.pay-password-changed: 重置支付密码
+log.action.user.verifiedMobile-changed: 重置手机
+log.action.user.change_role: 修改角色
+log.action.user.unbind: 解绑用户
+log.action.user.login_success: 登录成功
+log.action.user.login_fail: 登录失败
+log.action.user.lock: 禁封用户
+log.action.user.unlock: 解禁用户
+log.action.user.recommend: 推荐用户
+log.action.user.cancel_recommend: 取消推荐用户
+log.action.user.approved: 实名认证成功
+log.action.user.approval_fail: 实名认证失败
+log.action.user.password-reset: 重置密码邮件发送
+log.action.system.email_send_check: 邮件自检
+log.action.system.setting_email_change: 更变邮箱
+log.action.system.setting_email-verify: 邮箱验证
+log.action.system.update_settings: 更新设置
+log.action.system.questions_settings: 题库设置
+log.action.system.customerServiceSetting: 客服管理
+log.action.system.setting_userCenter: 用户中心设置
+log.action.system.update_block: 更新编辑区
+log.action.system.update_app_version: 更新版本
+log.action.classroom.create: 新增班级
+log.action.classroom.delete: 删除班级
+log.action.classroom.add_course: 添加课程
+log.action.classroom.add_student: 添加学员
+log.action.classroom.delete_course: 移除课程
+log.action.classroom.delete_review: 删除评价
+log.action.classroom.delete_thread: 删除话题
+log.action.classroom.update_picture: 更新图片
+log.action.classroom.remove_student: 移除学员
+log.action.classroom.recommend: 推荐班级
+log.action.classroom.cancel_recommend: 取消推荐
+log.action.article.update_settings: 更新设置
+log.action.article.create: 新增
+log.action.article.update: 修改
+log.action.article.update_property: 更新属性
+log.action.article.cancel_property: 取消属性
+log.action.article.trash: 移动到回收站
+log.action.article.removeThumb: 移除图片
+log.action.article.delete: 删除
+log.action.article.publish: 发布
+log.action.article.unpublish: 取消发布
+log.action.notify.create: 创建
+log.action.notify.check_fail: 检测
+log.action.order.pay_result: 支付结果
+log.action.order.andit_refund: 退款审核
+log.action.order.refund_cancel: 取消退款
+log.action.order.unbind-back: 解绑银行卡
+log.action.order.course_callback: 课程回调
+log.action.order.classroom_callback: 班级回调
+log.action.order.adjust_price: 价格调整
+log.action.category.create: 新增
+log.action.category.update: 修改
+log.action.category.delete: 删除
+log.action.content.create: 新增
+log.action.content.update: 修改
+log.action.content.trash: 移动到回收站
+log.action.content.delete: 删除
+log.action.content.publish: 发布
+log.action.crontab.job_start: 开始任务
+log.action.crontab.job_end: 结束任务
+log.action.upload_file.create: 新增文件
+log.action.upload_file.delete: 删除文件
+log.action.upload_file.download: 下载文件
+log.action.upload_file.cloud_convert_callback: 回调处理
+log.action.upload_file.cloud_convert_error: 转码失败
+log.action.marker.create: 增加驻点
+log.action.marker.delete: 删除驻点
+log.action.marker.mediaId_notExist: 视频不存在
+log.action.marker.delete_question: 删除驻点问题
+log.action.group.create_thread: 新增话题
+log.action.group.delete_thread: 删除话题
+log.action.group.close_thread: 关闭话题
+log.action.group.open_thread: 开启话题
+log.action.sms.sms_forget_password: 登录密码重置
+log.action.sms.sms_user_pay: 使用网站余额支付
+log.action.sms.sms_forget_pay_password: 支付密码重置
+log.action.sms.sms_bind: 手机绑定
+log.action.sms.sms_classroom_publish: 新班级发布
+log.action.sms.sms_course_publish: 新课程发布
+log.action.sms.sms_normal_lesson_publish: 学习任务发布通知（普通课程）
+log.action.sms.sms_live_lesson_publish: 学习任务发布通知（直播）
+log.action.sms.sms_live_play_one_day: 直播开播前通知（提前1天）
+log.action.sms.sms_live_play_one_hour: 直播开播前通知（提前1小时）
+log.action.sms.sms_homework_check: 作业完成批阅
+log.action.sms.sms_testpaper_check: 试卷完成批阅
+log.action.sms.sms_course_buy_notify: 课程购买
+log.action.sms.sms_classroom_buy_notify: 班级购买
+log.action.sms.sms_vip_buy_notify: 会员购买
+log.action.sms.sms_coin_buy_notify: 虚拟币充值
+log.action.tag.create: 新增
+log.action.tag.update: 修改
+log.action.tag.delete: 删除
+log.action.coin.update_settings: 设置
+log.action.coin.add_coin: 增加
+log.action.coin.deduct_coin: 扣除
+log.action.announcement.delete: 删除公告
+log.action.open_course.create_course: 创建公开课
+log.action.open_course.update_course: 更新公开课
+log.action.open_course.delete_course: 删除课程
+log.action.open_course.pulish_course: 发布公开课
+log.action.open_course.close_course: 关闭公开课
+log.action.open_course.update_picture: 更新公开课图片
+log.action.open_course.add_lesson: 添加公开课课时
+log.action.open_course.update_lesson: 更新公开课课时
+log.action.open_course.delete_lesson: 删除课时
+log.action.open_course.delete_member: 删除学员
+log.action.open_course.add_material: 新增资料
+log.action.open_course.delete_material: 移除资料
+log.action.open_course.update_teacher: 更新公开课教师
+log.action.open_course.delete_recommend_course: 删除推荐课程
+order.course_callback.fail: 订单处理成功，但是用户加入课程失败
+order.classroom_callback.fail: 订单处理成功，但是用户加入班级失败
+crontab.register_crontab_job.fail: 定时任务注册失败，请参考官网文档重新手动注册:http://developer.edusoho.com/biz-framework/scheduler.html
+cashier.order.status.changed_tips: 订单状态已变更，请重新下单。
+log.message.order_adjust_price.success: 订单（#%title%）价格从 %oldPrice%元 调整到 %newPrice%元.
+log.action.live.update_live_activity: 更新直播活动
+log.action.live.generate_live_replay: 生成直播回放
+
+course.to_be.biz.user.first: 需要先申请为商业用户!
+course.enable.video.convert.audio.benefit: 开启后，学员在学习时，可按需切换为音频听课，提高完成率。
+course.video.convert.audio.status: 当前转音频完成情况
+course.video.convert.audio.detail: 查看详情
+course.video.convert.client.listen: 听
+course.video.convert.client.click.listen: 手机端支持一键听课
+course.video.convert.client.try: '（试一试）'
+course.task.show.video.convert.client.try: 手机端支持一键听课，快去试试...
+course.task.show.video.convert.client.notify: 不再提醒
+course.info.video.convert.audio.enable: 音频听课（试用）
+course.info.video.convert.audio.start: 开启
+course.info.video.convert.audio.close: 关闭
+
+user.learn.statistics.start_time: 起始时间
+user.learn.statistics.end_time: 结束时间
+user.learn.statistics.default.search: 默认排序
+user.learn.statistics.search: 搜索
+user.learn.statistics.nickname: 用户名
+user.learn.statistics.join.classroom.num: 加入班级数
+user.learn.statistics.exit.classroom.num: 退出班级数
+user.learn.statistics.join.course.num: 加入计划数
+user.learn.statistics.exit.course.num: 退出计划数
+user.learn.statistics.finished.task.num: 学完任务数
+user.learn.statistics.learned.seconds: 学习时长(分)
+user.learn.statistics.actual.amount: 消费总额(元)
+user.learn.statistics.empty: 暂无用户统计数据
+user.learn.statistics.init: 数据升级中，请稍候（用户量越大，升级时间越久）
+
+admin.datalab.setting.modal_title: 提示：
+admin.datalab.setting.modal_enable_body: 开启后，将在 24 小时内开始更新数据。关闭期内的学习数据无法更新到报表中。
+admin.datalab.setting.modal_disable_body: 关闭后，关闭期内的学习数据将无法更新到报表中。您确认要关闭吗？
+admin.datalab.setting.agreement: 用户协议
+admin.datalab.setting.operation_title: '开启数据分析服务:'
+admin.datalab.warning_tip: 当前数据分析服务已关闭，报表数据无法更新。可在<a href="%url%">【设置】</a>中重新启用该服务。
+admin.datalab.setting.btn_cancel: 取消
+admin.datalab.setting.btn_open: 确认开启
+admin.datalab.setting.btn_close: 确认关闭
+admin.datalab.setting.btn_use: 再用用看

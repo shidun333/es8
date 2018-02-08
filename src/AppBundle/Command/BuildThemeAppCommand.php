@@ -39,7 +39,7 @@ class BuildThemeAppCommand extends BaseCommand
         $this->_buildDistPackage($name);
     }
 
-    private function _copyScript($themeDir, $distDir)
+    private function _copyScript($name, $themeDir, $distDir)
     {
         $scriptDir = "{$themeDir}/Scripts";
         $distScriptDir = "{$distDir}/Scripts";
@@ -50,9 +50,11 @@ class BuildThemeAppCommand extends BaseCommand
             $this->output->writeln('<comment>    * 拷贝脚本：无</comment>');
         }
 
-        $this->output->writeln('<info>    * 生成安装引导脚本：Upgrade.php</info>');
+        $this->output->writeln('<info>    * 生成安装引导脚本：EduSohoPluginUpgrade.php</info>');
 
-        $this->filesystem->copy(__DIR__.'/Fixtures/PluginAppUpgradeTemplate.php', "{$distDir}/Upgrade.php");
+        $data = file_get_contents(__DIR__.'/Fixtures/ThemeAppUpgradeTemplate.php');
+        $data = str_replace('{{name}}', $name, $data);
+        file_put_contents("{$distDir}/EduSohoPluginUpgrade.php", $data);
     }
 
     private function _generateBlocks($themeDir, $distDir, $container)
@@ -69,7 +71,7 @@ class BuildThemeAppCommand extends BaseCommand
 
         $distDir = $this->_makeDistDirectory($name);
         $sourceDistDir = $this->_copySource($name, $themeDir, $distDir);
-        $this->_copyScript($themeDir, $distDir);
+        $this->_copyScript($name, $themeDir, $distDir);
         $this->_generateBlocks($themeDir, $distDir, $this->getContainer());
         $this->_copyMeta($themeDir, $distDir);
         file_put_contents($distDir.'/ThemeApp', '');
@@ -80,7 +82,13 @@ class BuildThemeAppCommand extends BaseCommand
     private function _copySource($name, $themeDir, $distDir)
     {
         $sourceTargetDir = $distDir.'/source/'.$name;
-        $this->output->writeln("<info>    * 拷贝代码：{$themeDir} -> {$sourceTargetDir}</info>");
+        if ($this->filesystem->exists($themeDir."/../../static-dist/{$name}theme")) {
+            $this->filesystem->mirror($themeDir."/../../static-dist/{$name}theme", $themeDir."/static-dist/{$name}theme");
+            $this->output->writeln("<info>    * 拷贝代码：{$themeDir} -> {$sourceTargetDir}</info>");
+        } else {
+            $this->output->writeln('<info>    * 无静态资源文件</info>');
+        }
+
         $this->filesystem->mirror($themeDir, $sourceTargetDir);
 
         $this->filesystem->remove($sourceTargetDir.'/dev');

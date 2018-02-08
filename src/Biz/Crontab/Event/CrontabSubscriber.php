@@ -2,6 +2,7 @@
 
 namespace  Biz\Crontab\Event;
 
+use Biz\Crontab\Service\CrontabService;
 use Codeages\PluginBundle\Event\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Codeages\Biz\Framework\Event\Event;
@@ -27,12 +28,15 @@ class CrontabSubscriber extends EventSubscriber implements EventSubscriberInterf
     public function onSchedulerJobExecuting(Event $event)
     {
         $jobFired = $event->getSubject();
-        $job = $jobFired['job'];
+        $job = $jobFired['job_detail'];
         if (!empty($job['next_fire_time'])) {
             $this->getCrontabService()->setNextExcutedTime($job['next_fire_time']);
         }
     }
 
+    /**
+     * @return CrontabService
+     */
     protected function getCrontabService()
     {
         return $this->getBiz()->service('Crontab:CrontabService');

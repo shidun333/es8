@@ -105,8 +105,15 @@ admin:
                                     router_params:
                                         id: (user.id)
                                     disable: true
+                        admin_online:
+                            name: admin.user.basic.online
                         admin_login_record:
                             name: admin.user.basic.login_record_tab
+                admin_user_learn_statistics_manage:
+                    name: admin.user.statistics_manage
+                    children:
+                      admin_user_learn_statistics:
+                        name: admin.user.statistics_manage
                 admin_teacher:
                     name: admin.user.teacher_menu
                     children:
@@ -200,7 +207,7 @@ admin:
                                     name: admin.course.basic.basic_tab.preview_btn
                                     router_name: course_set_show
                                     router_params:
-                                        id: (courseSet.defaultCourseId)
+                                        id: (courseSet.id)
                                         previewAs: 'guest'
                                     group: groupButton
                                     icon: 'glyphicon glyphicon-eye-open'
@@ -225,6 +232,15 @@ admin:
                                     icon: 'glyphicon glyphicon-envelope'
                                     mode: modal
                                     visable: (courseSet.status == 'published')
+                                admin_course_set_clone:
+                                    name: admin.course.basic.basic_tab.clone_btn
+                                    router_params:
+                                        courseSetId: (courseSet.id)
+                                    group: groupButton
+                                    class: 'js-course-set-clone'
+                                    icon: 'glyphicon glyphicon-repeat'
+                                    mode: none
+                                    visable: (courseSet.parentId == 0 and courseSet.type != 'live')
                                 admin_course_set_publish:
                                     name: admin.course.basic.basic_tab.publish_submit_btn
                                     router_params:
@@ -491,8 +507,12 @@ admin:
                 admin_operation_invite:
                     name: admin.operation.invite_menu
                     children:
-                        admin_operation_invite_manage:
-                            name: admin.operation.invite.basic_tab
+                        admin_operation_invite_record:
+                            name: admin.operation.invite.record_tab
+                            disable: true
+                            router_name: admin_invite_record
+                        admin_operation_invite_user:
+                            name: admin.operation.invite.user_tab
                             disable: true
                             router_name: admin_invite
                         admin_operation_invite_coupon:
@@ -593,71 +613,36 @@ admin:
                         admin_keyword_banlogs:
                             name: admin.operation.sensitive_words.banlogs_tab
                             disable: true
-                # admin_operation_reward_point:
-                #     name: 积分管理
-                #     parent: admin_operation
-                #     group: 5
-                #     visable: (setting('reward_point.enable', '0'))
-                #     children:
-                #         admin_reward_point_account:
-                #             name: 积分账户
-                #             children:
-                #                 admin_reward_point_grant:
-                #                     name: '发放'
-                #                     mode: modal
-                #                     group: groupButton
-                #                     router_params:
-                #                         id: (user.id)
-                #                 admin_reward_point_deduction:
-                #                     name: '扣减'
-                #                     mode: modal
-                #                     group: groupButton
-                #                     router_params:
-                #                         id: (user.id)
-                #         admin_reward_point_logs:
-                #             name: 操作日志
-        admin_order:
-            name: admin.nav.order
-            children:
-                admin_course_order_manage:
-                    name: admin.order.course_menu
-                    children:
-                        admin_course_order:
-                            name: admin.order.course.basic_tab
-                            router_name: admin_course_order_manage
-                            disable: true
-                admin_coin_order_manange:
-                    name: admin.order.coin_menu
-                    children:
-                        admin_coin_orders:
-                            name: admin.order.coin.basic_tab
-                            disable: true
-                admin_classroom_order_manage:
-                    name: admin.order.classroom_menu
-                    parent: admin_order
-                    after: admin_course_order
-                    children:
-                        admin_classroom_order:
-                            name: admin.order.classroom.basic_tab
-                            disable: true
         admin_finance:
             name: admin.nav.finance
             children:
-                # admin_accounts_center:
-                #     name: 账务中心
-                #     children:
-                #         admin_account_center:
-                #             name: 账务中心
-                #             disable: true
+                admin_orders:
+                     name: admin.finance.order_menu
+                     children:
+                        admin_order_manage:
+                            name: admin.finance.order_menu
+                admin_order_refunds:
+                    name: admin.finance.refunds_menu
+                    children:
+                        admin_order_refunds_manage:
+                            name: admin.finance.refunds.basic_tab
+                            router_name: admin_order_refunds
                 admin_bills:
                     name: admin.finance.bills_menu
                     children:
-                        admin_bill:
+                        admin_bill_cash:
                             name: admin.finance.bills.cash_records_tab
+                            router_name: admin_bill
+                            router_params:
+                                type: money
                             disable: true
-                        admin_coin_records:
+                        admin_bill_coin:
                             name: admin.finance.bills.coin_records_tab
+                            router_name: admin_bill
+                            router_params:
+                                type: coin
                             disable: true
+                            router_name: admin_order_refunds
                 admin_coin_user:
                     name: admin.finance.coin_menu
                     children:
@@ -665,32 +650,6 @@ admin:
                             name: admin.finance.coin.basic_tab
                             disable: true
                             router_name: admin_coin_user_records
-                admin_course_refunds:
-                    name: admin.finance.course_refunds_menu
-                    children:
-                        admin_course_refunds_manage:
-                            name: admin.finance.course_refunds.basic_tab
-                            disable: true
-                            router_name: admin_order_refunds
-                            router_params:
-                                targetType: course
-                                status: created
-                admin_classroom_refunds:
-                    name: admin.finance.classroom_refunds_menu
-                    parent: admin_finance
-                    router_name: admin_order_refunds
-                    router_params:
-                        targetType: classroom
-                        status: created
-                    after: admin_course_refunds
-                    children:
-                        admin_classroom_refunds_manage:
-                            name: admin.finance.classroom_refunds.basic_tab
-                            disable: true
-                            router_name: admin_order_refunds
-                            router_params:
-                                targetType: classroom
-                                status: created
         admin_app:
             name: admin.nav.cloud
             visable: (not (setting('copyright.thirdCopyright', false) == 1) and not is_without_network()) #第三方授权和无网情况下不显示教育云
@@ -820,6 +779,15 @@ admin:
                         admin_cloud_consult_setting:
                             name: admin.tab.setting_tab
                             disable: true
+                admin_cloud_data_lab_manage:
+                    name: admin.cloud.data_lab
+                    visable: (cloudStatus())
+                    children:
+                        admin_cloud_data_lab:
+                            name: admin.cloud.data_lab
+                            router_name: admin_cloud_data_lab
+                        admin_cloud_data_lab_setting:
+                            name: admin.cloud.data_lab_setting
                 admin_setting_cloud:
                     name: admin.cloud.cloud_setting_menu
                     children:
@@ -827,6 +795,31 @@ admin:
                             name: admin.cloud.cloud_setting.basic_tab
                             router_name: admin_setting_cloud
                             disable: true
+
+        admin_marketing_top:
+                    name: admin.marketing.menu
+                    blank: true
+                    children:
+                      _admin_marketing_marketing_menu:
+                        name: admin.marketing.menu
+                        disable: true
+                        children:
+                            _marketing_marketing_page:
+                                name: admin.marketing.menu
+                                router_name: admin_login_marketing
+        
+        # 临时隐藏 distributor
+        #admin_distributor_top:
+        #            name: admin.distributor.menu
+        #            blank: true
+        #            children:
+        #              _admin_distributor_menu:
+        #                name: admin.distributor.menu
+        #                disable: true
+        #                children:
+        #                    _distributor_page:
+        #                        name: admin.distributor.menu
+        #                        router_name: admin_login_distributor
 
         admin_system:
             name: admin.nav.system
@@ -957,9 +950,6 @@ admin:
                         admin_wap_set:
                             name: admin.system.operation.wap_tab
                             disable: true
-                        # admin_reward_point_set:
-                        #     name: 积分
-                        #     disable: true
                 admin_setting_finance:
                     name: admin.system.finance_menu
                     children:
@@ -1045,32 +1035,35 @@ admin:
                 admin_jobs_manage:
                     name: 任务调度
                     group: 2
+                    visable: false
+                    disable: true
                     children:
                         admin_jobs:
                             name: 任务调度
                         admin_job_logs:
                             name: 任务日志
-        # admin_reward_point_mall:
-        #      name: 商城
-        #      visable: (setting('reward_point.enable', '0'))
-        #      children:
-        #         admin_reward_point_product:
-        #             name: 商品管理
-        #             children:
-        #                 admin_reward_point_product_manage:
-        #                     name: 商品管理
-        #                     router_name: admin_reward_point_product
-        #                     children:
-        #                         admin_reward_point_product_add:
-        #                             name: 添加商品
-        #                             router_name: admin_reward_point_product_create
-        #                             group: topBtn
-        #         admin_reward_point_product_exchange:
-        #             name: 兑换管理
-        #             children:
-        #                 admin_reward_point_product_exchange_manage:
-        #                     name: 兑换管理
-        #                     router_name: admin_reward_point_exchange
+                        admin_crontab:
+                            name: crontab管理
+                admin_xapi_manage:
+                    name: xAPI
+                    group: 2
+                    visable: false
+                    disable: true
+                    children:
+                        admin_xapi_setting:
+                            name: xAPI
+                        admin_xapi_statement_list:
+                            name: Statements
+                admin_queue_menege:
+                    name: 队列
+                    group: 2
+                    visable: false
+                    disable: true
+                    children:
+                        admin_queue_failed_logs:
+                            name: 队列错误日志
+
+
 web:
     name: web.basic_menu
     parent: null

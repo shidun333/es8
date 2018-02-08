@@ -9,15 +9,15 @@ class UploadFileDaoImpl extends GeneralDaoImpl implements UploadFileDao
 {
     protected $table = 'upload_files';
 
-    public function create($fields)
+    public function create($file)
     {
-        if (!isset($fields['id'])) {
+        if (!isset($file['id'])) {
             return array();
         }
 
-        parent::create($fields);
+        parent::create($file);
 
-        return $this->get($fields['id']);
+        return $this->get($file['id']);
     }
 
     public function getByHashId($hash)
@@ -127,6 +127,7 @@ class UploadFileDaoImpl extends GeneralDaoImpl implements UploadFileDao
                 'isPublic = :isPublic',
                 'targetId IN ( :targets )',
                 'type = :type',
+                'type IN ( :types)',
                 'storage = :storage',
                 'filename LIKE :filenameLike',
                 'id IN ( :ids )',
@@ -137,9 +138,12 @@ class UploadFileDaoImpl extends GeneralDaoImpl implements UploadFileDao
                 'createdUserId IN ( :createdUserIds )',
                 'createdUserId = :createdUserId',
                 'id IN ( :idsOr )',
+                'audioConvertStatus = :audioConvertStatus',
+                'audioConvertStatus IN ( :inAudioConvertStatus )',
             ),
             'serializes' => array(
                 'metas2' => 'json',
+                'metas' => 'json',
                 'convertParams' => 'json',
             ),
             'orderbys' => array(

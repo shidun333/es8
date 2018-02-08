@@ -37,6 +37,10 @@ interface UploadFileService
 
     public function reconvertOldFile($id, $convertCallback, $pipeline);
 
+    public function retryTranscode(array $globalIds);
+
+    public function getResourcesStatus(array $options);
+
     public function collectFile($userId, $fileId);
 
     public function findCollectionsByUserIdAndFileIds($fileIds, $userId);
@@ -52,6 +56,8 @@ interface UploadFileService
     public function findFilesByIds(array $ids, $showCloud = 0, $params = array());
 
     public function searchFiles($conditions, $sort, $start, $limit);
+
+    public function searchLiveCloudFiles($conditions, $sort, $start, $limit);
 
     public function searchFileCount($conditions);
 
@@ -70,6 +76,10 @@ interface UploadFileService
     public function saveConvertResult3($id, array $result = array());
 
     public function setFileConverting($id, $convertHash);
+
+    public function setAudioConvertStatus($id, $status);
+
+    public function setResourceConvertStatus($globalId, array $result);
 
     public function makeUploadParams($params);
 
@@ -116,10 +126,14 @@ interface UploadFileService
 
     public function waveUsedCount($id, $num);
 
-    public function searchUseFiles($conditions, $bindFile = ture);
+    public function countUseFile($conditions);
+
+    public function searchUseFiles($conditions, $bindFile = true);
 
     //file-used api
     public function createUseFiles($fileIds, $targetId, $targetType, $type);
+
+    public function batchCreateUseFiles($useFiles);
 
     public function getUseFile($id);
 

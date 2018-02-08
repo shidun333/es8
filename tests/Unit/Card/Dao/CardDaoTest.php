@@ -52,7 +52,7 @@ class CardDaoTest extends BaseDaoTestCase
                 'expectedCount' => 1,
                 ),
             array(
-                'condition' => array('reciveStartTime' => 0, 'reciveEndTime' => strtotime('2018-1-1')),
+                'condition' => array('reciveStartTime' => 0, 'reciveEndTime' => PHP_INT_MAX),
                 'expectedResults' => $expected,
                 'expectedCount' => 5,
                 ),
@@ -102,6 +102,14 @@ class CardDaoTest extends BaseDaoTestCase
         $res = $this->getDao()->findByUserIdAndCardType(1, 'a');
         $this->assertArrayEquals($expected[0], $res[0], $this->getCompareKeys());
         $this->assertArrayEquals($expected[1], $res[1], $this->getCompareKeys());
+    }
+
+    public function testFindByUserIdAndCardTypeAndStatus()
+    {
+        $card = $this->mockDataObject(array('cardId' => '2'));
+        $result = $this->getDao()->findByUserIdAndCardTypeAndStatus(1, 'a', 'receive');
+
+        $this->assertArrayEquals($card, $result[0], $this->getCompareKeys());
     }
 
     public function testFindByCardIds()

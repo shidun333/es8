@@ -14,6 +14,11 @@ class QuestionMarkerResultDaoImpl extends GeneralDaoImpl implements QuestionMark
         return $this->db()->delete($this->table, array('questionMarkerId' => $questionMarkerId));
     }
 
+    public function findByIds($ids)
+    {
+        return $this->findInField('id', $ids);
+    }
+
     public function findByUserIdAndMarkerId($userId, $markerId)
     {
         return $this->findByFields(array('userId' => $userId, 'markerId' => $markerId));
@@ -55,6 +60,7 @@ class QuestionMarkerResultDaoImpl extends GeneralDaoImpl implements QuestionMark
                 'userId = :userId',
                 'markerId = :markerId',
                 'status = :status',
+                'taskId = :taskId',
                 'questionMarkerId = :questionMarkerId',
             ),
         );

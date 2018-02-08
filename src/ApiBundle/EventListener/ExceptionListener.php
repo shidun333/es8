@@ -22,7 +22,9 @@ class ExceptionListener
 
             list($error, $httpCode) = ExceptionUtil::getErrorAndHttpCodeFromException($exception, $this->isDebug());
 
-            $response = new JsonResponse(array('error' => $error), $httpCode);
+            $error['message'] = $this->container->get('translator')->trans($error['message']);
+
+            $response = $this->container->get('api_response_viewer')->view(array('error' => $error), $httpCode);
             $event->setResponse($response);
             $event->stopPropagation();
         }

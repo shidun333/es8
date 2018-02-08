@@ -7,6 +7,7 @@ use Codeages\Biz\Framework\Context\Biz;
 
 abstract class AccessorAdapter implements AccessorInterface
 {
+    const CONTEXT_ERROR_KEY = '_contextResults';
     /**
      * @var Biz
      */
@@ -14,11 +15,49 @@ abstract class AccessorAdapter implements AccessorInterface
 
     private $messages;
 
+    /**
+     * @var \Biz\Accessor\AccessorAdapter
+     */
+    private $nextAccessor = null;
+
     public function __construct($biz)
     {
         $this->biz = $biz;
         $this->registerDefaultMessages();
         $this->registerMessages();
+    }
+
+    public function setNextAccessor(AccessorInterface $nextAccessor)
+    {
+        $this->nextAccessor = $nextAccessor;
+    }
+
+    public function getNextAccessor()
+    {
+        return $this->nextAccessor;
+    }
+
+    public function process($bean)
+    {
+        $error = $this->access($bean);
+        if ($this->nextAccessor) {
+            if ($error) {
+                $bean[self::CONTEXT_ERROR_KEY] = $error;
+            }
+
+            return $this->nextAccessor->access($bean);
+        } else {
+            return $error;
+        }
+    }
+
+    public function hasError($bean, $errorCode)
+    {
+        if (empty($bean[self::CONTEXT_ERROR_KEY])) {
+            return false;
+        } else {
+            return $bean[self::CONTEXT_ERROR_KEY]['code'] === $errorCode;
+        }
     }
 
     protected function registerMessages()
@@ -54,6 +93,7 @@ abstract class AccessorAdapter implements AccessorInterface
         $this->messages['course.unpublished'] = '教学计划(#%s)尚未发布';
         $this->messages['course.closed'] = '教学计划(#%s)已关闭';
         $this->messages['course.not_buyable'] = '教学计划(#%s)未开放购买';
+        $this->messages['course.course.reach_max_student_num'] = '不达到最大人数限制，不可加入';
         $this->messages['course.expired'] = '教学计划(#%s)已到期';
         $this->messages['course.buy_expired'] = '教学计划(#%s)已过购买期限';
 

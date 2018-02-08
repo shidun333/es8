@@ -74,10 +74,12 @@ interface MemberService
      */
     public function becomeStudent($courseId, $userId, $info = array());
 
+    public function batchBecomeStudents($courseId, $memberIds);
+
     /**
      * 退学.
      */
-    public function removeStudent($courseId, $userId);
+    public function removeStudent($courseId, $userId, $info = array());
 
     /**
      * 封锁学员，封锁之后学员不能再查看该课程.
@@ -90,6 +92,8 @@ interface MemberService
     public function unlockStudent($courseId, $userId);
 
     public function createMemberByClassroomJoined($courseId, $userId, $classRoomId, array $info);
+
+    public function batchCreateMembers($members);
 
     public function findCoursesByStudentIdAndCourseIds($studentId, $courseIds);
 
@@ -134,4 +138,8 @@ interface MemberService
     public function updateMembersDeadlineByClassroomId($classroomId, $deadline);
 
     public function findMembersByCourseIdAndRole($courseId, $role);
+
+    public function findDailyIncreaseNumByCourseIdAndRoleAndTimeRange($courseId, $role, $timeRange = array(), $format = '%Y-%m-%d');
+
+    public function findMembersByIds($ids);
 }

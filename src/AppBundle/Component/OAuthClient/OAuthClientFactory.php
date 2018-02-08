@@ -24,7 +24,7 @@ class OAuthClientFactory
         $clients = self::clients();
 
         if (!array_key_exists($type, $clients)) {
-            throw new InvalidArgumentException(array('参数不正确%type%', array('%type%' => $type)));
+            throw new InvalidArgumentException('参数不正确'.$type);
         }
 
         $class = $clients[$type]['class'];
@@ -56,17 +56,6 @@ class OAuthClientFactory
                 'key_setting_label' => 'App ID',
                 'secret_setting_label' => 'App Key',
                 'apply_url' => 'http://connect.qq.com/',
-            ),
-            'renren' => array(
-                'name' => '人人帐号',
-                'admin_name' => '人人登录接口',
-                'class' => 'AppBundle\Component\OAuthClient\RenrenOAuthClient',
-                'icon_class' => 'renren',
-                'icon_img' => '',
-                'large_icon_img' => 'assets/img/social/renren.gif',
-                'key_setting_label' => 'App Key',
-                'secret_setting_label' => 'App Secret',
-                'apply_url' => 'http://dev.renren.com/website',
             ),
             'weixinweb' => array(
                 'name' => '微信网页登录接口',

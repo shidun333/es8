@@ -3,9 +3,9 @@
 namespace Biz\Task\Dao\Impl;
 
 use Biz\Task\Dao\TaskDao;
-use Codeages\Biz\Framework\Dao\GeneralDaoImpl;
+use Codeages\Biz\Framework\Dao\AdvancedDaoImpl;
 
-class TaskDaoImpl extends GeneralDaoImpl implements TaskDao
+class TaskDaoImpl extends AdvancedDaoImpl implements TaskDao
 {
     protected $table = 'course_task';
 
@@ -83,6 +83,16 @@ class TaskDaoImpl extends GeneralDaoImpl implements TaskDao
         return $this->db()->fetchAssoc($sql, array($seq, $courseId));
     }
 
+    public function getByCopyId($copyId)
+    {
+        return $this->getByFields(array('copyId' => $copyId));
+    }
+
+    public function getByCourseIdAndCopyId($courseId, $copyId)
+    {
+        return $this->getByFields(array('courseId' => $courseId, 'copyId' => $copyId));
+    }
+
     public function findByChapterId($chapterId)
     {
         $sql = "SELECT * FROM {$this->table()} WHERE categoryId = ? ORDER BY seq ASC ";
@@ -130,7 +140,7 @@ class TaskDaoImpl extends GeneralDaoImpl implements TaskDao
     {
         $time = time();
         $sql
-        = "SELECT fromCourseSetId, max(startTime) as startTime
+            = "SELECT fromCourseSetId, max(startTime) as startTime
                  FROM {$this->table()}
                  WHERE endTime < {$time} AND status='published' AND type = 'live'
                  GROUP BY fromCourseSetId
@@ -161,6 +171,22 @@ class TaskDaoImpl extends GeneralDaoImpl implements TaskDao
         $parmaters = array_merge(array($copyId), $courseIds);
 
         $sql = "SELECT * FROM {$this->table()} WHERE copyId= ? AND courseId IN ({$marks})";
+
+        return $this->db()->fetchAll($sql, $parmaters) ?: array();
+    }
+
+    public function findByCopyIdSAndLockedCourseIds($copyIds, $courseIds)
+    {
+        if (empty($courseIds) || empty($copyIds)) {
+            return array();
+        }
+
+        $copyIdMarks = str_repeat('?,', count($copyIds) - 1).'?';
+        $courseIdMarks = str_repeat('?,', count($courseIds) - 1).'?';
+
+        $parmaters = array_merge($copyIds, $courseIds);
+
+        $sql = "SELECT * FROM {$this->table()} WHERE copyId IN ({$copyIdMarks}) AND courseId IN ({$courseIdMarks})";
 
         return $this->db()->fetchAll($sql, $parmaters) ?: array();
     }
@@ -201,6 +227,7 @@ class TaskDaoImpl extends GeneralDaoImpl implements TaskDao
                 'createdTime',
                 'updatedTime',
                 'id',
+                'number',
             ),
             'conditions' => array(
                 'id = :id',
@@ -216,9 +243,12 @@ class TaskDaoImpl extends GeneralDaoImpl implements TaskDao
                 'type = :type',
                 'isFree =:isFree',
                 'type IN ( :types )',
+                'type NOT IN ( :typesNotIn )',
                 'seq >= :seq_GE',
                 'seq > :seq_GT',
                 'seq < :seq_LT',
+                'seq >= :seq_GTE',
+                'seq <= :seq_LTE',
                 'startTime >= :startTime_GE',
                 'createdTime >= :createdTime_GE',
                 'createdTime <= :createdTime_LE',
@@ -233,6 +263,8 @@ class TaskDaoImpl extends GeneralDaoImpl implements TaskDao
                 'activityId = :activityId',
                 'mode = :mode',
                 'isOptional = :isOptional',
+                'copyId = :copyId',
+                'copyId IN (:copyIds)',
             ),
         );
     }

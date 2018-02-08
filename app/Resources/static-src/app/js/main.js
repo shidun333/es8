@@ -1,13 +1,32 @@
 import Swiper from 'swiper';
-import 'common/tabs-lavalamp/index';
-import 'common/card';
-import 'common/es-polyfill';
-import 'app/common/reward-point-notify';
-import { isMobileDevice } from 'common/utils';
 import Cookies from 'js-cookie';
 
+import 'common/codeages-design/js/codeages-design';
+import 'common/tabs-lavalamp';
+import 'common/card';
+import 'common/bootstrap-modal-hack';
+import RewardPointNotify from 'app/common/reward-point-notify';
+import { isMobileDevice } from 'common/utils';
+import notify from "common/notify";
+import './alert';
+
+let rpn = new RewardPointNotify();
+rpn.display();
+
+$(document).ajaxSuccess(function(event, XMLHttpRequest, ajaxOptions){
+  rpn.push(XMLHttpRequest.getResponseHeader('Reward-Point-Notify'));
+  rpn.display();
+});
+
+if ($('#rewardPointNotify').length > 0) {
+  let message = $('#rewardPointNotify').text();
+  if (message) {
+    notify('success', decodeURIComponent(message));
+  };
+};
+
 $('[data-toggle="popover"]').popover({
-  html: true,
+  html: true
 });
 
 $('[data-toggle="tooltip"]').tooltip({
@@ -40,59 +59,64 @@ $(document).ajaxError(function (event, jqxhr, settings, exception) {
 });
 
 $(document).ajaxSend(function (a, b, c) {
+  // 加载loading效果
+  let url = c.url;
+  url = url.split('?')[0];
+  let $dom = $(`[data-url="${url}"]`);
+  if ($dom.data('loading')) {
+    let loading;
+    if ($dom.data('loading-class')) {
+      loading = cd.loading({
+        loadingClass: $dom.data('loading-class')
+      });
+    } else {
+      loading = cd.loading();
+    }
+
+    let loadingBox = $($dom.data('target') || $dom);
+    loadingBox.html(loading);
+  };
+
   if (c.type === 'POST') {
     b.setRequestHeader('X-CSRF-Token', $('meta[name=csrf-token]').attr('content'));
   }
+
 });
 
 if (app.scheduleCrontab) {
   $.post(app.scheduleCrontab);
 }
 
-$("i.hover-spin").mouseenter(function () {
-  $(this).addClass("md-spin");
+$('i.hover-spin').mouseenter(function () {
+  $(this).addClass('md-spin');
 }).mouseleave(function () {
-  $(this).removeClass("md-spin");
+  $(this).removeClass('md-spin');
 });
 
-if ($(".set-email-alert").length > 0) {
-  $(".set-email-alert .close").click(function () {
-    Cookies.set("close_set_email_alert", 'true');
-  });
-}
-
-if ($(".announcements-alert").length > 0) {
-  if ($('.announcements-alert .swiper-container .swiper-wrapper').children().length > 1) {
-    let noticeSwiper = new Swiper('.alert-notice .swiper-container', {
-      speed: 300,
-      loop: true,
-      mode: 'vertical',
-      autoplay: 5000,
-      calculateHeight: true
-    });
-  }
-
-  $(".announcements-alert .close").click(function () {
-    Cookies.set("close_announcements_alert", 'true', {
-      path: '/'
-    });
+if ($('#announcements-alert').length && $('#announcements-alert .swiper-container .swiper-wrapper').children().length > 1) {
+  let noticeSwiper = new Swiper('#announcements-alert .swiper-container', {
+    speed: 300,
+    loop: true,
+    mode: 'vertical',
+    autoplay: 5000,
+    calculateHeight: true
   });
 }
 
 if (!isMobileDevice()) {
-  $("body").on("mouseenter", "li.nav-hover", function (event) {
-    $(this).addClass("open");
-  }).on("mouseleave", "li.nav-hover", function (event) {
-    $(this).removeClass("open");
+  $('body').on('mouseenter', 'li.nav-hover', function (event) {
+    $(this).addClass('open');
+  }).on('mouseleave', 'li.nav-hover', function (event) {
+    $(this).removeClass('open');
   });
 } else {
-  $("li.nav-hover >a").attr("data-toggle", "dropdown");
+  $('li.nav-hover >a').attr('data-toggle', 'dropdown');
 }
 
-$(".js-search").focus(function () {
-  $(this).prop("placeholder", "").addClass("active");
+$('.js-search').focus(function () {
+  $(this).prop('placeholder', '').addClass('active');
 }).blur(function () {
-  $(this).prop("placeholder", Translator.trans('site.search_hint')).removeClass("active");
+  $(this).prop('placeholder', Translator.trans('site.search_hint')).removeClass('active');
 });
 
 $("select[name='language']").change(function () {
@@ -116,3 +140,4 @@ $('body').on('event-report', function(e, name){
     eventPost($obj);
 })
 
+$.ajax('/online/sample');

@@ -30,12 +30,16 @@ class LiveroomController extends BaseController
         $avatar = $this->getWebExtension()->getFurl($avatar, 'avatar.png');
         $user['avatar'] = $avatar;
 
+        $biz = $this->getBiz();
+        $user['hostname'] = $biz['env']['base_url'];
+
         $ticket = CloudAPIFactory::create('leaf')->post("/liverooms/{$roomId}/tickets", $user);
 
         return $this->render('liveroom/entry.html.twig', array(
             'roomId' => $roomId,
             'params' => $params,
             'ticket' => $ticket,
+            'liveRole' => !empty($user['role']) ? $user['role'] : 'student',
         ));
     }
 
@@ -69,7 +73,7 @@ class LiveroomController extends BaseController
         $openCourse = $this->getOpenCourseService()->getCourse($courseId);
         $replay = $this->getLiveReplayService()->getReplay($replayId);
 
-        return $openCourse['status'] == 'published' && $openCourse['id'] == $replay['courseId'] && $openCourse['type'] == $replay['type'];
+        return 'published' == $openCourse['status'] && $openCourse['id'] == $replay['courseId'] && $openCourse['type'] == $replay['type'];
     }
 
     protected function canTakeCourseReplay($courseId, $activityId, $replayId)
@@ -80,14 +84,14 @@ class LiveroomController extends BaseController
         }
         $access = $this->getCourseService()->canLearnTask($task['id']);
 
-        return $access['code'] == AccessorInterface::SUCCESS;
+        return AccessorInterface::SUCCESS == $access['code'];
     }
 
     protected function canTakeReplay($targetType, $targetId, $lessonId, $replayId)
     {
-        if ($targetType === self::LIVE_OPEN_COURSE_TYPE) {
+        if (self::LIVE_OPEN_COURSE_TYPE === $targetType) {
             return $this->canTakeOpenCourseReplay($targetId, $replayId);
-        } elseif ($targetType === self::LIVE_COURSE_TYPE) {
+        } elseif (self::LIVE_COURSE_TYPE === $targetType) {
             return $this->canTakeCourseReplay($targetId, $lessonId, $replayId);
         }
 

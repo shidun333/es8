@@ -160,6 +160,7 @@ class ThreadShowWidget {
         if ($textarea.data('imageUploadUrl')) {
             editor = CKEDITOR.replace($textarea.attr('id'), {
                 toolbar: 'Thread',
+                fileSingleSizeLimit: app.fileSingleSizeLimit,
                 filebrowserImageUploadUrl: $textarea.data('imageUploadUrl')
             });
             editor.on('change',()=> {
@@ -192,7 +193,7 @@ class ThreadShowWidget {
                 //清除附件
                 $('.js-attachment-list').empty();
                 $('.js-attachment-ids').val("");
-                $('.js-upload-file').removeClass('hidden');
+                $('.js-upload-file').show();
             },
             submitError: function (data) {
                 $btn.button('reset');

@@ -358,7 +358,8 @@ class LessonProcessorImpl extends BaseProcessor implements LessonProcessor
     {
         $courseId = $this->getParam('courseId');
         $lessonId = $this->getParam('lessonId');
-
+        $ssl = $this->request->isSecure() ? true : false;
+        
         $course = $this->getCourseService()->getCourse($courseId);
         if (empty($course)) {
             return $this->createErrorResponse('not_courseId', '课程信息不存在！');
@@ -380,7 +381,7 @@ class LessonProcessorImpl extends BaseProcessor implements LessonProcessor
                 }
             }
 
-            return $this->coverLesson($lesson);
+            return $this->coverLesson($lesson, $ssl);
         }
 
         if (!$user->isLogin()) {
@@ -395,7 +396,7 @@ class LessonProcessorImpl extends BaseProcessor implements LessonProcessor
         $member = $this->previewAsMember($member, $courseId, $user);
 
         if ($member && in_array($member['role'], array('teacher', 'student'))) {
-            return $this->coverLesson($lesson);
+            return $this->coverLesson($lesson, $ssl);
         }
 
         return $this->createErrorResponse('not_student', '你不是该课程学员，请加入学习!');
@@ -411,8 +412,8 @@ class LessonProcessorImpl extends BaseProcessor implements LessonProcessor
         if (empty($testpaper)) {
             return $this->createErrorResponse('error', '试卷不存在!');
         }
-
-        $testResult = $this->getTestpaperService()->findTestpaperResultByTestpaperIdAndUserIdAndActive($id, $user['id']);
+        
+        $testResult = $this->getTestpaperService()->getUserLatelyResultByTestId($user['id'], $id, $lesson['courseId'], $lesson['activityId'], 'testpaper');
         $lesson['content'] = array(
             'status' => empty($testResult) ? 'nodo' : $testResult['status'],
             'resultId' => empty($testResult) ? 0 : $testResult['id'],
@@ -456,7 +457,7 @@ class LessonProcessorImpl extends BaseProcessor implements LessonProcessor
         return $itemArray;
     }
 
-    private function coverLesson($lesson)
+    private function coverLesson($lesson, $ssl = false)
     {
         $lesson['createdTime'] = date('c', $lesson['createdTime']);
 
@@ -469,7 +470,7 @@ class LessonProcessorImpl extends BaseProcessor implements LessonProcessor
             case 'testpaper':
                 return $this->getTestpaperLesson($lesson);
             case 'document':
-                return $this->getDocumentLesson($lesson);
+                return $this->getDocumentLesson($lesson, $ssl);
             default:
                 $lesson['content'] = $this->wrapContent($lesson['content']);
         }
@@ -506,6 +507,7 @@ class LessonProcessorImpl extends BaseProcessor implements LessonProcessor
             if (!empty($file)) {
                 if ($file['storage'] == 'cloud') {
                     $lesson['mediaConvertStatus'] = $file['status'];
+
                     if (!empty($file['metas2']) && !empty($file['metas2']['sd']['key'])) {
                         if (isset($file['convertParams']['convertor']) && ($file['convertParams']['convertor'] == 'HLSEncryptedVideo')) {
                             $headLeaderInfo = $this->getHeadLeaderInfo();
@@ -655,7 +657,7 @@ class LessonProcessorImpl extends BaseProcessor implements LessonProcessor
         return $lesson;
     }
 
-    private function getDocumentLesson($lesson)
+    private function getDocumentLesson($lesson, $ssl = false)
     {
         $file = $this->controller->getUploadFileService()->getFullFile($lesson['mediaId']);
 
@@ -671,17 +673,17 @@ class LessonProcessorImpl extends BaseProcessor implements LessonProcessor
             }
         }
 
-        $file = $this->controller->getMaterialLibService()->player($file['globalId']);
+        $result = $this->controller->getMaterialLibService()->player($file['globalId'], $ssl);
 
         $content = $lesson['content'];
         $content = $this->controller->convertAbsoluteUrl($this->request, $content);
-        $render = $this->controller->render('TopxiaMobileBundleV2:Course:document.html.twig', array(
-            'pdfUri' => $file['pdf'],
-            'swfUri' => $file['swf'],
-            'title' => $lesson['title'],
-        ));
 
-        $lesson['content'] = $render->getContent();
+        $response = $this->controller->render('material-lib/player/global-document-player.html.twig', array(
+                'globalId' => $file['globalId'],
+                'token' => $result['token'],
+            ));
+
+        $lesson['content'] = $response->getContent();
 
         return $lesson;
     }

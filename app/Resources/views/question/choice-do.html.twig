@@ -6,10 +6,10 @@
 
 		<ul class="testpaper-question-choices js-testpaper-question-list">
 			{% for key, choice in question.metas.choices|default() %}
-			  {% set itemClass =  ((paperResult.status|default(null) in ['reviewing', 'finished']) and (key in question.answer)) ? 'testpaper-question-choice-right' : '' %}
+			  {% set itemClass =  ((paperResult.status|default(null) in ['reviewing', 'finished']) and (key in question.answer)) ? 'testpaper-question-choice-item--right' : '' %}
 			  {% set choiceIndex = (65+key)|chr %}
 
-				<li class="{{ itemClass }}"><span class="testpaper-question-choice-index">{{ choiceIndex }}.</span> {{ choice|bbCode2Html|raw }}</li>
+				<li class="{{ itemClass }} testpaper-question-body-item testpaper-question-choice-item"><span class="testpaper-question-body-item__index">{{ choiceIndex }}.</span> {{ choice|bbCode2Html|raw }}</li>
 				{% if key in question.answer %}
 					{% set keys = keys|merge([choiceIndex]) %}
 				{% endif  %}
@@ -19,7 +19,9 @@
 			{% endfor %}
 		</ul>
 	</div>
-	{% if (paperResult.status|default(null) in ['reviewing', 'finished'] and setting('questions.testpaper_answers_show_mode','submitted') == 'submitted') or (setting('questions.testpaper_answers_show_mode','submitted') == 'reviewed'  and paperResult.status|default(null) == 'finished') %}
+	{% if not question.isDeleted|default(0) and (paperResult.status|default(null) in ['reviewing', 'finished'] and setting('questions.testpaper_answers_show_mode','submitted') == 'submitted')
+	or (setting('questions.testpaper_answers_show_mode','submitted') == 'reviewed'  and paperResult.status|default(null) == 'finished')
+	or (setting('questions.testpaper_answers_show_mode','submitted') == 'hide'  and paperResult.status|default(null) in ['reviewing', 'finished'] and paperResult.type not in ['testpaper']) %}
 		<div class="testpaper-question-footer clearfix">
 		  <div class="testpaper-question-result">
 		  	{{'course.question_manage.question.true_answer'|trans}} <strong class="color-success">{{ keys|join(',') }}</strong>，
@@ -43,10 +45,10 @@
 		</div>
 		{% include 'question/part/show-analysis.html.twig' with {showAnalysis:1} %}
 
-	{% else %}
+	{% elseif not question.isDeleted|default(0) %}
 		<div class="testpaper-question-footer clearfix">
 
-		  <div class="testpaper-question-choice-inputs js-testpaper-question-label">
+		  <div class="testpaper-question-footer__input pull-left js-testpaper-question-label">
 				{% for key, choice in question.metas.choices|default() %}
 					{% set choiceIndex = (65+key)|chr %}
 

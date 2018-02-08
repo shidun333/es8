@@ -297,7 +297,7 @@ class CourseMemberDaoTest extends BaseDaoTestCase
         $expected[] = $this->mockDataObject(array('userId' => 2, 'courseSetId' => 2));
         $expected[] = $this->mockDataObject(array('courseId' => 2, 'role' => 'teacher'));
 
-        $res = $this->getDao()->searchMemberIds(array('unique' => true), array('createdTime', 'ASC'), 0, 10);
+        $res = $this->getDao()->searchMemberIds(array('unique' => true), array('createdTime' => 'ASC'), 0, 10);
 
         $this->assertEquals(array(array('userId' => $expected[0]['userId']), array('userId' => $expected[1]['userId'])),
             $res);
@@ -326,7 +326,6 @@ class CourseMemberDaoTest extends BaseDaoTestCase
         $res[] = $this->getDao()->getByCourseIdAndUserId(1, 2);
         $users = $this->getDao()->findByUserIdAndRole(2, 'teacher');
         $tmp = $users[0];
-
         unset($tmp['id']);
         unset($tmp['createdTime']);
         unset($tmp['updatedTime']);
@@ -336,6 +335,30 @@ class CourseMemberDaoTest extends BaseDaoTestCase
         foreach ($res as $key => $val) {
             $this->assertEquals($expected[$key], $val);
         }
+    }
+
+    public function testCountUserLearnCourses()
+    {
+        $expected = array();
+        $expected[] = $this->mockDataObject();
+        $expected[] = $this->mockDataObject(array('userId' => 2, 'courseSetId' => 2));
+        $expected[] = $this->mockDataObject(array('courseId' => 2, 'role' => 'teacher'));
+
+        $res = $this->getDao()->countUserLearnCourses(2);
+
+        $this->assertEquals(1, $res);
+    }
+
+    public function testFindUserLearnCourseIds()
+    {
+        $expected = array();
+        $expected[] = $this->mockDataObject();
+        $expected[] = $this->mockDataObject(array('userId' => 2, 'courseSetId' => 2));
+        $expected[] = $this->mockDataObject(array('courseId' => 2, 'role' => 'teacher'));
+
+        $res = $this->getDao()->countUserLearnCourses(2);
+
+        $this->assertEquals(1, count($res));
     }
 
     // Todo 跨表
@@ -378,6 +401,8 @@ class CourseMemberDaoTest extends BaseDaoTestCase
             'lastLearnTime' => '1',
             'courseSetId' => '1',
             'lastViewTime' => '0',
+            'refundDeadline' => '0',
+            'learnedCompulsoryTaskNum' => '0',
         );
     }
 

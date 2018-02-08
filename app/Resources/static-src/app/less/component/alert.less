@@ -1,5 +1,5 @@
 .alert {
-  >i {
+  > i {
     margin-right: 10px;
   }
   &.alert-lg {
@@ -16,11 +16,6 @@
   a {
     text-decoration: none;
   }
-}
-
-.alert-blank {
-  color: #000;
-  background-color: @bg-color;
 }
 
 .alert-success {
@@ -75,6 +70,12 @@
   }
 }
 
+.alert-blank {
+  color: #000;
+  background-color: @bg-color;
+}
+
+// 之后需要移出-应属于具体业务
 .alert-default {
   border-color: @gray-light;
   background-color: @gray-lighter;
@@ -128,51 +129,6 @@
       padding-top: 20px;
       border-top: 1px solid @gray-light; 
     }
-  }
-}
-
-// 全站公告
-.alert-notice {
-  .border-radius(0);
-  margin-bottom: 0;
-  padding: 0;
-  border: none;
-  color: @brand-primary;
-  .swiper-container {
-    position: relative;
-    height: 38px;
-    line-height: 38px;
-    overflow: hidden;
-  }
-  .swiper-wrapper {
-    padding-right: 30px;
-  }
-  .swiper-slide {
-    float: none;
-    .text-overflow;
-  }
-  .close {
-    float: none;
-    position: absolute;
-    top: 5px;
-    right: 0;
-    width: 30px;
-  }
-}
-
-// 站内公告
-.aside-notice {
-  padding: 0;
-  .swiper-container {
-    position: relative;
-    padding: 0 15px;
-    height: 38px;
-    line-height: 38px;
-    overflow: hidden;
-  }
-  .swiper-slide {
-    float: none;
-    .text-overflow;
   }
 }
 

@@ -7,11 +7,8 @@ use ApiBundle\Api\Exception\ErrorCode;
 use ApiBundle\Api\Resource\AbstractResource;
 use Biz\Course\Service\CourseService;
 use Biz\Course\Service\MemberService;
-use Biz\Order\OrderRefundProcessor\OrderRefundProcessorFactory;
-use Biz\Order\Service\OrderService;
 use ApiBundle\Api\Annotation\ResponseFilter;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MeCourseMember extends AbstractResource
 {
@@ -33,26 +30,20 @@ class MeCourseMember extends AbstractResource
     public function remove(ApiRequest $request, $courseId)
     {
         $reason = $request->request->get('reason', '从App退出课程');
-        $processor = OrderRefundProcessorFactory::create('course');
 
         $user = $this->getCurrentUser();
-        $member = $processor->getTargetMember($courseId, $user['id']);
 
-        if (empty($member) || empty($member['orderId'])) {
+        $this->getCourseService()->tryTakeCourse($courseId);
+
+        $member = $this->getCourseMemberService()->getCourseMember($courseId, $user->getId());
+
+        if (empty($member)) {
             throw new BadRequestHttpException('您不是学员或尚未购买，不能退学。', null, ErrorCode::INVALID_ARGUMENT);
         }
 
-        $order = $this->getOrderService()->getOrder($member['orderId']);
-
-        if (empty($order)) {
-            throw new NotFoundHttpException('', null, ErrorCode::RESOURCE_NOT_FOUND);
-        }
-
-        if ($order['targetType'] == 'groupSell') {
-            throw new BadRequestHttpException('组合购买课程不能退出。', null, ErrorCode::INVALID_ARGUMENT);
-        }
-
-        $processor->applyRefundOrder($member['orderId'], 0, array('note' => $reason), null);
+        $this->getCourseMemberService()->removeStudent($courseId, $user->getId(), array(
+           'reason' => $reason,
+        ));
 
         return array('success' => true);
     }
@@ -63,14 +54,6 @@ class MeCourseMember extends AbstractResource
     private function getCourseService()
     {
         return $this->service('Course:CourseService');
-    }
-
-    /**
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return $this->service('Order:OrderService');
     }
 
     /**

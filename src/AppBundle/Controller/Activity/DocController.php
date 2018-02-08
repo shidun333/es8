@@ -4,12 +4,11 @@ namespace AppBundle\Controller\Activity;
 
 use Biz\File\Service\FileImplementor;
 use Biz\File\Service\UploadFileService;
-use AppBundle\Controller\BaseController;
 use Biz\Activity\Service\ActivityService;
 use Symfony\Component\HttpFoundation\Request;
 use Biz\MaterialLib\Service\MaterialLibService;
 
-class DocController extends BaseController implements ActivityActionInterface
+class DocController extends BaseActivityController implements ActivityActionInterface
 {
     public function showAction(Request $request, $activity)
     {
@@ -22,7 +21,7 @@ class DocController extends BaseController implements ActivityActionInterface
         $ssl = $request->isSecure() ? true : false;
         list($result, $error) = $this->getDocFilePlayer($doc, $ssl);
 
-        return $this->render('activity/doc/show.html.twig', array(
+        return $this->render('activity/new-doc/show.html.twig', array(
             'doc' => $doc,
             'error' => $error,
             'docMedia' => $result,
@@ -41,7 +40,7 @@ class DocController extends BaseController implements ActivityActionInterface
         $ssl = $request->isSecure() ? true : false;
         list($result, $error) = $this->getDocFilePlayer($doc, $ssl);
 
-        return $this->render('activity/doc/preview.html.twig', array(
+        return $this->render('activity/new-doc/preview.html.twig', array(
             'doc' => $doc,
             'error' => $error,
             'docMedia' => $result,

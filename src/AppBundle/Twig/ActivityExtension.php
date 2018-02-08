@@ -36,6 +36,7 @@ class ActivityExtension extends \Twig_Extension
         return array(
             new \Twig_SimpleFunction('activity_meta', array($this, 'getActivityMeta')),
             new \Twig_SimpleFunction('activity_metas', array($this, 'getActivityMeta')),
+            new \Twig_SimpleFunction('can_free_activity_types', array($this, 'getCanFreeActivityTypes')),
         );
     }
 
@@ -81,11 +82,11 @@ class ActivityExtension extends \Twig_Extension
 
     public function lengthFormat($len, $type = null)
     {
-        if (empty($len) || $len == 0) {
+        if (empty($len) || 0 == $len) {
             return null;
         }
 
-        if ($type == 'testpaper') {
+        if (in_array($type, array('testpaper', 'live'))) {
             $len *= 60;
         }
         $h = floor($len / 3600);
@@ -98,5 +99,18 @@ class ActivityExtension extends \Twig_Extension
     public function getName()
     {
         return 'web_activity_twig';
+    }
+
+    public function getCanFreeActivityTypes()
+    {
+        $types = array();
+        $activities = $this->container->get('extension.manager')->getActivities();
+        foreach ($activities as $type => $activity) {
+            if (isset($activity['canFree']) && $activity['canFree']) {
+                $types[$type] = $this->container->get('translator')->trans($activity['meta']['name']);
+            }
+        }
+
+        return $types;
     }
 }

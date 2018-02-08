@@ -6,9 +6,7 @@
 {% set bodyClass = 'course-dashboard-page' %}
 
 
-{% block title %}
-  {{ course_set.title }} - {{ parent() }}
-{% endblock %}
+{% block title %}{{ course_set.title }} - {{ parent() }}{% endblock %}
 
 {% block keywords %}
   {% for tag in course_set.tags %}{{ tag.name }}{% if not loop.last %},{% endif %}{% else %}{{ parent() }}{% endfor %}
@@ -63,10 +61,9 @@
       </div>
 
       <div class="col-lg-3 col-md-4 course-sidebar">
-        {# 积分奖励侧边栏隐藏 #}
-        {# {% if setting('reward_point.enable',0) and (course.taskRewardPoint|default(0) > 0 or course.rewardPoint|default(0) > 0)%}
-          {% include 'course/side-bar/reward-point.html.twig' with {course: course} %}
-        {% endif %} #}
+
+        {{ slot('course.show.sidebar', {'course':course}) }}
+
         {# 有些widget只有班级计划才显示 #}
         {% for key, widget in metas.widgets %}
           {% if (widget.showMode|default('all') == 'classroom' and course.parentId > 0)

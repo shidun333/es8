@@ -34,10 +34,7 @@
   
   {% block stylesheets %}
   <link href="{{ asset('assets/libs/gallery2/bootstrap/3.1.1/css/bootstrap.css') }}" rel="stylesheet" />
-  <link href="{{ asset('assets/css/common.css') }}" rel="stylesheet" />
-  <link href="{{ asset('bundles/topxiaadmin/css/admin.css') }}" rel="stylesheet" />
-  <link href="{{ asset('bundles/topxiaadmin/css/admin_v2.css') }}" rel="stylesheet" />
-  <link rel="stylesheet" media="screen" href="{{ asset('assets/v2/css/es-icon.css') }}" />
+  <link href="{{ asset('static-dist/app/css/admin.css') }}" rel="stylesheet" />
   {% endblock %}
 
   {% block javascripts %}{% endblock %}
@@ -76,10 +73,13 @@
               </ul>
             </li>
             <li><a href="{{ path('homepage') }}"><i class="glyphicon glyphicon-home"></i> {{'admin.navbar.header.home_btn'|trans}}</a></li>
-
             <li class="dropdown">
               <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i> {{ app.user.nickname }} <span class="glyphicon glyphicon-chevron-down"></span></a>
               <ul class="dropdown-menu main-list">
+                {% if 'ROLE_TEACHER' in app.user.roles %}
+                  <li><a href="{{ path('my') }}"><i class="es-icon es-icon-event mrs" style="vertical-align: middle;"></i>{{ 'homepage.header.my_course'|trans }}</a></li>
+                {% endif %}
+                <li><a href="{{ path('my_courses_learning') }}"><i class="es-icon es-icon-book mrs"></i>{{ 'homepage.header.my_learning'|trans }}</a></li>
                 <li><a href="{{ path('logout') }}"><i class="glyphicon glyphicon-off"></i> {{'admin.navbar.header.dropdown_menu.exit_btn'|trans}}</a></li>
               </ul>
             </li>
@@ -149,7 +149,10 @@
       {{ setting('site.analytics')|raw }}
     {% endblock %}
 
-    {% include 'old-script_boot.html.twig' with {script_main: asset('bundles/topxiaadmin/js/admin-app.js')} %}
+    {% block scriptBoot %}
+      {% include 'old-script_boot.html.twig' with {script_main: asset('bundles/topxiaadmin/js/admin-app.js')} %}
+    {% endblock %}
+    
     <div id="modal" class="modal" ></div>
     <div id="attachment-modal" class="modal" ></div>
     {% if setting('copyright.thirdCopyright') != 1 %}
@@ -160,6 +163,20 @@
         </a>
       </div>
     {% endif %}
+
+    {% block faqSDK %}
+      {% if setting('copyright.thirdCopyright')|default(0) != 1 %}
+        <script aysnc="aysnc" src="{{ cloud_sdk_url('faq') }}"></script>
+        <script aysnc="aysnc">
+          {% set faqApiServer = setting("magic.faq_api_server", '') != '' ? setting("magic.faq_api_server") : app.request.getScheme() ~ '://www.qiqiuyu.com' %}
+          new FaqSDK({
+            id: 'faq-sdk',
+            apiUrl: '{{ faqApiServer }}/faq/api/hotlist?version={{ asset_version('/') }}&host={{ app.request.getHost() }}&url={{ app.request.getRequestUri() }}',
+            color: '#43bc60',
+          });
+        </script>
+      {% endif %}
+    {% endblock %}
   </body>
 {% endblock %}
 </html>

@@ -24,7 +24,8 @@ class AppExtension extends \Twig_Extension
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->biz = $container->get('Biz');
+
+        $this->biz = $container->get('biz');
     }
 
     public function getFilters()
@@ -48,6 +49,7 @@ class AppExtension extends \Twig_Extension
             //@see WebExtension#avatarPath
             new \Twig_SimpleFunction('user_avatar', array($this, 'userAvatar')),
             new \Twig_SimpleFunction('course_price', array($this, 'coursePrice')),
+            new \Twig_SimpleFunction('log_trans', array($this, 'logTrans')),
         );
     }
 
@@ -86,13 +88,39 @@ class AppExtension extends \Twig_Extension
         }, $encoded);
     }
 
+    public function logTrans($message, $data)
+    {
+        $translator = $this->container->get('translator');
+        $parameters = array();
+
+        if (isset($data['context'])) {
+            $data = $data['context'];
+        }
+
+        if (is_string($data)) {
+            return $message;
+        }
+
+        foreach ($data as $key => $value) {
+            if (!is_array($value)) {
+                $parameters['%'.$key.'%'] = $value;
+            }
+        }
+
+        $message = $translator->trans($message, $parameters);
+        unset($parameters);
+        unset($data);
+
+        return $message;
+    }
+
     public function buildServiceTags($selectedTags)
     {
         $tags = ServiceToolkit::getServicesByCodes(
             array('homeworkReview', 'testpaperReview', 'teacherAnswer', 'liveAnswer')
         );
 
-        $this->transServiceTags($tags);
+        $tags = $this->transServiceTags($tags);
 
         if (empty($selectedTags)) {
             return $tags;
@@ -106,13 +134,15 @@ class AppExtension extends \Twig_Extension
         return $this->sortTags($tags);
     }
 
-    private function transServiceTags(&$tags)
+    public function transServiceTags($tags)
     {
         foreach ($tags as &$tag) {
             $tag['shortName'] = $this->container->get('translator')->trans($tag['shortName']);
             $tag['fullName'] = $this->container->get('translator')->trans($tag['fullName']);
             $tag['summary'] = $this->container->get('translator')->trans($tag['summary']);
         }
+
+        return $tags;
     }
 
     public function buildClassroomServiceTags($selectedTags)
@@ -121,7 +151,7 @@ class AppExtension extends \Twig_Extension
             array('homeworkReview', 'testpaperReview', 'teacherAnswer', 'liveAnswer', 'event', 'workAdvise')
         );
 
-        $this->transServiceTags($tags);
+        $tags = $this->transServiceTags($tags);
 
         if (empty($selectedTags)) {
             return $tags;

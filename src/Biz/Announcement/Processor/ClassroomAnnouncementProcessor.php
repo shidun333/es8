@@ -2,7 +2,10 @@
 
 namespace Biz\Announcement\Processor;
 
-use Topxia\Service\Common\ServiceKernel;
+use Biz\Classroom\Service\ClassroomService;
+use Biz\CloudPlatform\QueueJob\PushJob;
+use Biz\System\Service\SettingService;
+use Codeages\Biz\Framework\Queue\Service\QueueService;
 use Biz\User\Service\NotificationService;
 
 class ClassroomAnnouncementProcessor extends AnnouncementProcessor
@@ -34,6 +37,7 @@ class ClassroomAnnouncementProcessor extends AnnouncementProcessor
 
         $result = false;
         if ($members) {
+            $this->classroomAnnouncementPush($targetId);
             $message = array('title' => $targetObject['title'],
                 'url' => $targetObjectShowUrl,
                 'type' => 'classroom', );
@@ -43,6 +47,59 @@ class ClassroomAnnouncementProcessor extends AnnouncementProcessor
         }
 
         return $result;
+    }
+
+    private function classroomAnnouncementPush($targetId)
+    {
+        if (!$this->isIMEnabled()) {
+            return;
+        }
+
+        $classroom = $this->getClassroomService()->getClassroom($targetId);
+
+        $conv = $this->getConversationService()->getConversationByTarget($classroom['id'], 'classroom-push');
+
+        $from = array(
+            'id' => $classroom['id'],
+            'type' => 'classroom',
+        );
+
+        $to = array(
+            'type' => 'classroom',
+            'id' => 'all',
+            'convNo' => $conv['no'],
+        );
+
+        $body = array(
+            'type' => 'classroom.announcement.create',
+            'classroomId' => $classroom['id'],
+            'title' => "《{$classroom['title']}》",
+            'message' => "[班级公告] 你正在学习的班级《{$classroom['title']}》有一个新的公告，快去看看吧",
+        );
+
+        $this->createPushJob($from, $to, $body);
+    }
+
+    private function createPushJob($from, $to, $body)
+    {
+        $pushJob = new PushJob(array(
+            'from' => $from,
+            'to' => $to,
+            'body' => $body,
+        ));
+
+        $this->getQueueService()->pushJob($pushJob);
+    }
+
+    public function isIMEnabled()
+    {
+        $setting = $this->getSettingService()->get('app_im', array());
+
+        if (empty($setting) || empty($setting['enabled'])) {
+            return false;
+        }
+
+        return true;
     }
 
     public function tryManageObject($targetId)
@@ -69,9 +126,12 @@ class ClassroomAnnouncementProcessor extends AnnouncementProcessor
         return $config[$action];
     }
 
+    /**
+     * @return ClassroomService
+     */
     protected function getClassroomService()
     {
-        return ServiceKernel::instance()->createService('Classroom:ClassroomService');
+        return $this->biz->service('Classroom:ClassroomService');
     }
 
     /**
@@ -80,5 +140,26 @@ class ClassroomAnnouncementProcessor extends AnnouncementProcessor
     protected function getNotificationService()
     {
         return $this->biz->service('User:NotificationService');
+    }
+
+    /**
+     * @return QueueService
+     */
+    protected function getQueueService()
+    {
+        return $this->biz->service('Queue:QueueService');
+    }
+
+    /**
+     * @return SettingService
+     */
+    protected function getSettingService()
+    {
+        return $this->biz->service('System:SettingService');
+    }
+
+    protected function getConversationService()
+    {
+        return $this->biz->service('IM:ConversationService');
     }
 }

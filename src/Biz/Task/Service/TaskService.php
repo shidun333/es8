@@ -12,9 +12,13 @@ interface TaskService
 
     public function getCourseTask($courseId, $id);
 
+    public function getCourseTaskByCourseIdAndCopyId($courseId, $copyId);
+
     public function preCreateTaskCheck($task);
 
     public function createTask($task);
+
+    public function batchCreateTasks($tasks);
 
     public function preUpdateTaskCheck($taskId, $fields);
 
@@ -56,6 +60,8 @@ interface TaskService
     public function findTasksFetchActivityByCourseId($courseId);
 
     public function findTasksFetchActivityAndResultByCourseId($courseId);
+
+    public function wrapTaskResultToTasks($courseId, $tasks);
 
     /**
      * for question and testpaper ranges.
@@ -101,7 +107,7 @@ interface TaskService
      */
     public function canLearnTask($taskId);
 
- // 任务是否可学
+    // 任务是否可学
 
     /**
      * return if the task has been learned.
@@ -189,6 +195,8 @@ interface TaskService
      */
     public function findToLearnTasksByCourseIdForMission($courseId);
 
+    public function getTimeSec($type);
+
     public function getTaskByCourseIdAndActivityId($courseId, $activityId);
 
     /**
@@ -210,4 +218,6 @@ interface TaskService
     public function findPublishedLivingTasksByCourseSetId($courseSetId);
 
     public function findPublishedTasksByCourseSetId($courseSetId);
+
+    public function getTodayLiveCourseNumber();
 }

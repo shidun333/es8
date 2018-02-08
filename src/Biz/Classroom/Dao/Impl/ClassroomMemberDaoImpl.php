@@ -3,9 +3,9 @@
 namespace Biz\Classroom\Dao\Impl;
 
 use Biz\Classroom\Dao\ClassroomMemberDao;
-use Codeages\Biz\Framework\Dao\GeneralDaoImpl;
+use Codeages\Biz\Framework\Dao\AdvancedDaoImpl;
 
-class ClassroomMemberDaoImpl extends GeneralDaoImpl implements ClassroomMemberDao
+class ClassroomMemberDaoImpl extends AdvancedDaoImpl implements ClassroomMemberDao
 {
     protected $table = 'classroom_member';
 
@@ -126,13 +126,6 @@ class ClassroomMemberDaoImpl extends GeneralDaoImpl implements ClassroomMemberDa
         return $this->db()->fetchAll($sql, array($classroomId, $role));
     }
 
-    public function findMemberIdsByClassroomId($classroomId)
-    {
-        $sql = "SELECT userId FROM {$this->table} WHERE classroomId = ?";
-
-        return $this->db()->executeQuery($sql, array($classroomId))->fetchAll(\PDO::FETCH_COLUMN);
-    }
-
     public function findByUserId($userId)
     {
         return $this->findByFields(array(
@@ -162,6 +155,7 @@ class ClassroomMemberDaoImpl extends GeneralDaoImpl implements ClassroomMemberDa
                 'createdTime >= :createdTime_GE',
                 'createdTime < :startTimeLessThan',
                 'updatedTime >= :updatedTime_GE',
+                'userId NOT IN ( :excludeUserIds )',
             ),
         );
     }

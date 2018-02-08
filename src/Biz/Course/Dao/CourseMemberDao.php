@@ -30,6 +30,10 @@ interface CourseMemberDao extends GeneralDaoInterface
 
     public function findLearnedMembers($conditions, $start, $limit);
 
+    public function countUserLearnCourses($userId);
+
+    public function findUserLearnCourseIds($userId);
+
     public function findByIds($ids);
 
     public function findLearnedByCourseIdAndUserId($courseId, $userId);
@@ -86,7 +90,7 @@ interface CourseMemberDao extends GeneralDaoInterface
 
     public function findByUserIdAndJoinType($userId, $joinedType);
 
-    public function searchMemberIds($conditions, $orderBy, $start, $limit);
+    public function searchMemberIds($conditions, $orderBys, $start, $limit);
 
     public function updateMembers($conditions, $updateFields);
 
@@ -127,4 +131,6 @@ interface CourseMemberDao extends GeneralDaoInterface
     public function updateByClassroomIdAndUserId($classroomId, $userId, array $fields);
 
     public function updateByClassroomId($classroomId, array $fields);
+
+    public function searchMemberCountsByConditionsGroupByCreatedTimeWithFormat($conditions, $format = '%Y-%m-%d');
 }

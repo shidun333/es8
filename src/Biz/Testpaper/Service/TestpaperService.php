@@ -14,6 +14,8 @@ interface TestpaperService
 
     public function createTestpaper($fields);
 
+    public function batchCreateTestpaper($testpapers);
+
     public function updateTestpaper($id, $fields);
 
     public function deleteTestpaper($id, $quietly = false);
@@ -38,6 +40,8 @@ interface TestpaperService
     public function getItem($id);
 
     public function createItem($fields);
+
+    public function batchCreateItems($items);
 
     public function updateItem($id, $fields);
 
@@ -65,13 +69,15 @@ interface TestpaperService
 
     public function getTestpaperResult($id);
 
+    public function findTestpaperResultsByIds($ids);
+
     public function getUserUnfinishResult($testId, $courseId, $activityId, $type, $userId);
 
     public function getUserFinishedResult($testId, $courseId, $activityId, $type, $userId);
 
     public function getUserLatelyResultByTestId($userId, $testId, $courseId, $activityId, $type);
 
-    public function findPaperResultsStatusNumGroupByStatus($testId, $courseIds);
+    public function findPaperResultsStatusNumGroupByStatus($testId, $activityId);
 
     public function addTestpaperResult($fields);
 
@@ -118,4 +124,20 @@ interface TestpaperService
     public function getTestpaperBuilder($type);
 
     public function countQuestionTypes($testpaper, $items);
+
+    /**
+     * @param  $type
+     *
+     * @return
+     * $usedTime
+     * $firstScore
+     * $maxScore
+     */
+    public function findTestResultsByTestpaperIdAndUserIds($userIds, $testpaperId);
+
+    public function findExamFirstResults($testId, $type, $activityId);
+
+    public function findResultsByTestIdAndActivityId($testId, $activityId);
+
+    public function getNextReviewingResult($courseIds, $activityId, $type);
 }

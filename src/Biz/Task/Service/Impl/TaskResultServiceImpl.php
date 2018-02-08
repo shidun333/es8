@@ -12,6 +12,13 @@ use Biz\Task\Service\TaskService;
 
 class TaskResultServiceImpl extends BaseService implements TaskResultService
 {
+    public function countTaskNumGroupByUserId($conditions)
+    {
+        $result = $this->getTaskResultDao()->countTaskNumGroupByUserId($conditions);
+
+        return ArrayToolkit::index($result, 'userId');
+    }
+
     public function analysisCompletedTaskDataByTime($startTime, $endTime)
     {
         return $this->getTaskResultDao()->analysisCompletedTaskDataByTime($startTime, $endTime);
@@ -54,6 +61,11 @@ class TaskResultServiceImpl extends BaseService implements TaskResultService
     public function deleteTaskResultsByTaskId($taskId)
     {
         return $this->getTaskResultDao()->deleteByTaskId($taskId);
+    }
+
+    public function getTaskResult($resultId)
+    {
+        return $this->getTaskResultDao()->get($resultId);
     }
 
     public function createTaskResult($taskResult)
@@ -106,7 +118,7 @@ class TaskResultServiceImpl extends BaseService implements TaskResultService
         $course = $this->getCourseService()->getCourse($task['courseId']);
 
         //只有视频课程才限制观看时长
-        if (empty($course['watchLimit']) || $task['type'] !== 'video') {
+        if (empty($course['watchLimit']) || 'video' !== $task['type']) {
             return array('status' => 'ignore');
         }
 
@@ -207,10 +219,7 @@ class TaskResultServiceImpl extends BaseService implements TaskResultService
     {
         $user = $this->getCurrentUser();
 
-        if (!$user->isLogin()) {
-            throw $this->createAccessDeniedException('unlogin');
-        }
-        if (empty($taskIds)) {
+        if (!$user->isLogin() || empty($taskIds)) {
             return array();
         }
 
@@ -219,11 +228,14 @@ class TaskResultServiceImpl extends BaseService implements TaskResultService
 
     public function countUsersByTaskIdAndLearnStatus($taskId, $status)
     {
-        if ($status === 'all') {
+        if ('all' === $status) {
             $status = null;
         }
+        $task = $this->getTaskService()->getTask($taskId);
 
-        return $this->getTaskResultDao()->count(array('courseTaskId' => $taskId, 'status' => $status));
+        $courseMemberIds = $this->getCourseMemberService()->findMemberUserIdsByCourseId($task['courseId']);
+
+        return $this->getTaskResultDao()->count(array('userIds' => $courseMemberIds, 'courseTaskId' => $taskId, 'status' => $status));
     }
 
     /**
@@ -294,6 +306,11 @@ class TaskResultServiceImpl extends BaseService implements TaskResultService
         return $this->getTaskResultDao()->countFinishedCompulsoryTasksByUserIdAndCourseId($userId, $courseId);
     }
 
+    public function findTaskresultsByTaskId($taskId)
+    {
+        return $this->getTaskResultDao()->findTaskresultsByTaskId($taskId);
+    }
+
     /**
      * @return TaskResultDao
      */
@@ -324,5 +341,10 @@ class TaskResultServiceImpl extends BaseService implements TaskResultService
     protected function getLogService()
     {
         return $this->createService('System:LogService');
+    }
+
+    protected function getCourseMemberService()
+    {
+        return $this->createService('Course:MemberService');
     }
 }

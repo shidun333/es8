@@ -46,7 +46,7 @@ class QqOAuthClient extends AbstractOAuthClient
     {
         $params = array('access_token' => $token['access_token']);
         $result = $this->getRequest(self::OAUTH_ME_URL, $params);
-        if (strpos($result, 'callback') !== false) {
+        if (false !== strpos($result, 'callback')) {
             $lpos = strpos($result, '(');
             $rpos = strrpos($result, ')');
             $result = substr($result, $lpos + 1, $rpos - $lpos - 1);
@@ -54,10 +54,11 @@ class QqOAuthClient extends AbstractOAuthClient
         $user = json_decode($result);
         $token['id'] = $user->openid;
         $params = array(
-            'oauth_consumer_key' => $this->config['key'],
+            'oauth_consumer_key' => isset($token['key']) ? $token['key'] : $this->config['key'], // 因为移动端第三方登录会走此接口，移动端的key和网站的key是不一样的
             'openid' => $token['id'],
             'format' => 'json',
-            'access_token' => $token['access_token'], );
+            'access_token' => $token['access_token'],
+        );
         $result = $this->getRequest(self::USERINFO_URL, $params);
         $info = json_decode($result, true);
         $info['id'] = $token['id'];
@@ -71,9 +72,9 @@ class QqOAuthClient extends AbstractOAuthClient
         $userInfo['id'] = $infos['id'];
         $userInfo['name'] = $infos['nickname'];
         $userInfo['avatar'] = empty($infos['figureurl_qq_2']) ? $infos['figureurl_qq_1'] : $infos['figureurl_qq_2'];
-        if ($infos['gender'] == '男') {
+        if ('男' == $infos['gender']) {
             $infos['gender'] = 'male';
-        } elseif ($infos['gender'] == '女') {
+        } elseif ('女' == $infos['gender']) {
             $infos['gender'] = 'female';
         } else {
             $infos['gender'] = 'secret';

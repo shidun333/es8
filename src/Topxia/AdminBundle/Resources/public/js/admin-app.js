@@ -1,6 +1,6 @@
 define(function(require, exports, module) {
 	window.$ = window.jQuery = require('jquery');
-
+  require('./util/mark-menu.js');
 	require('placeholder');
 
 	require('bootstrap');
@@ -77,4 +77,5 @@ define(function(require, exports, module) {
     $('.js-update-modal').modal('show');
   }
 
+  $.ajax('/online/sample');
 });

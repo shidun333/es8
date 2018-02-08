@@ -2,7 +2,7 @@
 
 use Topxia\Service\Common\ServiceKernel;
 use Symfony\Component\HttpFoundation\Request;
-use Codeages\Biz\Framework\UnitTests\UnitTestsBootstrap;
+use Biz\UnitTests\UnitTestsBootstrap;
 
 $loader = require __DIR__.'/../app/autoload.php';
 
@@ -25,6 +25,13 @@ $container->set('request', $request, 'request');
 $biz = $kernel->getContainer()->get('biz');
 $bootstrap = new UnitTestsBootstrap($biz);
 $bootstrap->boot();
+
+\Biz\BaseTestCase::setAppKernel($kernel);
+\Biz\BaseTestCase::setDb($biz['db']);
+
+if (isset($biz['redis'])) {
+    \Biz\BaseTestCase::setRedis($biz['redis']);
+}
 
 // init service kernel env
 ServiceKernel::instance()

@@ -4,14 +4,13 @@ namespace AppBundle\Controller\Activity;
 
 use AppBundle\Common\ArrayToolkit;
 use Biz\Course\Service\CourseService;
-use AppBundle\Controller\BaseController;
 use Topxia\Service\Common\ServiceKernel;
 use Biz\Activity\Service\ActivityService;
 use Biz\Question\Service\QuestionService;
 use Biz\Testpaper\Service\TestpaperService;
 use Symfony\Component\HttpFoundation\Request;
 
-class HomeworkController extends BaseController implements ActivityActionInterface
+class HomeworkController extends BaseActivityController implements ActivityActionInterface
 {
     public function showAction(Request $request, $activity, $preview = 0)
     {
@@ -77,8 +76,6 @@ class HomeworkController extends BaseController implements ActivityActionInterfa
 
         $homeworkActivity = $this->getTestpaperService()->getTestpaperByIdAndType($activity['mediaId'], $activity['mediaType']);
 
-        $activity = array_merge($activity, $homeworkActivity);
-
         $questionItems = $this->getTestpaperService()->searchItems(
             array('testId' => $activity['mediaId']),
             array('id' => 'DESC'),
@@ -94,6 +91,7 @@ class HomeworkController extends BaseController implements ActivityActionInterfa
             'questionItems' => $questionItems,
             'questions' => $questions,
             'courseSetId' => $course['courseSetId'],
+            'homework' => $homeworkActivity,
         ));
     }
 

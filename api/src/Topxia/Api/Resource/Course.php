@@ -34,6 +34,11 @@ class Course extends BaseResource
         $course['userId'] = $course['creator'];
         $course['tryLookTime'] = $course['tryLookLength'];
         $course['createdTime'] = date('c', $course['createdTime']);
+
+        $enableAudioStatus = $this->getCourseService()->isSupportEnableAudio($course['enableAudio']);
+        $course['isAudioOn'] = $enableAudioStatus ? 1 : 0;
+        unset($course['enableAudio']);
+        
         return $course;
     }
 
@@ -61,6 +66,7 @@ class Course extends BaseResource
 
         $course['tags'] = TagUtil::buildTags('course-set', $courseSet['id']);
         $course['tags'] = ArrayToolkit::column($course['tags'], 'name');
+        $course['summary'] = $this->filterHtml($course['summary']);
 
         if ($course['courseType'] == CourseService::DEFAULT_COURSE_TYPE && $course['title'] == '默认教学计划') {
             $course['title'] = $courseSet['title'];

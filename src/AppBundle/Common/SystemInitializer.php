@@ -6,18 +6,20 @@ use Biz\Content\Service\BlockService;
 use Biz\Content\Service\ContentService;
 use Biz\Content\Service\FileService;
 use Biz\Content\Service\NavigationService;
-use Biz\Crontab\CrontabManager;
+use Biz\Crontab\SystemCrontabInitializer;
 use Biz\Dictionary\Service\DictionaryService;
 use Biz\Org\Service\OrgService;
 use Biz\Role\Service\RoleService;
+use Biz\System\Service\SettingService;
 use Biz\Taxonomy\Service\CategoryService;
 use Biz\Taxonomy\Service\TagService;
+use Biz\User\CurrentUser;
+use Biz\User\Service\UserService;
+use Codeages\Biz\Pay\Service\AccountService;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Topxia\Service\Common\ServiceKernel;
-use Biz\System\Service\SettingService;
-use Biz\User\CurrentUser;
-use Biz\User\Service\UserService;
+use CustomBundle\Biz\Common\CustomSystemInitializer;
 
 class SystemInitializer
 {
@@ -41,7 +43,7 @@ class SystemInitializer
         $this->_initJob();
         $this->_initOrg();
         $this->_initRole();
-        $this->_initDictionary();
+        $this->_initUserBalance();
 
         $this->_initDefaultSetting();
         $this->_initMagicSetting();
@@ -52,32 +54,18 @@ class SystemInitializer
         $this->_initSiteSetting();
         $this->_initStorageSetting();
         $this->_initSystemUsers();
+        $this->_initCustom();
     }
 
-    protected function _initDictionary()
+    public function _initCustom()
     {
-        $this->output->write('  初始化字典  ');
-
-        $dictionary = $this->getDictionaryService()->addDictionary(array(
-            'name' => '退学原因',
-            'type' => 'refund_reason',
-        ));
-
-        $this->getDictionaryService()->addDictionaryItem(array(
-            'type' => $dictionary['type'],
-            'name' => '课程内容质量差',
-            'createdTime' => time(),
-            'updateTime' => time(),
-        ));
-
-        $this->getDictionaryService()->addDictionaryItem(array(
-            'type' => $dictionary['type'],
-            'name' => '老师服务态度不好',
-            'createdTime' => time(),
-            'updateTime' => time(),
-        ));
-
-        $this->output->writeln(' ...<info>成功</info>');
+        try {
+            $biz = ServiceKernel::instance()->getBiz();
+            $customSystemInitializer = new CustomSystemInitializer($biz, $this->output);
+            $customSystemInitializer->init();
+        } catch (\Exception $e) {
+            $this->output->write('  定制初始化的数据异常'.$e->getMessage());
+        }
     }
 
     public function initAdminUser($fields)
@@ -208,7 +196,8 @@ class SystemInitializer
             'bank_gateway' => 'none',
             'alipay_enabled' => 0,
             'alipay_key' => '',
-            'alipay_secret' => '',
+            'alipay_accessKey' => '',
+            'alipay_secretKey' => '',
         );
 
         $this->getSettingService()->set('payment', $default);
@@ -623,7 +612,7 @@ EOD;
     {
         $this->output->write('  初始化CrontabJob');
 
-        CrontabManager::registerSystemJob();
+        SystemCrontabInitializer::init();
 
         $this->output->writeln(' ...<info>成功</info>');
     }
@@ -682,9 +671,12 @@ EOD;
         $this->output->writeln(' ...<info>成功</info>');
     }
 
-    protected function getSchedulerService()
+    /**
+     * 创建系统用户
+     */
+    private function _initUserBalance()
     {
-        return ServiceKernel::instance()->getBiz()->service('Scheduler:SchedulerService');
+        $this->getAccountService()->createUserBalance(array('user_id' => 0));
     }
 
     /**
@@ -693,6 +685,14 @@ EOD;
     protected function getTagService()
     {
         return ServiceKernel::instance()->getBiz()->service('Taxonomy:TagService');
+    }
+
+    /**
+     * @return AccountService
+     */
+    protected function getAccountService()
+    {
+        return ServiceKernel::instance()->getBiz()->service('Pay:AccountService');
     }
 
     /**

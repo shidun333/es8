@@ -1,11 +1,11 @@
 let $form = $('#thread-form');
 let validator = $form.validate({
   rules: {
-    'thread[title]': {
+    'title': {
       required: true,
       trim: true,
     },
-    'thread[content]': {
+    'content': {
       required: true,
     }
   }
@@ -20,6 +20,7 @@ $('.js-btn-thread-save').click((event) => {
 
 let editor = CKEDITOR.replace('thread_content', {
   toolbar: 'Thread',
+  fileSingleSizeLimit: app.fileSingleSizeLimit,
   filebrowserImageUploadUrl: $('#thread_content').data('imageUploadUrl')
 });
 
@@ -31,4 +32,3 @@ editor.on('blur', () => {
   $('#thread_content').val(editor.getData());
   validator.form();
 });
-

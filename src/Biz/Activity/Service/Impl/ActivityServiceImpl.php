@@ -77,11 +77,17 @@ class ActivityServiceImpl extends BaseService implements ActivityService
         $activity = $this->getActivity($id);
 
         if (empty($activity)) {
-            return;
+            return false;
         }
 
-        if ($eventName == 'start') {
+        if ('start' == $eventName) {
             $this->biz['dispatcher']->dispatch("activity.{$eventName}", new Event($activity, $data));
+        }
+
+        if (isset($data['events']) && array_key_exists('finish', $data['events'])) {
+            $tempData['taskId'] = empty($data['taskId']) ? 0 : $data['taskId'];
+            $data = $tempData;
+            $eventName = 'finish';
         }
         $this->triggerActivityLearnLogListener($activity, $eventName, $data);
 
@@ -96,9 +102,11 @@ class ActivityServiceImpl extends BaseService implements ActivityService
             $this->triggerActivityLearnLogListener($activity, $key, $data);
             $this->triggerExtendListener($activity, $key, $data);
         }
-        if ($eventName == 'doing') {
+        if ('doing' == $eventName) {
             $this->biz['dispatcher']->dispatch("activity.{$eventName}", new Event($activity, $data));
         }
+
+        return true;
     }
 
     protected function triggerActivityLearnLogListener($activity, $eventName, $data)
@@ -225,7 +233,7 @@ class ActivityServiceImpl extends BaseService implements ActivityService
 
     protected function syncActivityMaterials($activity, $materials, $mode = 'create')
     {
-        if ($mode === 'delete') {
+        if ('delete' === $mode) {
             $this->getMaterialService()->deleteMaterialsByLessonId($activity['id']);
 
             return;
@@ -243,7 +251,10 @@ class ActivityServiceImpl extends BaseService implements ActivityService
                 break;
             case 'update':
                 $exists = $this->getMaterialService()->searchMaterials(
-                    array('lessonId' => $activity['id']),
+                    array(
+                        'lessonId' => $activity['id'],
+                        'type' => 'course',
+                    ),
                     array('createdTime' => 'DESC'),
                     0,
                     PHP_INT_MAX
@@ -282,7 +293,7 @@ class ActivityServiceImpl extends BaseService implements ActivityService
             'description' => empty($material['summary']) ? '' : $material['summary'],
             'userId' => $this->getCurrentUser()->offsetGet('id'),
             'type' => 'course',
-            'source' => $activity['mediaType'] == 'download' ? 'coursematerial' : 'courseactivity',
+            'source' => 'download' == $activity['mediaType'] ? 'coursematerial' : 'courseactivity',
             'link' => empty($material['link']) ? '' : $material['link'],
             'copyId' => 0, //$fields
         );
@@ -297,7 +308,7 @@ class ActivityServiceImpl extends BaseService implements ActivityService
         foreach ($arr1 as $value1) {
             $contained = false;
             foreach ($arr2 as $value2) {
-                if ($value1['fileId'] == 0) {
+                if (0 == $value1['fileId']) {
                     $contained = $value1['link'] == $value2['link'];
                 } else {
                     $contained = $value1['fileId'] == $value2['fileId'];
@@ -323,8 +334,8 @@ class ActivityServiceImpl extends BaseService implements ActivityService
         foreach ($exists as $exist) {
             foreach ($currents as $current) {
                 //如果fileId存在则匹配fileId，否则匹配link
-                if (($exist['fileId'] != 0 && $exist['fileId'] == $current['fileId'])
-                    || ($exist['fileId'] == 0 && $exist['link'] == $current['link'])
+                if ((0 != $exist['fileId'] && $exist['fileId'] == $current['fileId'])
+                    || (0 == $exist['fileId'] && $exist['link'] == $current['link'])
                 ) {
                     $current['id'] = $exist['id'];
                     if (empty($current['description'])) {
@@ -358,7 +369,7 @@ class ActivityServiceImpl extends BaseService implements ActivityService
             )
         );
 
-        if (!empty($fields['startTime']) && !empty($fields['length']) && $fields['mediaType'] != 'testpaper') {
+        if (!empty($fields['startTime']) && !empty($fields['length']) && 'testpaper' != $fields['mediaType']) {
             $fields['endTime'] = $fields['startTime'] + $fields['length'] * 60;
         }
 
@@ -403,22 +414,9 @@ class ActivityServiceImpl extends BaseService implements ActivityService
         }
 
         if (!empty($fields['media'])) {
-            return array(json_decode($fields['media'], true));
-        }
-
-        if (!empty($fields['ext'])) {
-            $mediaId = empty($ext['mediaId']) ? 0 : $ext['mediaId'];
-        } elseif ($activityConfig->materialSupported() && !empty($fields['mediaId'])) {
-            $mediaId = $fields['mediaId'];
-        }
-
-        if (!empty($mediaId)) {
-            $file = $this->getUploadFileService()->getFile($mediaId);
-            if (!empty($file)) {
-                return array(array(
-                    'id' => $file['id'],
-                    'name' => $file['filename'],
-                ));
+            $media = json_decode($fields['media'], true);
+            if (!empty($media['id'])) {
+                return array($media);
             }
         }
     }
@@ -586,7 +584,7 @@ class ActivityServiceImpl extends BaseService implements ActivityService
         $fileIds = ArrayToolkit::column($activities, 'fileId');
         $files = $this->getUploadFileService()->findFilesByIds($fileIds);
         $cloudFiles = array_filter($files, function ($file) {
-            return $file['storage'] === 'cloud';
+            return 'cloud' === $file['storage'];
         });
         $cloudFiles = ArrayToolkit::index($cloudFiles, 'id');
 

@@ -2,13 +2,12 @@
 
 namespace ApiBundle\Api\Resource\Activity;
 
-use ApiBundle\Api\Resource\CourseSet\CourseSetFilter;
 use ApiBundle\Api\Resource\Filter;
 
 class ActivityFilter extends Filter
 {
     protected $publicFields = array(
-        'id', 'remark', 'ext', 'mediaType', 'mediaId'
+        'id', 'remark', 'ext', 'mediaType', 'mediaId',
     );
 
     protected function publicFields(&$data)
@@ -28,6 +27,10 @@ class ActivityFilter extends Filter
         if (!empty($data['ext']) && !empty($data['ext']['finishCondition'])) {
             $data['finishDetail'] = $data['ext']['finishCondition']['finishScore'];
             $data['finishType'] = $data['ext']['finishCondition']['type'];
+        }
+
+        if (!empty($data['ext']) && !empty($data['ext']['file'])) {
+            $data['mediaStorage'] = $data['ext']['file']['storage'];
         }
 
         unset($data['ext']);

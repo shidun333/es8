@@ -26,7 +26,10 @@ class DocPlayer {
   }
 
   onFullScreen(docPlayer) {
-     window.onmessage=function(e){  
+    alert(1)
+     window.onmessage=function(e){
+	     alert(2)
+       console.log(e.data)
         if(e == null || e == undefined ){
             return;
         }
@@ -56,7 +59,7 @@ class DocPlayer {
   initPDFJSViewer() {
     $("html").attr('dir', 'ltr');
 
-    let src = '//service-cdn.qiqiuyun.net/js-sdk/document-player/v7/viewer.html#' + this.pdfUrl;
+    let src = app.cloudOldDocumentSdkUrl + '#' + this.pdfUrl;
 
     if (!this.canCopy) {
       src += '#false';

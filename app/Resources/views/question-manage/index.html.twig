@@ -15,6 +15,7 @@
   <div class="panel panel-default panel-col">
     <div class="panel-heading">
       <div class="pull-right">
+        {{ slot('course_set.questions_import_btn.extension', {'courseSet': courseSet}) }}
         {% for type,name in questionTypes %}
           {% if loop.index <= 3 %}
             <a href="{{ path('course_set_manage_question_create',{id:courseSet.id,type:type,parentId:parentId, goto:app.request.server.get('REQUEST_URI')}) }}" class="btn btn-info btn-sm"><span class="es-icon es-icon-anonymous-iconfont"></span> {{ name|trans }}</a>
@@ -39,7 +40,8 @@
 
       {% if parentQuestion %}
         <ol class="breadcrumb">
-          {{ 'course.question_manage.bread_crumbs'|trans({'%questionUrl%':path('course_set_manage_question',{id:courseSet.id})})|raw }}
+          <li><a href="{{ path('course_set_manage_question',{id:courseSet.id}) }}">{{ 'course.question_manage.content_title'|trans }}</a></li>
+          <li class="active">{{ dict_text('questionType', 'material') }}</li>
         </ol>
       {% endif %}
 

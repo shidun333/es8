@@ -4,10 +4,11 @@ namespace ApiBundle\Security\Authentication;
 
 use ApiBundle\Api\Exception\ErrorCode;
 use ApiBundle\Api\Resource\ResourceProxy;
-use ApiBundle\Security\Authentication\Token\ApiToken;
 use Doctrine\Common\Annotations\CachedReader;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class DefaultResourceAuthenticationProvider implements ResourceAuthenticationInterface
 {
@@ -38,9 +39,20 @@ class DefaultResourceAuthenticationProvider implements ResourceAuthenticationInt
             return;
         }
 
+        $accessAnnotation = $this->annotationReader->getMethodAnnotation(
+            new \ReflectionMethod(get_class($resourceProxy->getResource()), $method),
+            'ApiBundle\Api\Annotation\Access'
+        );
+
+        $biz = $this->container->get('biz');
+        $currentUser = $biz['user'];
+        if ($accessAnnotation && !$accessAnnotation->canAccess($currentUser->getRoles())) {
+            throw new UnauthorizedHttpException('Role', 'Roles are not allow', null, ErrorCode::UNAUTHORIZED);
+        }
+
         $token = $this->tokenStorage->getToken();
 
-        if (!$token instanceof ApiToken) {
+        if (!$token instanceof TokenInterface || $token instanceof AnonymousToken) {
             throw new UnauthorizedHttpException('Basic', 'Requires authentication', null, ErrorCode::UNAUTHORIZED);
         }
     }

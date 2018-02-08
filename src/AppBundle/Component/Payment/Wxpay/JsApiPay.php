@@ -19,6 +19,8 @@ class JsApiPay
 
     private $curl_timeout = 10;
 
+    private $mockedCurl = null;
+
     public function __construct($config, $request)
     {
         $this->config = $config;
@@ -41,13 +43,6 @@ class JsApiPay
      * @var array
      */
     public $data = null;
-
-    public function getRedirectUri()
-    {
-        $url = $this->request->getUri().'?'.http_build_query($this->request->request->all());
-
-        return urlencode($url);
-    }
 
     /**
      * 通过跳转获取用户的openid，跳转流程如下：
@@ -90,22 +85,27 @@ class JsApiPay
     public function getOpenidFromMp($code)
     {
         $url = $this->__createOauthUrlForOpenid($code);
-        //初始化curl
-        $ch = curl_init();
-        //设置超时
-        curl_setopt($ch, CURLOPT_TIMEOUT, $this->curl_timeout);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        //运行curl，结果以jason形式返回
-        $res = curl_exec($ch);
-        curl_close($ch);
-        //取出openid
-        $data = json_decode($res, true);
 
-        return $data['openid'];
+        if (empty($this->mockedCurl)) {
+            //初始化curl
+            $ch = curl_init();
+            //设置超时
+            curl_setopt($ch, CURLOPT_TIMEOUT, $this->curl_timeout);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            curl_setopt($ch, CURLOPT_HEADER, false);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            //运行curl，结果以jason形式返回
+            $res = curl_exec($ch);
+            curl_close($ch);
+            //取出openid
+            $data = json_decode($res, true);
+
+            return $data['openid'];
+        }
+
+        return $this->mockedCurl['openid'];
     }
 
     /**
@@ -119,7 +119,7 @@ class JsApiPay
     {
         $buff = '';
         foreach ($urlObj as $k => $v) {
-            if ($k != 'sign') {
+            if ('sign' != $k) {
                 $buff .= $k.'='.$v.'&';
             }
         }
@@ -139,7 +139,7 @@ class JsApiPay
     private function __createOauthUrlForCode()
     {
         $urlObj['appid'] = $this->config['appid'];
-        $urlObj['redirect_uri'] = $this->getRedirectUri();
+        $urlObj['redirect_uri'] = urlencode($this->config['redirect_uri']);
         $urlObj['response_type'] = 'code';
         $urlObj['scope'] = 'snsapi_base';
         $urlObj['state'] = 'STATE'.'#wechat_redirect';

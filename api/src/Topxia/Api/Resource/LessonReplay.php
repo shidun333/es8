@@ -37,6 +37,8 @@ class LessonReplay extends BaseResource
             return empty($replay['hidden']);
         });
 
+        $visibleReplays = array_values($visibleReplays);
+
         $user = $this->getCurrentUser();
         $response = array(
             'url' => '',
@@ -66,7 +68,7 @@ class LessonReplay extends BaseResource
             } else {
                 $response = CloudAPIFactory::create('root')->get("/lives/{$activity['ext']['liveId']}/replay", array('replayId' => $visibleReplays[0]['replayId'], 'userId' => $user['id'], 'nickname' => $user['nickname'], 'device' => $device));
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $this->error('503', '获取回放失败！');
         }
 

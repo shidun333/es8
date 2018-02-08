@@ -10,7 +10,7 @@
       <h3 class="panel-title">
         {{ threadMain.title }}
         {% if threadMain.isStick %}
-          <span class="label label-primary">{{'group.thread.top'|trans}}</span>
+          <span class="label label-primary">{{'group.thread.stick_label'|trans}}</span>
         {% endif %}
         {% if threadMain.isElite %}
           <span class="label label-danger">{{'group.thread.essence_label'|trans}}</span>
@@ -43,7 +43,7 @@
         <span class="mll"> {{'group.thread.hit_num'|trans({'%hitNum%':threadMain.hitNum})}}</span>
       </div>
       <div class="editor-text">
-        {{threadMain.content|raw}}
+        {{threadMain.content|cdn|raw}}
       </div>
 
       {% include 'attachment/widget/list.html.twig' with {targetType:'group.thread', targetId:threadMain.id} %}
@@ -123,7 +123,7 @@
               </div>
 
               <div class="content editor-text">
-                {{post.content|raw}}
+                {{post.content|cdn|raw}}
                   {% include 'attachment/widget/list.html.twig' with {targetType:'group.thread.post', targetId:post.id} %}
               </div>
 

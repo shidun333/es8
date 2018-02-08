@@ -31,7 +31,7 @@ class RowStrategy implements CacheStrategy
 
     public function beforeQuery(GeneralDaoInterface $dao, $method, $arguments)
     {
-        if (strpos($method, 'get') !== 0) {
+        if (0 !== strpos($method, 'get')) {
             return false;
         }
 
@@ -43,11 +43,11 @@ class RowStrategy implements CacheStrategy
         }
 
         $cache = $this->redis->get($key);
-        if ($cache === false) {
+        if (false === $cache) {
             return false;
         }
 
-        if ($method === 'get') {
+        if ('get' === $method) {
             return $cache;
         }
 
@@ -56,7 +56,10 @@ class RowStrategy implements CacheStrategy
 
     public function afterQuery(GeneralDaoInterface $dao, $method, $arguments, $data)
     {
-        if (strpos($method, 'get') !== 0) {
+        if (empty($data)) {
+            return;
+        }
+        if (0 !== strpos($method, 'get')) {
             return;
         }
 
@@ -67,7 +70,7 @@ class RowStrategy implements CacheStrategy
             return;
         }
 
-        if ($method === 'get') {
+        if ('get' === $method) {
             $this->redis->set($key, $data, self::LIFE_TIME);
         } else {
             $primaryKey = $this->getPrimaryCacheKey($dao, $metadata, $data['id']);
@@ -133,6 +136,14 @@ class RowStrategy implements CacheStrategy
             $primaryKey = $this->getPrimaryCacheKey($dao, $metadata, $id);
             $this->redis->del($primaryKey);
             $this->delRelKeys($primaryKey);
+        }
+    }
+
+    public function flush(GeneralDaoInterface $dao)
+    {
+        $keys = $this->redis->keys("dao:{$dao->table()}:*");
+        foreach ($keys as $key) {
+            $this->redis->del($key);
         }
     }
 

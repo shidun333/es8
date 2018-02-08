@@ -6,6 +6,7 @@ use AppBundle\Common\ExceptionPrintingToolkit;
 use Codeages\Biz\Framework\Service\Exception\AccessDeniedException;
 use Codeages\Biz\Framework\Service\Exception\NotFoundException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Topxia\Service\Common\ServiceKernel;
@@ -31,9 +32,11 @@ class ExceptionListener
 
         $request = $event->getRequest();
         if (!$request->isXmlHttpRequest()) {
+            $this->setTargetPath($request);
             $exception = $this->convertException($exception);
+            $statusCode = $this->getStatusCode($exception);
             $user = $this->getUser();
-            if ($statusCode === Response::HTTP_FORBIDDEN && empty($user)) {
+            if (Response::HTTP_FORBIDDEN === $statusCode && empty($user)) {
                 $response = new RedirectResponse($this->container->get('router')->generate('login'));
                 $event->setResponse($response);
             }
@@ -52,13 +55,16 @@ class ExceptionListener
             return;
         }
 
-        $error = array('name' => 'Error', 'message' => $exception->getMessage());
+        $error = array('name' => 'Error');
 
         if ($this->container->get('kernel')->isDebug()) {
+            $error['message'] = $exception->getMessage();
             $error['trace'] = ExceptionPrintingToolkit::printTraceAsArray($exception);
+        } else {
+            $error['message'] = 'Request occurs an error';
         }
 
-        if ($statusCode === 403) {
+        if (403 === $statusCode) {
             $user = $this->getUser($event);
             if ($user) {
                 $error = array('name' => 'AccessDenied', 'message' => $this->getServiceKernel()->trans('访问被拒绝！'));
@@ -69,6 +75,14 @@ class ExceptionListener
 
         $response = new JsonResponse(array('error' => $error), $statusCode);
         $event->setResponse($response);
+    }
+
+    protected function setTargetPath(Request $request)
+    {
+        // session isn't required when using HTTP basic authentication mechanism for example
+        if ($request->hasSession() && $request->isMethodSafe(false) && !$request->isXmlHttpRequest()) {
+            $request->getSession()->set('_target_path', $request->getUri());
+        }
     }
 
     public function getUser()

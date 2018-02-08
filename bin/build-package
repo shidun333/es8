@@ -14,6 +14,8 @@ fi
 # pull the last version of repository
 echo $(tput setaf 2)pull the last version of repository using command $(tput bold)git pull$(tput sgr 0)
 git pull
+app/console trans:dump-js
+echo "生成翻译静态资源文件"
 
 # pull the last version of repository from scripts
 echo $(tput setaf 2)pull the last version of repository from scripts command $(tput bold) git pull $(tput sgr 0)
@@ -21,10 +23,28 @@ cd scripts
 git pull
 cd ..
 
+version=$2;
+upgradefile="scripts/upgrade-${version}.php";
+
+if [ ! -f "$upgradefile" ]; then
+    echo "升级脚本不存在，请确是否需要升级脚本，确认开其他发者是否已经上传了升级脚本${upgradefile}, 如需处理${upgradefile} 输入n，继续输入y  y|n";
+    read LINE; 
+    if [ "$LINE" == "N" ] || [ "$LINE" == "n" ] || [ "$LINE" == "" ]; then
+        echo "升级包制作中止，请创建升级脚本 ${upgradefile}"; 
+        exit 1
+    fi
+fi
+
 if [ "$SKIP" = 'n' ]; then
+# remove node modules folder and caches folder 
+echo $(tput setaf 2)remove old node_modules and app/caches using  command  $(tput bold)rm -rf app/caches node_modules $(tput sgr 0)
+rm -rf app/caches node_modules
+yarn
+
 #compile static resource file with webpack
 echo $(tput setaf 2)compile static resource file with webpack using command  $(tput bold)npm run compile$(tput sgr 0)
 npm run compile
+
 fi
 #commit static file
 git add web/static-dist

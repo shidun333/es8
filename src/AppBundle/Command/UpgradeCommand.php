@@ -42,11 +42,11 @@ class UpgradeCommand extends BaseCommand
         $this->copyUpgradeSource($code, $version);
         $output->writeln('<info>代码复制</info>');
 
-        $this->executeScript($code, $version);
-        $output->writeln('<info>执行脚本</info>');
-
         $this->removeCache();
         $output->writeln('<info>删除缓存</info>');
+
+        $this->executeScript($code, $version);
+        $output->writeln('<info>执行脚本</info>');
 
         $this->updateApp($code, $version);
         $output->writeln('<info>元数据更新</info>');
@@ -134,7 +134,8 @@ class UpgradeCommand extends BaseCommand
         }
 
         include_once $packageDir.'/Upgrade.php';
-        $upgrade = new \EduSohoUpgrade($this->getServiceKernel());
+        $upgrade = new \EduSohoUpgrade($this->getBiz());
+        $upgrade->setUpgradeType('install');
 
         if (method_exists($upgrade, 'update')) {
             $info = $upgrade->update();
@@ -165,17 +166,17 @@ class UpgradeCommand extends BaseCommand
 
         $this->getLogService()->info('system', 'update_app_version', "命令行更新应用「{$app['name']}」版本为「{$version}」");
 
-        return $this->getAppDao()->updateApp($app['id'], $newApp);
+        return $this->getAppDao()->update($app['id'], $newApp);
     }
 
     protected function getAppDao()
     {
-        return $this->getServiceKernel()->createDao('CloudPlatform:CloudAppDao');
+        return $this->getBiz()->dao('CloudPlatform:CloudAppDao');
     }
 
     protected function getAppService()
     {
-        return $this->getServiceKernel()->createService('CloudPlatform:AppService');
+        return $this->getBiz()->service('CloudPlatform:AppService');
     }
 
     protected function getLogService()

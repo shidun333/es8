@@ -13,12 +13,16 @@ class Money
      */
     public static function convert($price)
     {
-        $setting = self::getSettingService()->get('coin', array(
+        $setting = self::getSettingService()->get('coin');
+
+        $default = array(
             'coin_enabled' => 0,
             'cash_model' => 'none',
             'cash_rate' => 1,
             'coin_name' => '虚拟币',
-        ));
+        );
+
+        $setting = array_merge($default, $setting);
 
         $money = array(
             'currency' => 'RMB',
@@ -30,7 +34,7 @@ class Money
         }
 
         if ($setting['cash_model'] != 'none') {
-            $money['coinAmount'] = strval(floatval($price) * floatval($setting['cash_rate']));
+            $money['coinAmount'] = strval(round(floatval($price) * floatval($setting['cash_rate']), 2));
             $money['coinName'] = $setting['coin_name'];
         }
 

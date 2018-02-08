@@ -6,7 +6,6 @@ use Biz\Activity\Config\Activity;
 use Biz\Activity\Dao\AudioActivityDao;
 use Biz\CloudPlatform\Client\CloudAPIIOException;
 use Biz\File\Service\UploadFileService;
-use Biz\Activity\Service\ActivityService;
 use AppBundle\Common\ArrayToolkit;
 
 class Audio extends Activity
@@ -16,10 +15,16 @@ class Audio extends Activity
      */
     public function create($fields)
     {
-        if (empty($fields['ext'])) {
+        if (empty($fields['media'])) {
             throw $this->createInvalidArgumentException('参数不正确');
         }
-        $audio = ArrayToolkit::parts($fields['ext'], array('mediaId'));
+        $media = json_decode($fields['media'], true);
+
+        if (empty($media['id'])) {
+            throw $this->createInvalidArgumentException('参数不正确');
+        }
+        $media['mediaId'] = $media['id'];
+        $audio = ArrayToolkit::parts($media, array('mediaId'));
         $audioActivity = $this->getAudioActivityDao()->create($audio);
 
         return $audioActivity;
@@ -49,8 +54,18 @@ class Audio extends Activity
      */
     public function update($targetId, &$fields, $activity)
     {
-        $audioActivityFields = $fields['ext'];
+        if (empty($fields['media'])) {
+            throw $this->createInvalidArgumentException('参数不正确');
+        }
+        $media = json_decode($fields['media'], true);
 
+        if (empty($media['id'])) {
+            throw $this->createInvalidArgumentException('参数不正确');
+        }
+
+        $audioActivityFields = array(
+            'mediaId' => $media['id'],
+        );
         $audioActivity = $this->getAudioActivityDao()->get($fields['mediaId']);
         if (empty($audioActivity)) {
             throw $this->createNotFoundException('教学活动不存在');
@@ -83,15 +98,16 @@ class Audio extends Activity
     {
         $audioActivities = $this->getAudioActivityDao()->findByIds($targetIds);
         $mediaIds = ArrayToolkit::column($audioActivities, 'mediaId');
+        $groupMediaIds = array_chunk($mediaIds, 50);
+        $files = array();
         try {
-            $files = $this->getUploadFileService()->findFilesByIds(
-                $mediaIds,
-                $showCloud = 1
-            );
+            foreach ($groupMediaIds as $mediaIds) {
+                $chuckFiles = $this->getUploadFileService()->findFilesByIds($mediaIds, $showCloud = 1);
+                $files = array_merge($files, $chuckFiles);
+            }
         } catch (CloudAPIIOException $e) {
             $files = array();
         }
-
         if (empty($files)) {
             return $audioActivities;
         }
@@ -122,14 +138,6 @@ class Audio extends Activity
     protected function getAudioActivityDao()
     {
         return $this->getBiz()->dao('Activity:AudioActivityDao');
-    }
-
-    /**
-     * @return ActivityService
-     */
-    protected function getActivityService()
-    {
-        return $this->getBiz()->service('Activity:ActivityService');
     }
 
     /**

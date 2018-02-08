@@ -35,6 +35,8 @@ seajs.config({
         'autocomplete': 'arale/autocomplete/1.2.2/autocomplete',
         'upload': 'arale/upload/1.1.0/upload',
         'bootstrap.validator': 'common/validator',
+        'emitter': 'common/component-emitter',
+        'bootstrap.daterangepicker': 'common/bootstrap-daterangepicker',
         'class': 'arale/class/1.1.0/class',
         'base': 'arale/base/1.1.1/base',
         'widget': 'arale/widget/1.1.1/widget',
@@ -63,7 +65,7 @@ seajs.config({
         'ckeditor': 'ckeditor/4.6.7/ckeditor',
         'es-ckeditor': 'common/es-ckeditor',
         'edusoho.linkselect': 'edusoho/linkselect/1.0/linkselect-debug.js',
-        'edusoho.webuploader': 'edusoho/webuploader/1.0.2/web-uploader.js',
+        'edusoho.webuploader': 'edusoho/webuploader/1.0.3/web-uploader.js',
         'edusoho.imagecrop': 'edusoho/imagecrop/1.0.2/image-crop.js',
         'edusoho.autocomplete': 'edusoho/autocomplete/1.0.0/autocomplete.js',
         'edusoho.selecttree': 'edusoho/ztree/0.0.1/select-tree.js',
@@ -78,8 +80,9 @@ seajs.config({
         'jquery.lavalamp': 'jquery-plugin/jquery.lavalamp/jquery.lavalamp',
         'video-player': 'balloon-video-player/1.3.0/index',
         'edusoho.tree': 'edusoho/tree/1.0.0/tree.js',
-        'video-player-new': __URL_PROTOCOL + ':' + (app.cloudSdkCdn ? app.cloudSdkCdn : '//service-cdn.qiqiuyun.net') + '/js-sdk/video-player/sdk-v1.js',
-        'new-uploader':  __URL_PROTOCOL + ':' + (app.cloudSdkCdn ? app.cloudSdkCdn : '//service-cdn.qiqiuyun.net') + '/js-sdk/uploader/sdk-v1.js',
+        'player-new': __URL_PROTOCOL + ':' + app.cloudPlayerSdkUrl,
+        'video-player-new': __URL_PROTOCOL + ':' + app.cloudVideoPlayerSdkUrl,
+        'new-uploader':  __URL_PROTOCOL + ':' + app.cloudUploaderSdkUrl,
         'subtitle-browser': 'subtitle/1.0.0/subtitle.browser.min.js',
         'echarts': 'gallery2/echarts/3.1.10/echarts',
         'echarts-debug':'gallery2/echarts/3.1.10/echarts-debug',
@@ -89,8 +92,8 @@ seajs.config({
         'org_z_tree_css': 'jquery-plugin/zTree/3.5.21/css/org.css',
         'jquery.treegrid': 'jquery-plugin/treegrid/0.3.0/jquery.treegrid',
         'jquery.treegrid.css': 'jquery-plugin/treegrid/0.3.0/jquery.treegrid.css',
-        'jweixin':'edusoho/wxrs/1.2.0/jweixin.js',
-        'g2':'g2/1.2.4/index.js'
+        'g2':'g2/1.2.4/index.js',
+        'jquery.serializeJSON': 'jquery.serializeJSON/jquery.serializejson.min.js',
     },
 
     // 预加载项
@@ -130,15 +133,6 @@ seajs.on('fetch', function(data) {
         return ;
     }
 
-    if (data.uri.indexOf('js-sdk/video-player') > 0) {
-        data.requestUri = data.uri + '?flag=' + Math.round(new Date().getTime() / 100000);
-        return ;
-    }
-
-    if (data.uri.indexOf('js-sdk/uploader') > 0) {
-        data.requestUri = data.uri + '?flag=' + Math.round(new Date().getTime() / 100000);
-        return ;
-    }
     data.requestUri = data.uri + __SEAJS_FILE_VERSION;
 });
 

@@ -2,9 +2,9 @@
 
 namespace Biz\Task\Dao;
 
-use Codeages\Biz\Framework\Dao\GeneralDaoInterface;
+use Codeages\Biz\Framework\Dao\AdvancedDaoInterface;
 
-interface TaskDao extends GeneralDaoInterface
+interface TaskDao extends AdvancedDaoInterface
 {
     public function deleteByCategoryId($categoryId);
 
@@ -24,6 +24,8 @@ interface TaskDao extends GeneralDaoInterface
 
     public function findByCopyIdAndLockedCourseIds($copyId, $courseIds);
 
+    public function findByCopyIdSAndLockedCourseIds($copyIds, $courseIds);
+
     public function getMaxSeqByCourseId($courseId);
 
     public function getNumberSeqByCourseId($courseId);
@@ -39,6 +41,10 @@ interface TaskDao extends GeneralDaoInterface
     public function getMinSeqByCourseId($courseId);
 
     public function getByCourseIdAndSeq($courseId, $sql);
+
+    public function getByCopyId($copyId);
+
+    public function getByCourseIdAndCopyId($courseId, $copyId);
 
     /**
      * 统计当前时间以后每天的直播次数.

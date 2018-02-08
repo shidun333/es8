@@ -11,12 +11,13 @@ class ThreadPostDaoImpl extends GeneralDaoImpl implements ThreadPostDao
 
     public function searchByUserIdGroupByThreadId($userId, $start, $limit)
     {
+        $this->filterStartLimit($start, $limit);
         $builder = $this->createQueryBuilder(array('userId' => $userId))
             ->select('course_thread_post.*')
             ->where('id in (SELECT MAX(id) AS id FROM `course_thread_post` WHERE userId = :userId GROUP BY threadId)')
             ->addOrderBy('id', 'desc')
-            ->setFirstResult(intval($start))
-            ->setMaxResults(intval($limit));
+            ->setFirstResult($start)
+            ->setMaxResults($limit);
 
         return $builder->execute()->fetchAll();
     }
@@ -40,6 +41,14 @@ class ThreadPostDaoImpl extends GeneralDaoImpl implements ThreadPostDao
     public function deleteByCourseId($courseId)
     {
         return $this->db()->delete($this->table(), array('courseId' => $courseId));
+    }
+
+    public function findThreadIds($conditions)
+    {
+        $builder = $this->createQueryBuilder($conditions)
+            ->select('threadId');
+
+        return $builder->execute()->fetchAll(0) ?: array();
     }
 
     public function declares()

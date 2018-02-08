@@ -4,6 +4,7 @@ namespace Tests\Unit\Activity\Dao;
 
 use Biz\Activity\Dao\ActivityDao;
 use Tests\Unit\Base\BaseDaoTestCase;
+use AppBundle\Common\ArrayToolkit;
 
 class ActivityLearnLogDaoTest extends BaseDaoTestCase
 {
@@ -45,6 +46,74 @@ class ActivityLearnLogDaoTest extends BaseDaoTestCase
         $this->searchTestUtil($this->getDao(), $testConditions, $this->getCompareKeys());
     }
 
+    public function testCreate()
+    {
+        $result = $this->getDao()->create($this->getDefaultMockFields());
+
+        $this->assertEquals('finish', $result['event']);
+    }
+
+    public function testGetRecentFinishedLogByActivityIdAndUserId()
+    {
+        $log = $this->mockDataObject(array('event' => 'finish', 'activityId' => 2, 'userId' => 2));
+        $result = $this->getDao()->getRecentFinishedLogByActivityIdAndUserId(2, 2);
+
+        $this->assertEquals('finish', $result[0]['event']);
+    }
+
+    public function testCountLearnedDaysByCourseIdAndUserId()
+    {
+        $this->mockActivity();
+        $log = $this->getDao()->create($this->getDefaultMockFields());
+
+        $result = $this->getDao()->countLearnedDaysByCourseIdAndUserId(1, 1);
+
+        $this->assertEquals(1, $result);
+    }
+
+    public function testDeleteByActivityId()
+    {
+        $log = $this->getDao()->create($this->getDefaultMockFields());
+        $result = $this->getDao()->deleteByActivityId(1);
+
+        $this->assertEquals(1, $result);
+    }
+
+    public function testGetLastestByActivityIdAndUserId()
+    {
+        $log1 = $this->getDao()->create($this->getDefaultMockFields());
+        $log2 = $this->mockDataObject(array('event' => 'unfinish', 'activityId' => 1, 'userId' => 1));
+        $log3 = $this->mockDataObject(array('event' => 'wait', 'activityId' => 1, 'userId' => 1));
+
+        $result = $this->getDao()->getLastestByActivityIdAndUserId(1, 1);
+
+        $this->assertEquals('finish', $result['event']);
+    }
+
+    public function testSumLearnTimeGroupByUserId()
+    {
+        $time = time();
+        $this->getDao()->create(array('userId' => 1, 'learnedTime' => 100, 'event' => 'doing', 'mediaType' => 'ppt'));
+        $this->getDao()->create(array('userId' => 1, 'learnedTime' => 12, 'event' => 'start', 'mediaType' => 'ppt'));
+        $this->getDao()->create(array('userId' => 2, 'learnedTime' => 11, 'event' => 'finish', 'mediaType' => 'ppt'));
+
+        $result = $this->getDao()->sumLearnTimeGroupByUserId(array());
+        $result = ArrayToolkit::index($result, 'userId');
+        $this->assertEquals('112', $result[1]['learnedTime']);
+        $this->assertEquals('11', $result[2]['learnedTime']);
+
+        $result = $this->getDao()->sumLearnTimeGroupByUserId(array('createdTime_GE' => $time + 10 * 3600));
+        $result = ArrayToolkit::index($result, 'userId');
+        $this->assertEmpty($result);
+
+        $result = $this->getDao()->sumLearnTimeGroupByUserId(array('userIds' => array(3)));
+        $this->assertEmpty($result);
+
+        $result = $this->getDao()->sumLearnTimeGroupByUserId(array('userIds' => array(2)));
+        $result = ArrayToolkit::index($result, 'userId');
+        $this->assertEquals('11', $result[2]['learnedTime']);
+    }
+
     protected function fetchAndAssembleIds(array $rawInput)
     {
         $res = array();
@@ -81,7 +150,7 @@ class ActivityLearnLogDaoTest extends BaseDaoTestCase
             'activityId' => 1,
             'userId' => 1,
             'mediaType' => 'video',
-            'event' => 'ffff',
+            'event' => 'finish',
             'data' => array('a'),
             'learnedTime' => 1,
             'courseTaskId' => 1,

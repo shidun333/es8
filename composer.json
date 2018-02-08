@@ -34,29 +34,33 @@
     "doctrine/common": "2.4.3",
     "doctrine/annotations": "1.2.7",
     "doctrine/doctrine-bundle": "1.6.4",
-    "endroid/qrcode": "1.7.4",
+    "endroid/qrcode": "1.8.0",
     "ezyang/htmlpurifier": "4.9.2",
     "gregwar/captcha": "1.1.1",
     "imagine/imagine": "0.6.3",
     "phpoffice/phpexcel": "1.8.1",
-    "willdurand/js-translation-bundle": "2.6.4",
+    "willdurand/js-translation-bundle": "2.6.5",
     "asm89/twig-cache-extension": "1.3.2",
-    "endroid/qrcode-bundle": "v1.6.3",
     "bshaffer/oauth2-server-bundle": "v0.4",
     "xxtea/xxtea": "1.0.2",
     "cerdic/css-tidy": "1.5.5",
-    "codeages/biz-framework": "0.5.2",
-    "codeages/plugin-bundle": "0.1.18",
-    "codeages/rest-api-client": "0.1.4",
-    "codeages/biz-rate-limiter": "0.1.7",
+    "codeages/biz-framework": "0.9.10",
+    "codeages/plugin-bundle": "0.1.21",
+    "codeages/rest-api-client": "0.2.2",
+    "codeages/biz-rate-limiter": "0.1.8",
     "sentry/sentry-symfony": "0.7.1",
-    "piwik/device-detector": "3.7.7"
+    "piwik/device-detector": "3.7.7",
+    "codeages/web-lib": "^0.1.1",
+    "tiben/crontab-manager": "1.2.1",
+    "codeages/qiqiuyun-php-sdk": "^0.1.0",
+    "phpdocumentor/reflection-docblock": "2.0.5",
+    "codeages/biz-order-pay": "0.1.14"
   },
   "require-dev": {
     "sensio/generator-bundle": "3.0.11",
     "symfony/phpunit-bridge": "3.2.6",
     "mockery/mockery": "0.9.9",
-    "phpunit/phpunit": "4.8.35"
+    "phpunit/phpunit": "4.8.36"
   },
   "scripts": {
     "post-install-cmd": [

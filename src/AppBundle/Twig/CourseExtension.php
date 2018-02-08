@@ -9,6 +9,7 @@ use Biz\Course\Service\MemberService;
 use Biz\System\Service\SettingService;
 use Codeages\Biz\Framework\Context\Biz;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use AppBundle\Common\ArrayToolkit;
 
 class CourseExtension extends \Twig_Extension
 {
@@ -41,24 +42,39 @@ class CourseExtension extends \Twig_Extension
             new \Twig_SimpleFunction('buy_course_need_approve', array($this, 'needApproval')),
             new \Twig_SimpleFunction('is_member_expired', array($this, 'isMemberExpired')),
             new \Twig_SimpleFunction('course_chapter_alias', array($this, 'getCourseChapterAlias')),
+            //课程视频转音频完成率
+            new \Twig_SimpleFunction('video_convert_completion', array($this, 'getAudioConvertionStatus')),
+            new \Twig_SimpleFunction('is_support_enable_audio', array($this, 'isSupportEnableAudio')),
         );
+    }
+
+    public function isSupportEnableAudio($enableAudioStatus)
+    {
+        return $this->getCourseService()->isSupportEnableAudio($enableAudioStatus);
+    }
+
+    public function getAudioConvertionStatus($courseId)
+    {
+        $activities = $this->getActivityService()->findActivitiesByCourseIdAndType($courseId, 'video', true);
+        $medias = ArrayToolkit::column($activities, 'ext');
+
+        return $this->getUploadFileService()->getAudioConvertionStatus(array_unique(ArrayToolkit::column($medias, 'mediaId')));
     }
 
     public function getCourseChapterAlias($type)
     {
         $defaultCourseChapterAlias = array(
             'chapter' => '章',
-            'part' => '节'
+            'part' => '节',
         );
 
         $courseSetting = $this->getSettingService()->get('course');
 
-        if(empty($courseSetting['custom_chapter_enabled'])) {
+        if (empty($courseSetting['custom_chapter_enabled'])) {
             return false;
         }
 
         return $courseSetting[$type.'_name'];
-
     }
 
     public function isMemberExpired($course, $member)
@@ -107,7 +123,7 @@ class CourseExtension extends \Twig_Extension
             return false;
         }
 
-        return $course['approval'] && $user['approvalStatus'] !== 'approved';
+        return $course['approval'] && 'approved' !== $user['approvalStatus'];
     }
 
     protected function isUserAvatarEmpty()
@@ -154,6 +170,22 @@ class CourseExtension extends \Twig_Extension
     protected function getMemberService()
     {
         return $this->biz->service('Course:MemberService');
+    }
+
+    /**
+     * @return ActivityService
+     */
+    protected function getActivityService()
+    {
+        return $this->biz->service('Activity:ActivityService');
+    }
+
+    /**
+     * @return
+     */
+    protected function getUploadFileService()
+    {
+        return $this->biz->service('File:UploadFileService');
     }
 
     public function getName()

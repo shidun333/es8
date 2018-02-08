@@ -31,7 +31,7 @@ function initEvent() {
   $('.js-save-btn').click(function () {
     if (validator.form()) {
       $('.js-save-btn').button('loading');
-      $.post($('#announcement-write-form').data('url'), $('#announcement-write-form').serialize(), function (json) {
+      $.post($('#announcement-write-form').attr('action'), $('#announcement-write-form').serialize(), function (json) {
         window.location.reload();
       }, 'json');
     }
@@ -42,6 +42,7 @@ function initCkeditor(validator) {
   // group: 'course'
   var editor = CKEDITOR.replace('announcement-content-field', {
     toolbar: 'Simple',
+    fileSingleSizeLimit: app.fileSingleSizeLimit,
     filebrowserImageUploadUrl: $('#announcement-content-field').data('imageUploadUrl')
   });
 

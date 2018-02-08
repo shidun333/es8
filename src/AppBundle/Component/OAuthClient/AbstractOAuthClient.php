@@ -12,9 +12,41 @@ abstract class AbstractOAuthClient
 
     protected $timeout = 30;
 
+    protected $request;
+
     public function __construct($config)
     {
         $this->config = $config;
+    }
+
+    public function makeToken($type, $accessToken, $openid, $appid = '')
+    {
+        switch ($type) {
+            case 'weibo':
+                $token = array(
+                    'userId' => $openid,
+                    'token' => $accessToken,
+                );
+                break;
+            case 'qq':
+                $token = array(
+                    'openid' => $openid,
+                    'access_token' => $accessToken,
+                    'key' => $appid,
+                );
+                break;
+            case 'weixinmob':
+            case 'weixinweb':
+                $token = array(
+                    'openid' => $openid,
+                    'access_token' => $accessToken,
+                );
+                break;
+            default:
+                throw new \InvalidArgumentException('Bad type');
+        }
+
+        return $token;
     }
 
     abstract public function getAuthorizeUrl($callbackUrl);
@@ -33,6 +65,10 @@ abstract class AbstractOAuthClient
      */
     public function postRequest($url, $params)
     {
+        if (isset($this->request)) {
+            return $this->request->postRequest($url, $params);
+        }
+
         $curl = curl_init();
 
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
@@ -56,6 +92,10 @@ abstract class AbstractOAuthClient
 
     public function getRequest($url, $params)
     {
+        if (isset($this->request)) {
+            return $this->request->getRequest($url, $params);
+        }
+
         $curl = curl_init();
 
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);

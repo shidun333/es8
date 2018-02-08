@@ -8,38 +8,35 @@ use ApiBundle\Api\Util\ObjectCombinationUtil;
 use Biz\User\CurrentUser;
 use Codeages\Biz\Framework\Context\Biz;
 use Codeages\Biz\Framework\Event\Event;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Topxia\Service\Common\ServiceKernel;
 
 abstract class AbstractResource
 {
     /**
      * @var Biz
      */
-    private $biz;
+    protected $biz;
 
-    private $container;
+    protected $container;
 
     const METHOD_SEARCH = 'search';
     const METHOD_GET = 'get';
     const METHOD_ADD = 'add';
     const METHOD_REMOVE = 'remove';
     const METHOD_UPDATE = 'update';
-    
+
     const DEFAULT_PAGING_LIMIT = 10;
     const DEFAULT_PAGING_OFFSET = 0;
     const MAX_PAGING_LIMIT = 100;
 
     const PREFIX_SORT_DESC = '-';
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, Biz $biz)
     {
         $this->container = $container;
-        $this->biz = $container->get('biz');
+        $this->biz = $biz;
     }
 
     public function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
@@ -132,7 +129,7 @@ abstract class AbstractResource
             static::METHOD_GET,
             static::METHOD_SEARCH,
             static::METHOD_UPDATE,
-            static::METHOD_REMOVE
+            static::METHOD_REMOVE,
         );
     }
 
@@ -148,7 +145,17 @@ abstract class AbstractResource
     {
         return $this->container->get('api.plugin.config.manager')->isPluginInstalled($code);
     }
-    
+
+    public function getClientIp()
+    {
+        return $this->container->get('request')->getClientIp();
+    }
+
+    public function invokeResource(ApiRequest $apiRequest)
+    {
+        return $this->container->get('api_resource_kernel')->handleApiRequest($apiRequest);
+    }
+
     protected function makePagingObject($objects, $total, $offset, $limit)
     {
         return array(
@@ -156,8 +163,8 @@ abstract class AbstractResource
             'paging' => array(
                 'total' => $total,
                 'offset' => $offset,
-                'limit' => $limit
-            )
+                'limit' => $limit,
+            ),
         );
     }
 
@@ -167,11 +174,7 @@ abstract class AbstractResource
     protected function getCurrentUser()
     {
         $biz = $this->getBiz();
-        return $biz['user'];
-    }
 
-    protected function getServiceKernel()
-    {
-        return ServiceKernel::instance();
+        return $biz['user'];
     }
 }

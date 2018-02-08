@@ -9,21 +9,16 @@ class StatisticsServiceImpl extends BaseService implements StatisticsService
 {
     public function countOnline($retentionTime)
     {
-        return $this->getSessionDao()->countOnline($retentionTime);
+        return $this->getOnlineService()->countOnline($retentionTime);
     }
 
     public function countLogin($retentionTime)
     {
-        return $this->getSessionDao()->countLogin($retentionTime);
+        return $this->getOnlineService()->countLogined($retentionTime);
     }
 
-    protected function getSessionDao()
+    protected function getOnlineService()
     {
-        return $this->createDao('System:SessionDao');
-    }
-
-    protected function getSettingService()
-    {
-        return $this->biz->service('System:SettingService');
+        return $this->biz->service('Session:OnlineService');
     }
 }

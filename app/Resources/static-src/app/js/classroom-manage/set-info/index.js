@@ -33,11 +33,12 @@ function initEditor() {
   let editor_classroom_about = CKEDITOR.replace('about', {
     allowedContent: true,
     toolbar: 'Detail',
+    fileSingleSizeLimit: app.fileSingleSizeLimit,
     filebrowserImageUploadUrl: $('#about').data('imageUploadUrl'),
     filebrowserFlashUploadUrl: $('#about').data('flashUploadUrl')
   });
 
-  $('[data-role="tree-select"], [name="categoryId"]').select2({
+  $('[name="categoryId"]').select2({
     treeview: true,
     dropdownAutoWidth: true,
     treeviewInitState: 'collapsed',

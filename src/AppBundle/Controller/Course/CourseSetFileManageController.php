@@ -19,7 +19,8 @@ class CourseSetFileManageController extends BaseController
     {
         $courseSet = $this->getCourseSetService()->tryManageCourseSet($id);
 
-        if ($courseSet['locked']) {
+        $sync = $request->query->get('sync');
+        if ($courseSet['locked'] && empty($sync)) {
             return $this->redirectToRoute('course_set_manage_sync', array(
                 'id' => $id,
                 'sideNav' => 'files',
@@ -134,18 +135,30 @@ class CourseSetFileManageController extends BaseController
         return $this->createJsonResponse(array('status' => 'ok'));
     }
 
-    public function uploadCourseFilesAction($id, $targetType)
+    public function retryTranscodeAction($id, $fileId)
     {
-        $courseSet = $this->getCourseSetService()->tryManageCourseSet($id);
+        $this->getCourseSetService()->tryManageCourseSet($id);
 
-        $storageSetting = $this->getSettingService()->get('storage', array());
+        $file = $this->getUploadFileService()->getFile($fileId);
 
-        return $this->render('courseset-manage/file/modal-upload-course-files.html.twig', array(
-            'courseSet' => $courseSet,
-            'storageSetting' => $storageSetting,
-            'targetType' => $targetType,
-            'targetId' => $id,
-        ));
+        if (empty($file)) {
+            throw $this->createNotFoundException('File Not Found');
+        }
+
+        if (in_array($file['audioConvertStatus'], array('none', 'error'))) {
+            $convertStatus = $this->getUploadFileService()->retryTranscode(array($file['globalId']));
+            if (empty($convertStatus)) {
+                return $this->createJsonResponse(array('status' => 'error', 'message' => '文件转换请求失败，请重试！'));
+            }
+            if (isset($convertStatus['error'])) {
+                return $this->createJsonResponse(array('status' => 'error', 'message' => $convertStatus['error']));
+            }
+            if (isset($convertStatus['status']) && $convertStatus['status'] == 'ok') {
+                $this->getUploadFileService()->setAudioConvertStatus($fileId, 'doing');
+            }
+        }
+
+        return $this->createJsonResponse(array('status' => 'ok'));
     }
 
     public function deleteMaterialsAction(Request $request, $id)
@@ -169,13 +182,18 @@ class CourseSetFileManageController extends BaseController
     {
         $this->getCourseSetService()->tryManageCourseSet($id);
 
-        if ($request->getMethod() == 'POST') {
+        if ('POST' == $request->getMethod()) {
             $formData = $request->request->all();
 
-            $this->getMaterialService()->deleteMaterials($id, $formData['ids']);
+            $deletedMaterials = $this->getMaterialService()->deleteMaterials($id, $formData['ids']);
 
-            if (isset($formData['isDeleteFile']) && $formData['isDeleteFile']) {
-                foreach ($formData['ids'] as $key => $fileId) {
+            if (empty($deletedMaterials)) {
+                return $this->createJsonResponse(true);
+            }
+
+            if (!empty($formData['isDeleteFile'])) {
+                $fileIds = array_unique(ArrayToolkit::column($deletedMaterials, 'fileId'));
+                foreach ($fileIds as $fileId) {
                     if ($this->getUploadFileService()->canManageFile($fileId)) {
                         $this->getUploadFileService()->deleteFile($fileId);
                     }

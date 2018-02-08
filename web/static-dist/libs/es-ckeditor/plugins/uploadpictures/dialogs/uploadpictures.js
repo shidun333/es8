@@ -8,15 +8,24 @@ CKEDITOR.dialog.add('uploadpictures', function(editor) {
         uploadUrl += uploadUrl.indexOf('?') == -1 ? '?' : '&';
         uploadUrl += 'CKEditorFuncNum=0&isWebuploader=1';
 
+        var fileSingleSizeLimit = editor.config.fileSingleSizeLimit;
+
         uploader = WebUploader.create({
             swf: CKEDITOR.getUrl('plugins/uploadpictures/webuploader/Uploader.swf'),
             server: uploadUrl,
             pick: '.' + editor.id + ' .ckeditor-uploadpictures-pick-btn',
-            compress: false,
+            compress: {
+                width: 1200,
+                height: 1200,
+                quality: 90,
+                allowMagnify: false,
+                crop: false,
+                preserveHeaders: true
+            },
             resize: false,
             fileNumLimit: 10,
             threads: 1,
-            fileSingleSizeLimit: 10*1024*1024,
+            fileSingleSizeLimit: fileSingleSizeLimit*1024*1024,
             accept: {
                 title: 'Images',
                 extensions: 'gif,jpg,jpeg,bmp,png,ico',
@@ -24,15 +33,15 @@ CKEDITOR.dialog.add('uploadpictures', function(editor) {
             }
         });
 
-        $('.start-upload-btn').on('click', function(){
+        $('.js-start-upload-btn').on('click', function() {
             uploader.upload();
         });
 
         uploader.on('error', function(errorCode) {
             if (errorCode == 'Q_TYPE_DENIED') {
-                alert(lang.file_type_tip+uploader.get('accept')['extensions'].join(','));
+                alert(lang.file_type_tip + uploader.options.accept[0].extensions.join(','));
             } else if (errorCode == 'F_EXCEED_SIZE') {
-                alert(lang.single_file_max_size_tip + filesize(uploader.get('fileSingleSizeLimit')));
+                alert(lang.single_file_max_size_tip + filesize(uploader.options.fileSingleSizeLimit));
             }
         });
 
@@ -63,6 +72,7 @@ CKEDITOR.dialog.add('uploadpictures', function(editor) {
         });
 
         uploader.on('uploadSuccess', function(file, response) {
+            console.log('file', response);
             imageHtml += '<p><img src="' + response.url  + '" /></p>';
 
             var $li = $('.' + editor.id + ' #' + file.id);
@@ -81,7 +91,7 @@ CKEDITOR.dialog.add('uploadpictures', function(editor) {
         minWidth: 600,
         minHeight: 280,
         resizable: CKEDITOR.DIALOG_RESIZE_BOTH,
-        buttons: [CKEDITOR.dialog.okButton],
+        buttons: [CKEDITOR.dialog.cancelButton, CKEDITOR.dialog.okButton],
         contents: [{
             id: 'uploadpictures',
             label: editor.lang.uploadpictures.title,
@@ -90,13 +100,13 @@ CKEDITOR.dialog.add('uploadpictures', function(editor) {
             elements: [{
                 id: "body",
                 type: "html",
-                html: '<div id="uploadpictures-body"></div>'
+                html: '<div class="js-uploadpictures-body"></div>'
             }]
         }],
         
         onLoad: function() {
-            $('.' + editor.id + ' #uploadpictures-body').css({'vertical-align': 'top'});
-            $('.' + editor.id + ' #uploadpictures-body').load(CKEDITOR.getUrl('plugins/uploadpictures/html/index_'+editor.config.language+'.html'), onLoadDialog);
+            $('.' + editor.id + ' .js-uploadpictures-body').css({'vertical-align': 'top'});
+            $('.' + editor.id + ' .js-uploadpictures-body').load(CKEDITOR.getUrl('plugins/uploadpictures/html/index_'+editor.config.language+'.html'), onLoadDialog);
         },
 
         onOk: function() {

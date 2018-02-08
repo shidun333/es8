@@ -14,8 +14,6 @@ class OpenCourseDeleteServiceImpl extends BaseService implements OpenCourseDelet
     {
         try {
             $this->beginTransaction();
-            $course = $this->getOpenCourseService()->getCourse($courseId);
-
             $types = array('lessons', 'members', 'course', 'recommend', 'materials');
 
             if (!in_array($type, $types)) {
@@ -23,6 +21,7 @@ class OpenCourseDeleteServiceImpl extends BaseService implements OpenCourseDelet
             }
 
             $method = 'delete'.ucwords($type);
+            $course = $this->getOpenCourseService()->getCourse($courseId);
             $result = $this->$method($course);
             $this->commit();
 
@@ -49,7 +48,7 @@ class OpenCourseDeleteServiceImpl extends BaseService implements OpenCourseDelet
 
                 $result = $this->getOpenCourseLessonDao()->delete($lesson['id']);
 
-                $this->dispatchEvent('open.course.lesson.delete', $lesson);
+                $this->dispatchEvent('open.course.lesson.delete', array('lesson' => $lesson));
 
                 $count += $result;
             }

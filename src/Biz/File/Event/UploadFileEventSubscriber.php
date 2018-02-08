@@ -15,9 +15,9 @@ class UploadFileEventSubscriber extends EventSubscriber implements EventSubscrib
     public static function getSubscribedEvents()
     {
         return array(
-            'question.create' => 'onQuestionCreate',
-            'question.update' => 'onQuestionUpdate',
-            'question.delete' => 'onQuestionDelete',
+            'question.create' => array('onQuestionCreate', 2),
+            'question.update' => array('onQuestionUpdate', 2),
+            'question.delete' => array('onQuestionDelete', 2),
 
             'course.delete' => 'onCourseDelete',
             //'course.lesson.create' => 'onCourseLessonCreate',
@@ -36,6 +36,8 @@ class UploadFileEventSubscriber extends EventSubscriber implements EventSubscrib
             'course.thread.post.delete' => 'onCourseThreadPostDelete',
             'thread.delete' => 'onThreadDelete',
             'thread.post.delete' => 'onThreadPostDelete',
+
+            'delete.use.file' => 'onDeleteUseFiles',
         );
     }
 
@@ -86,7 +88,7 @@ class UploadFileEventSubscriber extends EventSubscriber implements EventSubscrib
     protected function deleteAttachment($targetType, $targetId)
     {
         $conditions = array('targetId' => $targetId, 'type' => 'attachment');
-        if (strpos($targetType, ',') === false) {
+        if (false === strpos($targetType, ',')) {
             $conditions['targetType'] = $targetType;
         } else {
             $conditions['targetTypes'] = explode(',', $targetType);
@@ -152,21 +154,6 @@ class UploadFileEventSubscriber extends EventSubscriber implements EventSubscrib
     public function onCourseDelete(Event $event)
     {
         $course = $event->getSubject();
-
-        /**
-         * @TODO 教学计划删除时需要使文件使用数减少
-         */
-        $lessons = $this->getCourseService()->getCourse($course['id']);
-
-        if (!empty($lessons)) {
-            $fileIds = ArrayToolkit::column($lessons, 'mediaId');
-
-            if (!empty($fileIds)) {
-                foreach ($fileIds as $fileId) {
-                    $this->getUploadFileService()->waveUsedCount($fileId, -1);
-                }
-            }
-        }
     }
 
     public function onCourseLessonCreate(Event $event)
@@ -265,6 +252,42 @@ class UploadFileEventSubscriber extends EventSubscriber implements EventSubscrib
         }
     }
 
+    public function onDeleteUseFiles(Event $event)
+    {
+        $attachment = $event->getSubject();
+
+        if ('attachment' != $attachment['type'] || !in_array($attachment['targetType'], array('question.stem', 'question.analysis'))) {
+            return;
+        }
+
+        $question = $this->getQuestionService()->get($attachment['targetId']);
+
+        if ($question['copyId'] > 0) {
+            return;
+        }
+
+        $copyQuestions = $this->getQuestionService()->findQuestionsByCopyId($question['id']);
+
+        if (empty($copyQuestions)) {
+            return;
+        }
+
+        $conditions = array(
+            'type' => 'attachment',
+            'targetType' => $attachment['targetType'],
+            'targetIds' => ArrayToolkit::column($copyQuestions, 'id'),
+        );
+        $attachments = $this->getUploadFileService()->searchUseFiles($conditions, false);
+
+        if (empty($attachments)) {
+            return;
+        }
+
+        foreach ($attachments as $value) {
+            $this->getUploadFileService()->deleteUseFile($value['id']);
+        }
+    }
+
     /**
      * @return UploadFileService
      */
@@ -284,6 +307,11 @@ class UploadFileEventSubscriber extends EventSubscriber implements EventSubscrib
     protected function getOpenCourseService()
     {
         return $this->getServiceKernel()->createService('OpenCourse:OpenCourseService');
+    }
+
+    protected function getQuestionService()
+    {
+        return $this->getBiz()->service('Question:QuestionService');
     }
 
     protected function getServiceKernel()

@@ -36,6 +36,7 @@ class ApiAuth
             ));
 
             $decoded = $this->decodeKeysign($token);
+            $this->onlineSample($request, $token, 0);
         } else {
             $whilelist = isset($this->whilelist[$request->getMethod()]) ? $this->whilelist[$request->getMethod()] : array();
 
@@ -71,7 +72,26 @@ class ApiAuth
             }
 
             $this->setCurrentUser($user);
+            $this->onlineSample($request, $token['token'], $user['id']);
         }
+    }
+
+    protected function onlineSample($request, $token, $userId)
+    {
+        $userAgent = $request->headers->get('User-Agent', '');
+        // 气球鱼爬虫不统计在线人数
+        if (!$userAgent || strpos($userAgent, 'QiQiuYun Search Spider') >= 0) {
+            return;
+        }
+
+        $online = array(
+            'sess_id' => $token,
+            'user_id' => $userId,
+            'ip' => $request->getClientIp(),
+            'user_agent' => $userAgent,
+            'source' => 'App',
+        );
+        $this->getOnlineService()->saveOnline($online);
     }
 
     public function decodeKeysign($token)
@@ -138,6 +158,11 @@ class ApiAuth
     private function getSettingService()
     {
         return ServiceKernel::instance()->createService('System:SettingService');
+    }
+
+    private function getOnlineService()
+    {
+        return ServiceKernel::instance()->createService('Session:OnlineService');
     }
 
     private function getUserService()

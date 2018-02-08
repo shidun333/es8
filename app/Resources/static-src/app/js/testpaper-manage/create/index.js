@@ -82,9 +82,9 @@ class TestpaperForm {
         let simplePercentage = parseInt(values[0]),
           normalPercentage = values[1] - values[0],
           difficultyPercentage = 100 - values[1];
-        $('.js-simple-percentage-text').html(Translator.trans('activity.testpaper_manage.simple_percentage', {'simplePercentage':simplePercentage}) + '%');
-        $('.js-normal-percentage-text').html(Translator.trans('activity.testpaper_manage.normal_percentage', {'normalPercentage':normalPercentage}) + '%');
-        $('.js-difficulty-percentage-text').html(Translator.trans('activity.testpaper_manage.difficulty_percentage', {'difficultyPercentage':difficultyPercentage}) + '%');
+        $('.js-simple-percentage-text').html(Translator.trans('activity.testpaper_manage.simple_percentage', {'simplePercentage':simplePercentage}));
+        $('.js-normal-percentage-text').html(Translator.trans('activity.testpaper_manage.normal_percentage', {'normalPercentage':normalPercentage}));
+        $('.js-difficulty-percentage-text').html(Translator.trans('activity.testpaper_manage.difficulty_percentage', {'difficultyPercentage':difficultyPercentage}));
         $('input[name="percentages[simple]"]').val(simplePercentage);
         $('input[name="percentages[normal]"]').val(normalPercentage);
         $('input[name="percentages[difficulty]"]').val(difficultyPercentage);
@@ -95,6 +95,7 @@ class TestpaperForm {
   _initEditor(validator) {
     let editor = CKEDITOR.replace(this.$description.attr('id'), {
       toolbar: 'Simple',
+      fileSingleSizeLimit: app.fileSingleSizeLimit,
       filebrowserImageUploadUrl: this.$description.data('imageUploadUrl'),
       height: 100
     });
@@ -124,7 +125,7 @@ class TestpaperForm {
           trim: true,
         },
         description: {
-          required: true,
+          //required: true,
           maxlength: 500,
           trim: true,
         },
@@ -169,8 +170,8 @@ class TestpaperForm {
 
       self.find('[data-role="score"]').rules('add', {
         min: 0,
-        max: 100,
-        digits: true
+        max: 1000,
+        es_score: true
       })
 
       if (self.find('[data-role="missScore"]').length > 0) {
@@ -179,7 +180,7 @@ class TestpaperForm {
           max: function () {
             return parseInt(self.find('[data-role="score"]').val());
           },
-          digits: true
+          es_score: true
         })
       }
     })

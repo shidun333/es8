@@ -29,14 +29,16 @@ class ThreadDaoImpl extends GeneralDaoImpl implements ThreadDao
 
     public function findLatestThreadsByType($type, $start, $limit)
     {
-        $sql = "SELECT * FROM {$this->table()} WHERE type = ? ORDER BY createdTime DESC LIMIT {$start}, {$limit}";
+        $sql = "SELECT * FROM {$this->table()} WHERE type = ? ORDER BY createdTime DESC";
+        $sql = $this->sql($sql, array(), $start, $limit);
 
         return $this->db()->fetchAll($sql, array($type)) ?: array();
     }
 
     public function findEliteThreadsByType($type, $status, $start, $limit)
     {
-        $sql = "SELECT * FROM {$this->table()} WHERE type = ? AND isElite = ? ORDER BY createdTime DESC LIMIT {$start}, {$limit}";
+        $sql = "SELECT * FROM {$this->table()} WHERE type = ? AND isElite = ? ORDER BY createdTime";
+        $sql = $this->sql($sql, array(), $start, $limit);
 
         return $this->db()->fetchAll($sql, array($type, $status)) ?: array();
     }
@@ -44,7 +46,8 @@ class ThreadDaoImpl extends GeneralDaoImpl implements ThreadDao
     public function findThreadsByCourseId($courseId, $orderBy, $start, $limit)
     {
         $orderBy = implode(' ', $orderBy);
-        $sql = "SELECT * FROM {$this->table} WHERE courseId = ? ORDER BY {$orderBy} LIMIT {$start}, {$limit}";
+        $sql = "SELECT * FROM {$this->table} WHERE courseId = ? ORDER BY {$orderBy}";
+        $sql = $this->sql($sql, array(), $start, $limit);
 
         return $this->db()->fetchAll($sql, array($courseId)) ?: array();
     }
@@ -52,9 +55,18 @@ class ThreadDaoImpl extends GeneralDaoImpl implements ThreadDao
     public function findThreadsByCourseIdAndType($courseId, $type, $orderBy, $start, $limit)
     {
         $orderBy = implode(' ', $orderBy);
-        $sql = "SELECT * FROM {$this->table} WHERE courseId = ? AND type = ? ORDER BY {$orderBy} LIMIT {$start}, {$limit}";
+        $sql = "SELECT * FROM {$this->table} WHERE courseId = ? AND type = ? ORDER BY {$orderBy} ";
+        $sql = $this->sql($sql, array(), $start, $limit);
 
         return $this->db()->fetchAll($sql, array($courseId, $type)) ?: array();
+    }
+
+    public function findThreadIds($conditions)
+    {
+        $builder = $this->createQueryBuilder($conditions)
+            ->select('id');
+
+        return $builder->execute()->fetchAll(0) ?: array();
     }
 
     public function declares()
@@ -79,6 +91,7 @@ class ThreadDaoImpl extends GeneralDaoImpl implements ThreadDao
                 'title LIKE :title',
                 'content LIKE :content',
                 'courseId IN (:courseIds)',
+                'id IN (:ids)',
                 'private = :private',
                 'createdTime >= :startTimeGreaterThan',
                 'createdTime < :startTimeLessThan',

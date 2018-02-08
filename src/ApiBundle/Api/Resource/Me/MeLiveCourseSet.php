@@ -28,13 +28,14 @@ class MeLiveCourseSet extends AbstractResource
 
         $members = $this->getCourseMemberService()->searchMembers(
             array('courseSetIds' => array_column($allLiveCourseSets, 'id'), 'userId' => $this->getCurrentUser()->getId()),
-            array('lastViewTime' => 'DESC'),
+            array('lastLearnTime' => 'DESC'),
             0,
             PHP_INT_MAX
         );
 
         $uniqueMemberIds = $this->getUniqueCourseSetIds($members);
         $courseSets = $this->getCourseSetService()->findCourseSetsByIds($uniqueMemberIds);
+
         return array_values($this->orderByLastViewTime($courseSets, $uniqueMemberIds));
     }
 

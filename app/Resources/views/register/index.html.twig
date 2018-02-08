@@ -69,7 +69,7 @@
 							<label class="control-label required" for="captcha_code">{{'user.register.account_with_sms_code_label'|trans}}</label>
 							<div class="controls row">
 								<div class = "col-xs-7">
-									<input type="text" class="form-control input-lg" id="captcha_code" name="captcha_code" maxlength="5" placeholder="{{'user.register.account_with_sms_code_label'|trans}}" required="required"  data-url="{{path('register_captcha_check')}}" >
+									<input type="text" class="form-control input-lg" id="captcha_code" name="captcha_code" maxlength="5" placeholder="{{'user.register.account_with_sms_code_label'|trans}}" data-url="{{path('register_captcha_check')}}" >
 									<p class="help-block"></p>
 								</div>
 								<div class="col-xs-5">
@@ -84,7 +84,7 @@
 							<label class="control-label required" for="sms_code">{{'user.settings.security.sms_code'|trans}}</label>
 							<div class="controls row" >
 								<div class = "col-xs-7" >
-									<input type="number" class="form-control input-lg" id="sms_code" name="sms_code" placeholder="{{'user.settings.security.input_sms_code'|trans}}" required="required" data-url="{{path('edu_cloud_sms_check',{type:'sms_registration'})}}">
+									<input type="number" class="form-control input-lg" id="sms_code" name="sms_code" placeholder="{{'user.settings.security.input_sms_code'|trans}}" data-url="{{path('edu_cloud_sms_check',{type:'sms_registration'})}}">
 									<p class="help-block"> </p>
 								</div>
 								<div class="col-xs-5">
@@ -98,28 +98,27 @@
 					{% endif %}
 					{% if (setting('invite.invite_code_setting')|default(0) == 1) and  inviteCode == null  %}
 						<div class="form-group mbl">
-							<label class="control-label required" for="invite_code">{{'user.register.invite_code_label'|trans}}<span class="color-success">（（{{'form.field.optional'|trans}}）</span></label>
+							<label class="control-label required" for="invite_code">{{'user.register.invite_code_label'|trans}}<span class="color-success">（{{'form.field.optional'|trans}}）</span></label>
 							<div class="controls">
 								<input type="text" name="invite_code" class="form-control input-lg invitecode" data-url="{{path('invitecode_check')}}" placeholder="{{'user.register.invite_code_placeholder'|trans}}">
 							</div>
 						</div>
 					{% endif %}
 
-					{% if setting('auth.user_terms') == 'opened' %}
-						<div class="form-group mbl">
-							<div class="controls">
-								<label>
-									<input type="checkbox" id="user_terms" checked="checked" name="userterms"> {{'user.register.i_agree'|trans}}<a href="{{ path('user_terms') }}" target="_blank">{{'user.register.terms'|trans}}》</a>
-								</label>
-							</div>
-						</div>
-					{% endif %}
-
 					<div class="form-group mbl">
 						<div class="controls">
-							<button type="submit" id="register-btn" data-submiting-text="{{'form.btn.submit.submiting'|trans}}" class="btn btn-primary btn-lg btn-block">{{'form.btn.register'|trans}}</button>
+							<button type="submit" id="register-btn" data-submiting-text="{{'form.btn.submit.submiting'|trans}}" class="btn btn-primary btn-lg btn-block">{% if setting('auth.user_terms') == 'opened' %}{{ 'user.register.agree_terms'|trans }}{% else %}{{'form.btn.register'|trans}}{% endif %}</button>
 						</div>
 					</div>
+
+          {% if setting('auth.user_terms') == 'opened' %}
+            <div class="form-group mbl">
+              <div class="controls">
+                <span>{{ 'user.register.read_detail'|trans }}</span>
+                <a href="{{ path('user_terms') }}" target="_blank">《{{'user.register.user_service_protocol'|trans}}》</a>
+              </div>
+            </div>
+          {% endif %}
 
 					<input type="hidden" name="captcha_enabled" value="{{ setting('auth.captcha_enabled') }}" />
 					<input type="hidden" name="_csrf_token" value="{{ csrf_token('site') }}">

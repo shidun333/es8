@@ -42,9 +42,31 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         return $thread;
     }
 
+    public function findThreadIds($conditions)
+    {
+        $threadIds = $threadIds = $this->getThreadDao()->findThreadIds($conditions);
+
+        return ArrayToolkit::column($threadIds, 'id');
+    }
+
+    public function findPostThreadIds($conditions)
+    {
+        $postThreadIds = $this->getThreadPostDao()->findThreadIds($conditions);
+
+        return ArrayToolkit::column($postThreadIds, 'threadId');
+    }
+
+    public function countPartakeThreadsByUserId($userId)
+    {
+        $threadIds = $this->findThreadIds(array('userId' => $userId));
+        $postThreadIds = $this->findPostThreadIds(array('userId' => $userId));
+
+        return count(array_unique(array_merge($threadIds, $postThreadIds)));
+    }
+
     public function findThreadsByType($courseId, $type, $sort, $start, $limit)
     {
-        if ($sort === 'latestPosted') {
+        if ('latestPosted' === $sort) {
             $orderBy = array('latestPosted' => 'DESC');
         } else {
             $orderBy = array('createdTime' => 'DESC');
@@ -54,7 +76,7 @@ class ThreadServiceImpl extends BaseService implements ThreadService
             $type = 'all';
         }
 
-        if ($type === 'all') {
+        if ('all' === $type) {
             return $this->getThreadDao()->search(array('courseId' => $courseId), $orderBy, $start, $limit);
         }
 
@@ -90,7 +112,7 @@ class ThreadServiceImpl extends BaseService implements ThreadService
     {
         if (is_array($sort)) {
             $orderBy = $sort;
-        } elseif ($sort === 'createdTimeByAsc') {
+        } elseif ('createdTimeByAsc' === $sort) {
             $orderBy = array('createdTime' => 'ASC');
         } else {
             $orderBy = array('createdTime' => 'DESC');
@@ -117,7 +139,7 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         $event = $this->dispatchEvent('course.thread.before_create', $thread);
 
         if ($event->isPropagationStopped()) {
-            throw $this->createServiceException('发帖次数过多，请稍候尝试。');
+            throw $this->createServiceException('发帖次数过多，请稍后尝试。');
         }
 
         $thread['content'] = $this->sensitiveFilter($thread['content'], 'course-thread-create');
@@ -128,12 +150,17 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         $thread['userId'] = $this->getCurrentUser()->id;
         $thread['title'] = $this->biz['html_helper']->purify(empty($thread['title']) ? '' : $thread['title']);
         $thread['courseSetId'] = $course['courseSetId'];
-        //创建thread过滤html
-        $thread['content'] = $this->biz['html_helper']->purify($thread['content']);
+
+        //if user can manage course, we trusted rich editor content
+        $hasCourseManagerRole = $this->getCourseService()->hasCourseManagerRole($thread['courseId']);
+        $trusted = empty($hasCourseManagerRole) ? false : true;
+        //更新thread过滤html
+        $thread['content'] = $this->biz['html_helper']->purify($thread['content'], $trusted);
+
         $thread['createdTime'] = time();
         $thread['latestPostUserId'] = $thread['userId'];
         $thread['latestPostTime'] = $thread['createdTime'];
-        $thread['private'] = $course['status'] === 'published' ? 0 : 1;
+        $thread['private'] = 'published' === $course['status'] ? 0 : 1;
 
         $thread = $this->getThreadDao()->create($thread);
 
@@ -142,7 +169,7 @@ class ThreadServiceImpl extends BaseService implements ThreadService
                 continue;
             }
 
-            if ($thread['type'] !== 'question') {
+            if ('question' !== $thread['type']) {
                 continue;
             }
 
@@ -182,9 +209,11 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         if (empty($fields)) {
             throw $this->createInvalidArgumentException('Fields Required');
         }
-
+        //if user can manage course, we trusted rich editor content
+        $hasCourseManagerRole = $this->getCourseService()->hasCourseManagerRole($courseId);
+        $trusted = empty($hasCourseManagerRole) ? false : true;
         //更新thread过滤html
-        $fields['content'] = $this->biz['html_helper']->purify($fields['content']);
+        $fields['content'] = $this->biz['html_helper']->purify($fields['content'], $trusted);
 
         $thread = $this->getThreadDao()->update($threadId, $fields);
         $this->dispatchEvent('course.thread.update', new Event($thread));
@@ -218,7 +247,9 @@ class ThreadServiceImpl extends BaseService implements ThreadService
             throw $this->createNotFoundException("Thread #{$threadId} Not Found");
         }
 
-        $this->getThreadDao()->update($thread['id'], array('isStick' => 1));
+        $thread = $this->getThreadDao()->update($thread['id'], array('isStick' => 1));
+
+        $this->dispatchEvent('course.thread.stick', new Event($thread));
     }
 
     public function unstickThread($courseId, $threadId)
@@ -231,7 +262,9 @@ class ThreadServiceImpl extends BaseService implements ThreadService
             throw $this->createNotFoundException("Thread #{$threadId} Not Found");
         }
 
-        $this->getThreadDao()->update($thread['id'], array('isStick' => 0));
+        $thread = $this->getThreadDao()->update($thread['id'], array('isStick' => 0));
+
+        $this->dispatchEvent('course.thread.unstick', new Event($thread));
     }
 
     public function eliteThread($courseId, $threadId)
@@ -244,7 +277,7 @@ class ThreadServiceImpl extends BaseService implements ThreadService
             throw $this->createNotFoundException("Thread #{$threadId} Not Found");
         }
 
-        $this->getThreadDao()->update($thread['id'], array('isElite' => 1));
+        $thread = $this->getThreadDao()->update($thread['id'], array('isElite' => 1));
 
         $this->dispatchEvent('course.thread.elite', new Event($thread));
     }
@@ -259,7 +292,9 @@ class ThreadServiceImpl extends BaseService implements ThreadService
             throw $this->createNotFoundException("Thread #{$threadId} Not Found");
         }
 
-        $this->getThreadDao()->update($thread['id'], array('isElite' => 0));
+        $thread = $this->getThreadDao()->update($thread['id'], array('isElite' => 0));
+
+        $this->dispatchEvent('course.thread.unelite', new Event($thread));
     }
 
     public function hitThread($courseId, $threadId)
@@ -280,9 +315,9 @@ class ThreadServiceImpl extends BaseService implements ThreadService
             return array();
         }
 
-        if ($sort === 'best') {
+        if ('best' === $sort) {
             $orderBy = array('score' => 'DESC');
-        } elseif ($sort === 'elite') {
+        } elseif ('elite' === $sort) {
             $orderBy = array('createdTime' => 'DESC', 'isElite' => 'ASC');
         } else {
             $orderBy = array('createdTime' => 'ASC');
@@ -330,6 +365,11 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         return $this->getThreadPostDao()->get($id);
     }
 
+    public function postAtNotifyEvent($post, $users)
+    {
+        $this->dispatchEvent('course.thread.post.at', $post, array('users' => $users));
+    }
+
     public function createPost($post)
     {
         $requiredKeys = array('courseId', 'threadId', 'content');
@@ -358,8 +398,12 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         $post['isElite'] = $this->getMemberService()->isCourseTeacher($post['courseId'], $post['userId']) ? 1 : 0;
         $post['createdTime'] = time();
 
+        //if user can manage course, we trusted rich editor content
+        $hasCourseManagerRole = $this->getCourseService()->hasCourseManagerRole($post['courseId']);
+        $trusted = empty($hasCourseManagerRole) ? false : true;
         //创建post过滤html
-        $post['content'] = $this->biz['html_helper']->purify($post['content']);
+        $post['content'] = $this->biz['html_helper']->purify($post['content'], $trusted);
+
         $post = $this->getThreadPostDao()->create($post);
 
         // 高并发的时候， 这样更新postNum是有问题的，这里暂时不考虑这个问题。
@@ -394,8 +438,12 @@ class ThreadServiceImpl extends BaseService implements ThreadService
             throw $this->createInvalidArgumentException('Fields Required');
         }
 
+        //if user can manage course, we trusted rich editor content
+        $hasCourseManagerRole = $this->getCourseService()->hasCourseManagerRole($courseId);
+        $trusted = empty($hasCourseManagerRole) ? false : true;
         //更新post过滤html
-        $fields['content'] = $this->biz['html_helper']->purify($fields['content']);
+        $fields['content'] = $this->biz['html_helper']->purify($fields['content'], $trusted);
+
         $post = $this->getThreadPostDao()->update($id, $fields);
         $this->dispatchEvent('course.thread.post.update', $post);
 

@@ -1,9 +1,14 @@
+import notify from 'common/notify';
+import InputEdit from 'app/common/input-edit';
+import 'app/common/local-image/upload';
+
 let editor = CKEDITOR.replace('profile_about', {
   toolbar: 'Simple',
+  fileSingleSizeLimit: app.fileSingleSizeLimit,
   filebrowserImageUploadUrl: $('#profile_about').data('imageUploadUrl')
 });
 
-$(".date").datetimepicker({
+$(".js-date").datetimepicker({
   autoclose: true,
   format: 'yyyy-mm-dd',
   minView: 'month',
@@ -12,6 +17,17 @@ $(".date").datetimepicker({
 
 $("#user-profile-form").validate({
   rules: {
+    'nickname': {
+			required: true,
+			chinese_alphanumeric: true,
+			byte_minlength: 4,
+			byte_maxlength: 18,
+			nickname: true,
+			chinese_alphanumeric: true,
+			es_remote: {
+				type: 'get',
+			}
+		},
     'profile[truename]': {
       minlength: 2,
       maxlength: 18
@@ -41,4 +57,18 @@ $("#user-profile-form").validate({
     'profile[dateField5]': 'date',
     'profile[dateField5]': 'date'
   }
-})
+});
+
+new InputEdit({
+  el: '#nickname-form-group',
+  success(data) {
+    notify('success', Translator.trans(data.message));
+  },
+  fail(data) {
+    if (data.responseJSON.message) {
+      notify('danger', Translator.trans(data.responseJSON.message));
+    } else {
+      notify('danger', Translator.trans('user.settings.basic_info.nickname_change_fail'));
+    }
+  }
+});

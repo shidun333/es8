@@ -2,7 +2,7 @@
 	<div class="testpaper-question-body">
 	  {% include 'question/part/question-stem.html.twig' %}
   </div>
-	{% if paperResult.status|default(null) in ['reviewing', 'finished'] %}
+	{% if not question.isDeleted|default(0) and paperResult.status|default(null) in ['reviewing', 'finished'] %}
 
 		{% if role|default(null) == 'teacher' %}
 
@@ -14,13 +14,13 @@
 					</ul>
 					<div class="tab-content mbl">
 						<div class="tab-pane active" id="studentAnswer{{ question.id }}">
-							{% if question.testResult.answer[0]|default('') or question.testResult.attachment is not empty %}
+							{% if question.testResult.answer[0]|default('') or question.testResult.attachment|default('') is not empty %}
 								{{ question.testResult.answer[0]|default('')|bbCode2Html|raw }}
 
 								{% include 'attachment/question-answer-attachment.html.twig' with {targetType: 'question.answer', targetId: question.testResult.id|default(0), showList:1} %}
 
 							{% else %}
-								{{'course.question_manage.you_no_answer_with_html'|trans}}
+								<span class="color-gray">{{ 'course.question_manage.you_no_answer'|trans }}</span>
 							{% endif %}
 						</div>
 						<div class="tab-pane" id="teacherAnswer{{ question.id }}">
@@ -37,14 +37,14 @@
 		{% elseif setting('questions.testpaper_answers_show_mode') == 'submitted' or paperResult.status in ['finished','reviewing'] %}
 			<div class="testpaper-question-footer clearfix">
 			  <div class="testpaper-question-result">
-			    <div class="testpaper-question-result-suggested">
-				    <div class="testpaper-question-result-title">{{'course.question_manage.manage.refer_answer'|trans}}</div>
+			    <div class="mbl">
+				    <div class="mbs">{{'course.question_manage.manage.refer_answer'|trans}}</div>
 				    <div>{{ question.answer[0]|bbCode2Html|raw }}</div>
 			    </div>
 			    <div class="testpaper-question-result-your">
-				    <div class="testpaper-question-result-title">{{'course.question_manage.your_answer'|trans}}</div>
+				    <div class="mbs">{{'course.question_manage.your_answer'|trans}}</div>
 						<div>
-							{% if question.testResult.answer[0]|default('') or question.testResult.attachment is not empty %}
+							{% if question.testResult.answer[0]|default('') or question.testResult.attachment|default('') is not empty %}
 								{{ question.testResult.answer[0]|default('')|bbCode2Html|raw }}
 
 								{% include 'attachment/question-answer-attachment.html.twig' with {targetType: 'question.answer', targetId: question.testResult.id|default(0), showList:1} %}
@@ -57,18 +57,18 @@
 			  {% if paperResult.status == 'finished' %}
 			  	<div class="testpaper-question-result-score mtl">
 			  		{% if showScore|default(1) %}
-			  			<div class="testpaper-question-result-title">{{'course.question_manage.score'|trans}} <strong>{{question.testResult.score|default(0) }}</strong></div>
+			  			<div class="mbs">{{'course.question_manage.score'|trans}} <strong>{{question.testResult.score|default(0) }}</strong></div>
 			  		{% endif %}
 			  	</div>
 			  	{% if question.testResult.teacherSay|default('') != '' %}
 			  		<div class="testpaper-question-teacherSay mtl">
-							<div class="testpaper-question-result-title">{{'course.question_manage.comment'|trans}}</div>
+							<div class="mbs">{{'course.question_manage.comment'|trans}}</div>
 							<div>{{ question.testResult.teacherSay|default('')|bbCode2Html|raw }}</div>
 						</div>
 					{% endif %}
 			  {% else %}
 			  	<div class="testpaper-question-score mtl">
-			  		<div class="testpaper-question-result-title">{{'course.question_manage.teacher_reviewing'|trans}}</div>
+            <div class="pvs phs">{{'course.question_manage.teacher_reviewing'|trans}}</div>
 			  	</div>
 			  {% endif %}
 			  </div>
@@ -81,15 +81,15 @@
 			{% include 'question/part/show-analysis.html.twig' with {showAnalysis:1} %}
 		{% endif %}
 
-	{% else %}
+	{% elseif not question.isDeleted|default(0) %}
 
 		<div class="testpaper-question-footer clearfix">
-		  <div class="testpaper-question-essay-inputs" data-role='js-answer-div-{{ question.id }}'>
+		  <div class="mbm" data-role='js-answer-div-{{ question.id }}'>
 		  	<textarea class="form-control essay-input-short" rows="1" style="overflow:hidden;line-height:20px;">{% if question.testResult.answer[0]|default(null) %}{{ question.testResult.answer[0]|bbCode2Html|raw }}{% endif %}</textarea>
 
 				<textarea id="question-input-long-{{ question.id }}" class="form-control essay-input-long" data-type="essay" name="{{ question.id }}" style="display:none;" data-image-upload-url="{{ path('editor_upload', {token:upload_token('course')}) }}" data-image-download-url="{{ path('editor_download', {token:upload_token('course')}) }}">{% if question.testResult.answer[0]|default(null) %}{{ question.testResult.answer[0]|default(null)|bbCode2Html|raw }}{% endif %}</textarea>
 
-				<a class="btn btn-link btn-muted btn-sm essay-input-btn" style="display:none"><span class="glyphicon glyphicon-chevron-up color-gray"></span> {{'site.btn.collapse'|trans}}</a>
+				<a class="btn btn-link color-gray btn-sm essay-input-btn" style="display:none"><span class="glyphicon glyphicon-chevron-up color-gray"></span> {{'site.btn.collapse'|trans}}</a>
 
 				<br/>
 
@@ -107,8 +107,8 @@
 	  {% if showAnswer|default(0) %}
 		  <div class="testpaper-preview-answer clearfix mtl mbl">
 		  	<div class="testpaper-question-result">
-			    <div class="testpaper-question-result-suggested">
-				    <div class="testpaper-question-result-title">{{'course.question_manage.manage.refer_answer'|trans}}</div>
+			    <div class="mbl">
+				    <div class="mbs">{{'course.question_manage.manage.refer_answer'|trans}}</div>
 				    <div>{{ question.answer[0]|bbCode2Html|raw }}</div>
 			    </div>
 				</div>

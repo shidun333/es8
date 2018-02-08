@@ -1,6 +1,7 @@
 <?php
 
 use AppBundle\Common\ExtensionManager;
+use Codeages\Biz\Framework\Context\Biz;
 use Codeages\Biz\Framework\Provider\DoctrineServiceProvider;
 use Codeages\Biz\Framework\Provider\MonologServiceProvider;
 use Codeages\PluginBundle\System\PluginableHttpKernelInterface;
@@ -49,9 +50,8 @@ class AppKernel extends Kernel implements PluginableHttpKernelInterface
         // init container
         $this->initializeContainer();
 
-        $this->initializeBiz();
+        $this->initializeBiz($this->getContainer()->get('biz'));
         $this->initializeServiceKernel();
-
         foreach ($this->getBundles() as $bundle) {
             $bundle->setContainer($this->container);
             $bundle->boot();
@@ -69,7 +69,7 @@ class AppKernel extends Kernel implements PluginableHttpKernelInterface
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new Endroid\Bundle\QrCodeBundle\EndroidQrCodeBundle(),
+            new Endroid\QrCode\Bundle\EndroidQrCodeBundle(),
             new Topxia\WebBundle\TopxiaWebBundle(),
             new Topxia\AdminBundle\TopxiaAdminBundle(),
             new Topxia\MobileBundleV2\TopxiaMobileBundleV2(),
@@ -85,15 +85,15 @@ class AppKernel extends Kernel implements PluginableHttpKernelInterface
             $bundles[] = new Sentry\SentryBundle\SentryBundle();
         }
 
-        if ($this->getEnvironment() !== 'test') {
+        if ('test' !== $this->getEnvironment()) {
             $plugins = $this->pluginConfigurationManager->getInstalledPlugins();
 
             foreach ($plugins as $plugin) {
-                if ($plugin['type'] != 'plugin') {
+                if ('plugin' != $plugin['type']) {
                     continue;
                 }
 
-                if ($plugin['protocol'] != 3) {
+                if (3 != $plugin['protocol']) {
                     continue;
                 }
 
@@ -104,13 +104,13 @@ class AppKernel extends Kernel implements PluginableHttpKernelInterface
         }
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
-            if(class_exists('Symfony\Bundle\WebProfilerBundle\WebProfilerBundle')){
+            if (class_exists('Symfony\Bundle\WebProfilerBundle\WebProfilerBundle')) {
                 $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             }
-            if(class_exists('Sensio\Bundle\DistributionBundle\SensioDistributionBundle')){
+            if (class_exists('Sensio\Bundle\DistributionBundle\SensioDistributionBundle')) {
                 $bundles[] = new Sensio\Bundle\DistributionBundle\SensioDistributionBundle();
             }
-            if(class_exists('Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle')){
+            if (class_exists('Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle')) {
                 $bundles[] = new Sensio\Bundle\GeneratorBundle\SensioGeneratorBundle();
             }
         }
@@ -140,17 +140,18 @@ class AppKernel extends Kernel implements PluginableHttpKernelInterface
         return $this;
     }
 
-    protected function initializeBiz()
+    public function initializeBiz(Biz $biz)
     {
-        $biz = $this->getContainer()->get('biz');
         $biz['migration.directories'][] = dirname(__DIR__).'/migrations';
         $biz['env'] = array(
             'base_url' => $this->request->getSchemeAndHttpHost().$this->request->getBasePath(),
         );
+
         $biz->register(new DoctrineServiceProvider());
         $biz->register(new MonologServiceProvider(), array(
             'monolog.logfile' => $this->getContainer()->getParameter('kernel.logs_dir').'/biz.log',
             'monolog.level' => $this->isDebug() ? \Monolog\Logger::DEBUG : \Monolog\Logger::INFO,
+            'monolog.permission' => 0666,
         ));
         $biz->register(new \Codeages\Biz\Framework\Provider\SchedulerServiceProvider());
         $biz->register(new \Codeages\Biz\Framework\Provider\TargetlogServiceProvider());
@@ -163,10 +164,21 @@ class AppKernel extends Kernel implements PluginableHttpKernelInterface
 
         $biz->register(new Codeages\Biz\RateLimiter\RateLimiterServiceProvider());
         $this->registerCacheServiceProvider($biz);
+        $biz->register(new Codeages\Biz\Order\OrderServiceProvider());
+        $biz->register(new Codeages\Biz\Pay\PayServiceProvider());
 
         $biz->register(new \Biz\Accessor\AccessorServiceProvider());
-
+        $biz->register(new \Biz\OrderFacade\OrderFacadeServiceProvider());
+        $biz->register(new \Biz\Xapi\XapiServiceProvider());
+        $biz->register(new \Codeages\Biz\Framework\Provider\SessionServiceProvider());
+        $biz->register(new \Codeages\Biz\Framework\Provider\QueueServiceProvider());
         $biz->boot();
+
+        $activeTheme = $this->pluginConfigurationManager->getActiveThemeName();
+        if (empty($activeTheme)) {
+            $this->pluginConfigurationManager->setActiveThemeName('jianmo')->save();
+        }
+        $biz['pluginConfigurationManager'] = $this->pluginConfigurationManager;
     }
 
     protected function registerCacheServiceProvider($biz)
@@ -181,7 +193,7 @@ class AppKernel extends Kernel implements PluginableHttpKernelInterface
                         'reserved' => $this->getContainer()->getParameter('redis_reserved'),
                         'redis_interval' => $this->getContainer()->getParameter('redis_retry_interval'),
                     ),
-                    'dao.cache.second.enabled' => true,
+                    'dao.cache.enabled' => true,
                 )
             );
         }
@@ -196,19 +208,20 @@ class AppKernel extends Kernel implements PluginableHttpKernelInterface
             $serviceKernel = ServiceKernel::create($this->getEnvironment(), $this->isDebug());
 
             $currentUser = new \Biz\User\AnonymousUser($this->request->getClientIp() ?: '127.0.0.1');
+            $currentUser['isSecure'] = $this->request->isSecure();
 
             $biz['user'] = $currentUser;
             $serviceKernel
                 ->setBiz($biz)
                 ->setCurrentUser($currentUser)
                 ->setEnvVariable(
-                    array(
-                        'host' => $this->request->getHttpHost(),
-                        'schemeAndHost' => $this->request->getSchemeAndHttpHost(),
-                        'basePath' => $this->request->getBasePath(),
-                        'baseUrl' => $this->request->getSchemeAndHttpHost().$this->request->getBasePath(),
-                    )
+                array(
+                    'host' => $this->request->getHttpHost(),
+                    'schemeAndHost' => $this->request->getSchemeAndHttpHost(),
+                    'basePath' => $this->request->getBasePath(),
+                    'baseUrl' => $this->request->getSchemeAndHttpHost().$this->request->getBasePath(),
                 )
+            )
                 ->setTranslatorEnabled(true)
                 ->setTranslator($container->get('translator'))
                 ->setParameterBag($container->getParameterBag())

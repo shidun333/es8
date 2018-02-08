@@ -50,21 +50,21 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         $event = $this->dispatchEvent('thread.before_create', $thread);
 
         if ($event->isPropagationStopped()) {
-            throw $this->createServiceException('发帖次数过多，请稍候尝试。');
+            throw $this->createServiceException('发帖次数过多，请稍后尝试。');
         }
 
         $thread = ArrayToolkit::parts($thread, array('targetType', 'targetId', 'relationId', 'categoryId', 'title', 'content', 'ats', 'location', 'userId', 'type', 'maxUsers', 'actvityPicture', 'status', 'startTime', 'endTIme'));
 
         $thread['title'] = $this->sensitiveFilter($thread['title'], $thread['targetType'].'-thread-create');
         $thread['content'] = $this->sensitiveFilter($thread['content'], $thread['targetType'].'-thread-create');
-        $thread['title'] = $this->purifyHtml(empty($thread['title']) ? '' : $thread['title']);
-        $thread['content'] = $this->purifyHtml(empty($thread['content'])) ? '' : $thread['content'];
+        $thread['title'] = $this->purifyHtml($thread['title']);
+        $thread['content'] = $this->purifyHtml($thread['content']);
         $thread['ats'] = $this->getUserService()->parseAts($thread['content']);
 
         $user = $this->getCurrentUser();
         $thread['userId'] = $user['id'];
 
-        if ($thread['type'] == 'event') {
+        if ('event' == $thread['type']) {
             $this->tryAccess('thread.event.create', $thread);
 
             if (!empty($thread['location'])) {
@@ -84,7 +84,6 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         $thread['lastPostUserId'] = $thread['userId'];
         $thread['lastPostTime'] = $thread['createdTime'];
         $thread = $this->getThreadDao()->create($thread);
-
         if (!empty($thread['ats'])) {
             foreach ($thread['ats'] as $userId) {
                 if ($thread['userId'] == $userId) {
@@ -147,7 +146,7 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         $this->tryAccess('thread.delete', $thread);
         $this->getThreadPostDao()->deletePostsByThreadId($threadId);
 
-        if ($thread['type'] == 'event') {
+        if ('event' == $thread['type']) {
             $this->deleteMembersByThreadId($thread['id']);
         }
 
@@ -325,7 +324,7 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         $event = $this->dispatchEvent('thread.post.before_create', $fields);
 
         if ($event->isPropagationStopped()) {
-            throw $this->createServiceException('回复次数过多，请稍候尝试。');
+            throw $this->createServiceException('回复次数过多，请稍后尝试。');
         }
 
         $fields['content'] = $this->sensitiveFilter($fields['content'], $fields['targetType'].'-thread-post-create');
@@ -375,11 +374,11 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         //给主贴主人发通知
         $atUserIds = array_values($post['ats']);
 
-        if ($post['parentId'] == 0 && $thread && ($thread['userId'] != $post['userId']) && (!in_array($thread['userId'], $atUserIds))) {
+        if (0 == $post['parentId'] && $thread && ($thread['userId'] != $post['userId']) && (!in_array($thread['userId'], $atUserIds))) {
             $this->getNotifiactionService()->notify($thread['userId'], 'thread.post_create', $notifyData);
         }
 
-//回复的回复的人给该回复的作者发通知
+        //回复的回复的人给该回复的作者        发通知
 
         if ($post['parentId'] > 0 && ($parent['userId'] != $post['userId']) && (!in_array($parent['userId'], $atUserIds))) {
             $this->getNotifiactionService()->notify($parent['userId'], 'thread.post_create', $notifyData);
@@ -400,11 +399,11 @@ class ThreadServiceImpl extends BaseService implements ThreadService
 
         $this->tryAccess('post.delete', $post);
 
-//        $thread = $this->getThread($post['threadId']);
+        //        $thread = $this->getThread($post['threadId']);
 
         $totalDeleted = 1;
 
-        if ($post['parentId'] == 0) {
+        if (0 == $post['parentId']) {
             $totalDeleted += $this->getThreadPostDao()->deletePostsByParentId($post['id']);
         }
 
@@ -487,7 +486,7 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         if (empty($member)) {
             $thread = $this->getThread($fields['threadId']);
 
-            if ($thread['maxUsers'] == $thread['memberNum'] && $thread['maxUsers'] != 0) {
+            if ($thread['maxUsers'] == $thread['memberNum'] && 0 != $thread['maxUsers']) {
                 throw $this->createAccessDeniedException('limit on the number of people');
             }
 
@@ -537,6 +536,29 @@ class ThreadServiceImpl extends BaseService implements ThreadService
     public function searchMemberCount($conditions)
     {
         return $this->getThreadMemberDao()->count($conditions);
+    }
+
+    public function findThreadIds($conditions)
+    {
+        $threadIds = $threadIds = $this->getThreadDao()->findThreadIds($conditions);
+
+        return ArrayToolkit::column($threadIds, 'id');
+    }
+
+    public function findPostThreadIds($conditions)
+    {
+        $postThreadIds = $this->getThreadPostDao()->findThreadIds($conditions);
+
+        return ArrayToolkit::column($postThreadIds, 'threadId');
+    }
+
+    public function countPartakeThreadsByUserIdAndTargetType($userId, $targetType)
+    {
+        $threadIds = $this->findThreadIds(array('userId' => $userId, 'targetType' => $targetType));
+
+        $postThreadIds = $this->findPostThreadIds(array('userId' => $userId, 'targetType' => $targetType));
+
+        return count(array_unique(array_merge($threadIds, $postThreadIds)));
     }
 
     /*
@@ -677,7 +699,7 @@ class ThreadServiceImpl extends BaseService implements ThreadService
         }
 
         if (!empty($conditions['latest'])) {
-            if ($conditions['latest'] == 'week') {
+            if ('week' == $conditions['latest']) {
                 $conditions['GTEcreatedTime'] = mktime(0, 0, 0, date('m'), date('d') - 7, date('Y'));
             }
         }

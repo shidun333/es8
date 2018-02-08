@@ -94,6 +94,51 @@ class ThreadDaoTest extends BaseDaoTestCase
         $this->searchTestUtil($this->getDao(), $testConditions, $this->getCompareKeys());
     }
 
+    public function testFindThreadIds()
+    {
+        $res[0] = $this->mockDataObject();
+        $res[1] = $this->mockDataObject();
+        $res[2] = $this->mockDataObject(array('userId' => 2));
+
+        $this->assertEquals(2, count($this->getDao()->findThreadIds(array('userId' => 1))));
+    }
+
+    public function testFindLatestThreadsByType()
+    {
+        $expected = array();
+        $expected[] = $this->mockDataObject();
+        $expected[] = $this->mockDataObject(array('createdTime' => 1000));
+        $result = $this->getDao()->findLatestThreadsByType('discussion', 0, 5);
+        $this->assertArrayEquals($expected[1], $result[0], $this->getCompareKeys());
+    }
+
+    public function testFindEliteThreadsByType()
+    {
+        $expected = array();
+        $expected[] = $this->mockDataObject();
+        $expected[] = $this->mockDataObject(array('createdTime' => 1000));
+        $result = $this->getDao()->findEliteThreadsByType('discussion', 1, 0, 5);
+        $this->assertArrayEquals($expected[1], $result[1], $this->getCompareKeys());
+    }
+
+    public function testFindThreadsByCourseId()
+    {
+        $expected = array();
+        $expected[] = $this->mockDataObject();
+        $expected[] = $this->mockDataObject(array('createdTime' => 1000));
+        $result = $this->getDao()->findThreadsByCourseId(1, array('createdTime'), 0, 5);
+        $this->assertArrayEquals($expected[1], $result[1], $this->getCompareKeys());
+    }
+
+    public function testFindThreadsByCourseIdAndType()
+    {
+        $expected = array();
+        $expected[] = $this->mockDataObject();
+        $expected[] = $this->mockDataObject(array('createdTime' => 1000));
+        $result = $this->getDao()->findThreadsByCourseIdAndType(1, 'discussion', array('createdTime'), 0, 5);
+        $this->assertArrayEquals($expected[1], $result[1], $this->getCompareKeys());
+    }
+
     protected function mockDataObject($fields = array())
     {
         return $this->getDao()->create(array_merge($this->getDefaultMockFields(), $fields));

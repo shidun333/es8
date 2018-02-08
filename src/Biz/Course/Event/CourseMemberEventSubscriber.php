@@ -3,18 +3,20 @@
 namespace Biz\Course\Event;
 
 use AppBundle\Common\ArrayToolkit;
+use AppBundle\Common\MathToolkit;
 use Biz\Classroom\Service\ClassroomService;
 use Biz\Course\Dao\CourseDao;
 use Biz\Course\Service\CourseService;
 use Biz\Course\Service\CourseSetService;
 use Biz\Course\Service\MemberService;
-use Biz\Order\Service\OrderService;
+use Biz\OrderFacade\Service\OrderFacadeService;
 use Biz\System\Service\SettingService;
 use Biz\Task\Service\TaskResultService;
 use Biz\User\Service\MessageService;
 use Biz\User\Service\StatusService;
 use Biz\User\Service\UserService;
 use Codeages\Biz\Framework\Event\Event;
+use Codeages\Biz\Order\Service\OrderService;
 use Codeages\PluginBundle\Event\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -29,8 +31,15 @@ class CourseMemberEventSubscriber extends EventSubscriber implements EventSubscr
             'task.view' => 'onTaskView',
             'classroom.course.join' => 'onClassroomCourseJoin',
             'classroom.course.copy' => 'onClassroomCourseCopy',
+            'course.delete' => array('onCourseDelete', -100),
             'course.task.finish' => 'onTaskFinish',
         );
+    }
+
+    public function onCourseDelete(Event $event)
+    {
+        $course = $event->getSubject();
+        $this->getCourseMemberService()->deleteMemberByCourseId($course['id']);
     }
 
     public function onTaskView(Event $event)
@@ -75,8 +84,9 @@ class CourseMemberEventSubscriber extends EventSubscriber implements EventSubscr
             return;
         }
         $memberIds = ArrayToolkit::column($members, 'userId');
+        $this->getCourseMemberService()->batchBecomeStudents($course['id'], $memberIds);
         //add classroom students to course
-        $existedMembers = $this->getCourseMemberService()->findCourseStudents($course['id'], 0, PHP_INT_MAX);
+        /*$existedMembers = $this->getCourseMemberService()->findCourseStudents($course['id'], 0, PHP_INT_MAX);
         $diffMemberIds = $memberIds;
         if (!empty($existedMembers)) {
             $existedMemberIds = ArrayToolkit::column($existedMembers, 'userId');
@@ -89,7 +99,7 @@ class CourseMemberEventSubscriber extends EventSubscriber implements EventSubscr
 
         foreach ($diffMemberIds as $memberId) {
             $this->getCourseMemberService()->becomeStudent($course['id'], $memberId);
-        }
+        }*/
     }
 
     private function countStudentMember(Event $event)
@@ -107,7 +117,15 @@ class CourseMemberEventSubscriber extends EventSubscriber implements EventSubscr
     {
         $course = $event->getSubject();
 
-        $income = $this->getOrderService()->sumOrderPriceByTarget('course', $course['id']);
+        $conditions = array(
+            'target_id' => $course['id'],
+            'target_type' => 'course',
+            'statuses' => array('success', 'finished'),
+        );
+
+        $income = $this->getOrderFacadeService()->sumOrderItemPayAmount($conditions);
+        $income = MathToolkit::simple($income, 0.01);
+
         $this->getCourseDao()->update($course['id'], array('income' => $income));
     }
 
@@ -161,10 +179,22 @@ class CourseMemberEventSubscriber extends EventSubscriber implements EventSubscr
     {
         $taskResult = $event->getSubject();
         $this->getCourseService()->recountLearningData($taskResult['courseId'], $taskResult['userId']);
+        $finishTime = $this->getCourseFinishTime($taskResult);
+
         $this->getCourseMemberService()->updateMembers(
             array('courseId' => $taskResult['courseId'], 'userId' => $taskResult['userId']),
-            array('lastLearnTime' => time())
+            array('lastLearnTime' => time(), 'finishedTime' => $finishTime)
         );
+    }
+
+    private function getCourseFinishTime($taskResult)
+    {
+        $student = $this->getCourseMemberService()->getCourseMember($taskResult['courseId'], $taskResult['userId']);
+        $course = $this->getCourseService()->getCourse($taskResult['courseId']);
+        $isFinished = intval($student['learnedCompulsoryTaskNum'] / $course['compulsoryTaskNum']) >= 1 ? true : false;
+        $finishTime = $isFinished ? time() : 0;
+
+        return $finishTime;
     }
 
     protected function getWelcomeMessageBody($user, $course)
@@ -211,6 +241,14 @@ class CourseMemberEventSubscriber extends EventSubscriber implements EventSubscr
     protected function getOrderService()
     {
         return $this->getBiz()->service('Order:OrderService');
+    }
+
+    /**
+     * @return OrderFacadeService
+     */
+    protected function getOrderFacadeService()
+    {
+        return $this->getBiz()->service('OrderFacade:OrderFacadeService');
     }
 
     /**

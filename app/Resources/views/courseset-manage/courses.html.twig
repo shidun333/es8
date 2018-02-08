@@ -3,7 +3,7 @@
 {% block title %}{{ 'course.teach_plan_manage'|trans }} - {{ parent() }}{% endblock %}
 {% set side_nav = 'plan' %}
 
-{% do script(['app/js/course-manage/index.js','app/js/course-manage/list/index.js']) %}
+{% do script(['app/js/course-manage/index.js']) %}
 
 {% block main %}
   <div class="panel panel-default" role="courseset-manage-courses" >
@@ -21,7 +21,7 @@
             {{'course.teaching_plan.create.mode'|trans}}
             <a class="link-medium es-icon es-icon-help ml5 text-normal"
               data-container="body" data-toggle="popover" data-trigger="hover"
-              data-placement="top" data-content="<ul class='pl20 ul-list-none'>
+              data-placement="top" data-content="<ul class='pl20 list-unstyled'>
               {{'course.teaching_plan.create.mode.free'|trans|raw}}
               {{'course.teaching_plan.create.mode.limit'|trans|raw}}</ul>">
             </a>

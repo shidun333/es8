@@ -65,11 +65,6 @@ class UserServiceImpl extends BaseService implements UserService
         return UserSerialize::unserializes($users);
     }
 
-    public function getUserSecureQuestionsByUserId($userId)
-    {
-        return $this->getUserSecureQuestionDao()->findByUserId($userId);
-    }
-
     public function changeRawPassword($id, $rawPassword)
     {
         if (empty($rawPassword)) {
@@ -98,6 +93,8 @@ class UserServiceImpl extends BaseService implements UserService
 
     public function searchApprovalsCount(array $conditions)
     {
+        $conditions = $this->_prepareApprovalConditions($conditions);
+
         return $this->getUserApprovalDao()->count($conditions);
     }
 
@@ -194,7 +191,7 @@ class UserServiceImpl extends BaseService implements UserService
             $user = $this->getUserDao()->getByNickname($keyword);
         }
 
-        if (isset($user['type']) && $user['type'] == 'system') {
+        if (isset($user['type']) && 'system' == $user['type']) {
             return null;
         }
 
@@ -237,12 +234,7 @@ class UserServiceImpl extends BaseService implements UserService
             $conditions['hasVerifiedMobile'] = true;
             $users = $this->searchUsers($conditions, $orderBy, $start, $limit);
         } else {
-            $profiles = $this->getProfileDao()->findDistinctMobileProfiles($start, $limit);
-            $conditions['userIds'] = ArrayToolkit::column($profiles, 'id');
-            $users = $this->searchUsers($conditions, $orderBy, 0, PHP_INT_MAX);
-            $profiles = ArrayToolkit::index($profiles, 'id');
-            $users = ArrayToolkit::index($users, 'id');
-            $users = array_intersect_key($users, $profiles);
+            $users = $this->getUserDao()->findUnlockedUsersWithMobile($start, $limit);
         }
 
         return $users;
@@ -284,6 +276,7 @@ class UserServiceImpl extends BaseService implements UserService
 
     public function searchApprovals(array $conditions, array $orderBy, $start, $limit)
     {
+        $conditions = $this->_prepareApprovalConditions($conditions);
         $approvals = $this->getUserApprovalDao()->search($conditions, $orderBy, $start, $limit);
 
         return $approvals;
@@ -457,7 +450,7 @@ class UserServiceImpl extends BaseService implements UserService
             );
         }
 
-        if (isset($options['deleteOriginFile']) && $options['deleteOriginFile'] == 0) {
+        if (isset($options['deleteOriginFile']) && 0 == $options['deleteOriginFile']) {
             $fields[] = array(
                 'type' => 'origin',
                 'id' => $record['id'],
@@ -596,28 +589,10 @@ class UserServiceImpl extends BaseService implements UserService
         $this->updateUserProfile($id, array(
             'mobile' => $mobile,
         ));
-        $this->dispatchEvent('mobile.change', new Event($user));
+
+        $this->dispatchEvent('user.change_mobile', new Event($user));
 
         $this->getLogService()->info('user', 'verifiedMobile-changed', "用户{$user['email']}(ID:{$user['id']})重置mobile成功");
-
-        return true;
-    }
-
-    public function addUserSecureQuestionsWithUnHashedAnswers($userId, $fieldsWithQuestionTypesAndUnHashedAnswers)
-    {
-        $encoder = $this->getPasswordEncoder();
-        $userSecureQuestionDao = $this->getUserSecureQuestionDao();
-
-        for ($questionNum = 1; $questionNum <= (count($fieldsWithQuestionTypesAndUnHashedAnswers) / 2); ++$questionNum) {
-            $fields = array('userId' => $userId);
-
-            $fields['securityQuestionCode'] = $fieldsWithQuestionTypesAndUnHashedAnswers['securityQuestion'.$questionNum];
-            $fields['securityAnswerSalt'] = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
-            $fields['securityAnswer'] = $encoder->encodePassword($fieldsWithQuestionTypesAndUnHashedAnswers['securityAnswer'.$questionNum], $fields['securityAnswerSalt']);
-            $fields['createdTime'] = time();
-
-            $userSecureQuestionDao->create($fields);
-        }
 
         return true;
     }
@@ -653,7 +628,7 @@ class UserServiceImpl extends BaseService implements UserService
     {
         $mode = $this->getRegisterMode();
 
-        if ($mode == 'email_or_mobile') {
+        if ('email_or_mobile' == $mode) {
             if (!empty($registration['emailOrMobile'])) {
                 if (SimpleValidator::email($registration['emailOrMobile'])) {
                     $registration['email'] = $registration['emailOrMobile'];
@@ -668,7 +643,7 @@ class UserServiceImpl extends BaseService implements UserService
             } else {
                 throw $this->createInvalidArgumentException('Invalid Mobile or Email');
             }
-        } elseif ($mode == 'mobile') {
+        } elseif ('mobile' == $mode) {
             if (!empty($registration['mobile'])) {
                 if (SimpleValidator::mobile($registration['mobile'])) {
                     $registration['verifiedMobile'] = $registration['mobile'];
@@ -692,7 +667,7 @@ class UserServiceImpl extends BaseService implements UserService
     {
         $authSetting = $this->getSettingService()->get('auth');
 
-        return !empty($authSetting['register_mode']) && (($authSetting['register_mode'] == 'email_or_mobile') || ($authSetting['register_mode'] == 'mobile'));
+        return !empty($authSetting['register_mode']) && (('email_or_mobile' == $authSetting['register_mode']) || ('mobile' == $authSetting['register_mode']));
     }
 
     /**
@@ -759,123 +734,23 @@ class UserServiceImpl extends BaseService implements UserService
         return $this->getUserDao()->getUserByType($type);
     }
 
-    public function register($registration, $type = 'default')
+    /**
+     * @registration type属性使用了原先的 $type 参数, 不填，则为default （原先的接口参数为 $registration, $type)
+     *
+     * @param $registerTypes 数组，可以是多个类型的组合
+     *   类型范围  email, mobile, binder(第三方登录)
+     */
+    public function register($registration, $registerTypes = array('email'))
     {
-        $this->validateNickname($registration['nickname']);
+        $register = $this->biz['user.register']->createRegister($registerTypes);
 
-        if (!$this->isNicknameAvaliable($registration['nickname'])) {
-            throw $this->createInvalidArgumentException('Nickname Occupied');
-        }
-
-        if (!SimpleValidator::email($registration['email'])) {
-            throw $this->createInvalidArgumentException('Invalid Email');
-        }
-
-        if (!$this->isEmailAvaliable($registration['email'])) {
-            throw $this->createInvalidArgumentException('Email Occupied');
-        }
-
-        $user = array();
-
-        if (isset($registration['verifiedMobile'])) {
-            $user['verifiedMobile'] = $registration['verifiedMobile'];
-        } else {
-            $user['verifiedMobile'] = '';
-        }
-
-        $user['email'] = $registration['email'];
-        $user['emailVerified'] = isset($registration['emailVerified']) ? $registration['emailVerified'] : 0;
-        $user['nickname'] = $registration['nickname'];
-        $user['roles'] = array('ROLE_USER');
-        $user['type'] = isset($registration['type']) ? $registration['type'] : $type;
-        $user['createdIp'] = empty($registration['createdIp']) ? '' : $registration['createdIp'];
-        if (isset($registration['guid'])) {
-            $user['guid'] = $registration['guid'];
-        }
-
-        $user['createdTime'] = time();
-        $user['registeredWay'] = isset($registration['registeredWay']) ? $registration['registeredWay'] : '';
-
-        $thirdLoginInfo = $this->getSettingService()->get('login_bind', array());
-
-        if (in_array($type, array('default', 'phpwind', 'discuz'))) {
-            $user['salt'] = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
-            $user['password'] = $this->getPasswordEncoder()->encodePassword($registration['password'], $user['salt']);
-            $user['setup'] = 1;
-        } elseif (in_array($type, array('qq', 'weibo', 'renren', 'weixinweb', 'weixinmob')) && isset($thirdLoginInfo["{$type}_set_fill_account"]) && $thirdLoginInfo["{$type}_set_fill_account"]) {
-            $user['salt'] = '';
-            $user['password'] = '';
-            $user['setup'] = 1;
-        } else {
-            $user['salt'] = '';
-            $user['password'] = '';
-            $user['setup'] = 0;
-        }
-        if (isset($registration['orgId'])) {
-            $user['orgId'] = $registration['orgId'];
-            $user['orgCode'] = $registration['orgCode'];
-        }
-        $user = $this->getUserDao()->create($user);
-
-        if (!empty($registration['invite_code'])) {
-            $inviteUser = $this->getUserDao()->getByInviteCode($registration['invite_code']);
-        }
+        list($user, $inviteUser) = $register->register($registration);
 
         if (!empty($inviteUser)) {
-            $this->getInviteRecordService()->createInviteRecord($inviteUser['id'], $user['id']);
-            $invitedCoupon = $this->getCouponService()->generateInviteCoupon($user['id'], 'register');
-
-            if (!empty($invitedCoupon)) {
-                $card = $this->getCardService()->getCardByCardId($invitedCoupon['id']);
-                $this->getInviteRecordService()->addInviteRewardRecordToInvitedUser($user['id'], array('invitedUserCardId' => $card['cardId']));
-            }
-
             $this->dispatchEvent(
                 'user.register',
                 new Event(array('userId' => $user['id'], 'inviteUserId' => $inviteUser['id']))
             );
-        }
-
-        if (isset($registration['mobile']) && $registration['mobile'] != '' && !SimpleValidator::mobile($registration['mobile'])) {
-            throw $this->createInvalidArgumentException('Invalid Mobile');
-        }
-
-        if (isset($registration['idcard']) && $registration['idcard'] != '' && !SimpleValidator::idcard($registration['idcard'])) {
-            throw $this->createInvalidArgumentException('Invalid ID number');
-        }
-
-        if (isset($registration['truename']) && $registration['truename'] != '' && !SimpleValidator::truename($registration['truename'])) {
-            throw $this->createInvalidArgumentException('Invalid truename');
-        }
-
-        $profile = array();
-        $profile['id'] = $user['id'];
-        $profile['mobile'] = empty($registration['mobile']) ? '' : $registration['mobile'];
-        $profile['idcard'] = empty($registration['idcard']) ? '' : $registration['idcard'];
-        $profile['truename'] = empty($registration['truename']) ? '' : $registration['truename'];
-        $profile['company'] = empty($registration['company']) ? '' : $registration['company'];
-        $profile['job'] = empty($registration['job']) ? '' : $registration['job'];
-        $profile['weixin'] = empty($registration['weixin']) ? '' : $registration['weixin'];
-        $profile['weibo'] = empty($registration['weibo']) ? '' : $registration['weibo'];
-        $profile['qq'] = empty($registration['qq']) ? '' : $registration['qq'];
-        $profile['site'] = empty($registration['site']) ? '' : $registration['site'];
-        $profile['gender'] = empty($registration['gender']) ? 'secret' : $registration['gender'];
-
-        for ($i = 1; $i <= 5; ++$i) {
-            $profile['intField'.$i] = empty($registration['intField'.$i]) ? null : $registration['intField'.$i];
-            $profile['dateField'.$i] = empty($registration['dateField'.$i]) ? null : $registration['dateField'.$i];
-            $profile['floatField'.$i] = empty($registration['floatField'.$i]) ? null : $registration['floatField'.$i];
-        }
-
-        for ($i = 1; $i <= 10; ++$i) {
-            $profile['varcharField'.$i] = empty($registration['varcharField'.$i]) ? '' : $registration['varcharField'.$i];
-            $profile['textField'.$i] = empty($registration['textField'.$i]) ? '' : $registration['textField'.$i];
-        }
-
-        $this->getProfileDao()->create($profile);
-
-        if ($type != 'default') {
-            $this->bindUser($type, $registration['token']['userId'], $user['id'], $registration['token']);
         }
 
         $this->dispatchEvent('user.registered', new Event($user));
@@ -885,15 +760,35 @@ class UserServiceImpl extends BaseService implements UserService
 
     public function generateNickname($registration, $maxLoop = 100)
     {
-        for ($i = 0; $i < $maxLoop; ++$i) {
-            $registration['nickname'] = 'user'.substr($this->getRandomChar(), 0, 6);
+        $rawNickname = isset($registration['nickname']) ? $registration['nickname'] : '';
+        if (!empty($rawNickname)) {
+            $rawNickname = preg_replace('/[^\x{4e00}-\x{9fa5}a-zA-z0-9_.]+/u', '', $rawNickname);
+            $rawNickname = str_replace(array('-'), array('_'), $rawNickname);
 
-            if ($this->isNicknameAvaliable($registration['nickname'])) {
+            if (!SimpleValidator::nickname($rawNickname)) {
+                $rawNickname = '';
+            }
+            if ($this->isNicknameAvaliable($rawNickname)) {
+                return $rawNickname;
+            }
+        }
+
+        if (empty($rawNickname)) {
+            $rawNickname = 'user';
+        }
+        $rawLen = (strlen($rawNickname) + mb_strlen($rawNickname, 'utf-8')) / 2;
+        if ($rawLen > 12) {
+            $rawNickname = substr($rawNickname, 0, -6);
+        }
+        for ($i = 0; $i < $maxLoop; ++$i) {
+            $nickname = $rawNickname.substr($this->getRandomChar(), 0, 6);
+
+            if ($this->isNicknameAvaliable($nickname)) {
                 break;
             }
         }
 
-        return $registration['nickname'];
+        return $nickname;
     }
 
     public function generateEmail($registration, $maxLoop = 100)
@@ -925,21 +820,6 @@ class UserServiceImpl extends BaseService implements UserService
             $this->rollback();
             throw $e;
         }
-    }
-
-    public function setupAccount($userId)
-    {
-        $user = $this->getUser($userId);
-
-        if (empty($user)) {
-            throw $this->createNotFoundException("User#{$userId} Not Found");
-        }
-
-        if ($user['setup']) {
-            throw $this->createAccessDeniedException('Account has been set');
-        }
-
-        return $this->getUserDao()->update($userId, array('setup' => 1));
     }
 
     public function updateUserProfile($id, $fields)
@@ -1037,7 +917,9 @@ class UserServiceImpl extends BaseService implements UserService
         }
 
         if (!empty($fields['about'])) {
-            $fields['about'] = $this->purifyHtml($fields['about']);
+            $currentUser = $this->biz['user'];
+            $trusted = $currentUser->isAdmin();
+            $fields['about'] = $this->purifyHtml($fields['about'], $trusted);
         }
 
         if (!empty($fields['site']) && !SimpleValidator::site($fields['site'])) {
@@ -1067,6 +949,14 @@ class UserServiceImpl extends BaseService implements UserService
         } else {
             $fields['isQQPublic'] = 1;
         }
+
+        $fields = array_filter($fields, function ($value) {
+            if (0 === $value) {
+                return true;
+            }
+
+            return !empty($value);
+        });
 
         $userProfile = $this->getProfileDao()->update($id, $fields);
 
@@ -1178,7 +1068,7 @@ class UserServiceImpl extends BaseService implements UserService
     protected function typeInOAuthClient($type)
     {
         $types = array_keys(OAuthClientFactory::clients());
-        $types = array_merge($types, array('discuz', 'phpwind'));
+        $types = array_merge($types, array('discuz', 'phpwind', 'marketing'));
 
         return in_array($type, $types);
     }
@@ -1196,9 +1086,9 @@ class UserServiceImpl extends BaseService implements UserService
         }
 
         $bind = $this->getUserBindByTypeAndUserId($type, $toId);
-
         if ($bind) {
-            $bind = $this->getUserBindDao()->delete($bind['id']);
+            $type = $this->convertOAuthType($type);
+            $this->getUserBindDao()->deleteByTypeAndToId($type, $toId);
             $currentUser = $this->getCurrentUser();
             $this->getLogService()->info('user', 'unbind', sprintf('用户名%s解绑成功，操作用户为%s', $user['nickname'], $currentUser['nickname']));
         }
@@ -1208,9 +1098,7 @@ class UserServiceImpl extends BaseService implements UserService
 
     public function getUserBindByTypeAndFromId($type, $fromId)
     {
-        if ($type == 'weixinweb' || $type == 'weixinmob') {
-            $type = 'weixin';
-        }
+        $type = $this->convertOAuthType($type);
 
         return $this->getUserBindDao()->getByTypeAndFromId($type, $fromId);
     }
@@ -1232,9 +1120,7 @@ class UserServiceImpl extends BaseService implements UserService
             throw $this->createInvalidArgumentException('Invalid Type');
         }
 
-        if ($type == 'weixinweb' || $type == 'weixinmob') {
-            $type = 'weixin';
-        }
+        $type = $this->convertOAuthType($type);
 
         return $this->getUserBindDao()->getByToIdAndType($type, $toId);
     }
@@ -1251,9 +1137,7 @@ class UserServiceImpl extends BaseService implements UserService
             throw $this->createInvalidArgumentException('Invalid Type');
         }
 
-        if ($type == 'weixinweb' || $type == 'weixinmob') {
-            $type = 'weixin';
-        }
+        $type = $this->convertOAuthType($type);
 
         $this->getUserBindDao()->create(array(
             'type' => $type,
@@ -1278,7 +1162,7 @@ class UserServiceImpl extends BaseService implements UserService
             'loginTime' => time(),
         ));
         //if user type is system,we do not record user login log
-        if ($user['type'] == 'system') {
+        if ('system' == $user['type']) {
             return false;
         }
         $this->getLogService()->info('user', 'login_success', '登录成功');
@@ -1715,7 +1599,7 @@ class UserServiceImpl extends BaseService implements UserService
             array(
                 'userId' => $user['id'],
                 'note' => $note,
-                //'status' => 'approved',
+                'status' => 'approved',
                 'operatorId' => $currentUser['id'],
             )
         );
@@ -1744,7 +1628,7 @@ class UserServiceImpl extends BaseService implements UserService
             'approvalTime' => time(),
         ));
 
-        $lastestApproval = $this->getUserApprovalDao()->getLastestByUserIdAndStatus($user['id'], 'approved');
+        $lastestApproval = $this->getUserApprovalDao()->getLastestByUserIdAndStatus($user['id'], 'approving');
         $currentUser = $this->getCurrentUser();
         $this->getUserApprovalDao()->update(
             $lastestApproval['id'],
@@ -1899,6 +1783,63 @@ class UserServiceImpl extends BaseService implements UserService
     public function deleteUserPayAgreements($id)
     {
         return $this->getUserPayAgreementDao()->delete($id);
+    }
+
+    public function getUserIdsByKeyword($keyword)
+    {
+        if (SimpleValidator::email($keyword)) {
+            $user = $this->getUserByEmail($keyword);
+
+            return $user ? array($user['id']) : array(-1);
+        }
+
+        if (SimpleValidator::mobile($keyword)) {
+            $mobileVerifiedUser = $this->getUserByVerifiedMobile($keyword);
+            $profileUsers = $this->searchUserProfiles(
+                array('tel' => $keyword),
+                array('id' => 'DESC'),
+                0,
+                PHP_INT_MAX
+            );
+            $mobileNameUser = $this->getUserByNickname($keyword);
+            $userIds = $profileUsers ? ArrayToolkit::column($profileUsers, 'id') : null;
+
+            $userIds[] = $mobileVerifiedUser ? $mobileVerifiedUser['id'] : null;
+            $userIds[] = $mobileNameUser ? $mobileNameUser['id'] : null;
+
+            $userIds = array_unique($userIds);
+
+            return $userIds ? $userIds : array(-1);
+        }
+        $user = $this->getUserByNickname($keyword);
+
+        return $user ? array($user['id']) : array(-1);
+    }
+
+    public function updateUserNewMessageNum($id, $num)
+    {
+        $user = $this->getCurrentUser();
+        $newMessageNum = $user['newMessageNum'] - 1;
+        if ($newMessageNum >= 0 && $num > 0) {
+            $this->getUserDao()->update($id, array('newMessageNum' => $newMessageNum));
+            $user->__set('newMessageNum', $newMessageNum);
+        }
+    }
+
+    protected function _prepareApprovalConditions($conditions)
+    {
+        if (!empty($conditions['keywordType']) && 'truename' == $conditions['keywordType']) {
+            $conditions['truename'] = trim($conditions['keyword']);
+        }
+
+        if (!empty($conditions['keywordType']) && 'idcard' == $conditions['keywordType']) {
+            $conditions['idcard'] = trim($conditions['keyword']);
+        }
+
+        unset($conditions['keywordType']);
+        unset($conditions['keyword']);
+
+        return $conditions;
     }
 
     /**
@@ -2077,6 +2018,20 @@ class UserServiceImpl extends BaseService implements UserService
     public function getKernel()
     {
         return ServiceKernel::instance();
+    }
+
+    /**
+     * @param $type
+     *
+     * @return string
+     */
+    private function convertOAuthType($type)
+    {
+        if ('weixinweb' == $type || 'weixinmob' == $type) {
+            $type = 'weixin';
+        }
+
+        return $type;
     }
 }
 

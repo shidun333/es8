@@ -20,6 +20,7 @@ use Biz\Course\Service\CourseNoteService;
 use Biz\User\Service\NotificationService;
 use Biz\Classroom\Service\ClassroomService;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Common\SmsToolkit;
 
 class UserController extends BaseController
 {
@@ -455,7 +456,18 @@ class UserController extends BaseController
 
         $goto = $this->getTargetPath($request);
 
-        if ($request->getMethod() == 'POST') {
+        if ('POST' == $request->getMethod()) {
+            $formData = $request->request->all();
+            $authSetting = $this->setting('auth', array());
+
+            if (!empty($formData['mobile']) && !empty($authSetting['mobileSmsValidate'])) {
+                list($result, $sessionField, $requestField) = SmsToolkit::smsCheck($request, 'sms_bind');
+
+                if (!$result) {
+                    return $this->createMessageResponse('info', 'register.userinfo_fill_tips', '', 3, $this->generateUrl('login_after_fill_userinfo'));
+                }
+            }
+
             $userInfo = $this->saveUserInfo($request, $user);
 
             return $this->redirect($goto);
@@ -481,7 +493,29 @@ class UserController extends BaseController
 
         $this->saveUserInfo($request, $user);
 
-        return $this->redirect($request->get('targetUrl'));
+        /**
+         * 这里要重构,这段代码是多余了，为了兼容点击任务预览跳转支付页面
+         * TODO
+         */
+        $courseId = $request->request->get('courseId', 0);
+        if ($courseId) {
+            $this->getCourseService()->tryFreeJoin($courseId);
+            $member = $this->getCourseMemberService()->getCourseMember($courseId, $user['id']);
+            if ($member) {
+                return $this->createJsonResponse(array(
+                    'url' => $this->generateUrl('my_course_show', array('id' => $courseId)),
+                ));
+            } else {
+                return $this->createJsonResponse(array(
+                    'url' => $this->generateUrl('order_show', array('targetId' => $courseId, 'targetType' => 'course')),
+                ));
+            }
+        }
+        /* end todo */
+
+        return $this->createJsonResponse(array(
+            'msg' => 'success',
+        ));
     }
 
     protected function saveUserInfo($request, $user)
@@ -507,14 +541,17 @@ class UserController extends BaseController
 
         if (isset($formData['email']) && !empty($formData['email'])) {
             $this->getAuthService()->changeEmail($user['id'], null, $formData['email']);
-
-            $currentUser = new CurrentUser();
-            $currentUser->fromArray($this->getUserService()->getUser($user['id']));
-            $this->switchUser($request, $currentUser);
-            if (!$user['setup']) {
-                $this->getUserService()->setupAccount($user['id']);
-            }
         }
+
+        $authSetting = $this->setting('auth', array());
+        if (!empty($formData['mobile']) && !empty($authSetting['fill_userinfo_after_login']) && !empty($authSetting['mobileSmsValidate'])) {
+            $verifiedMobile = $formData['mobile'];
+            $this->getUserService()->changeMobile($user['id'], $verifiedMobile);
+        }
+
+        $currentUser = new CurrentUser();
+        $currentUser->fromArray($this->getUserService()->getUser($user['id']));
+        $this->switchUser($request, $currentUser);
 
         $userInfo = $this->getUserService()->updateUserProfile($user['id'], $userInfo);
 
