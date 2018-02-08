@@ -9,7 +9,6 @@ develop
 
 EduSoho网络课堂
 [![Build Status](https://travis-ci.org/edusoho/edusoho.svg?branch=master)](https://www.edusoho.com)
-==============
 
 EduSoho是杭州阔知网络科技有限公司推出的开源、免费的互联网教育产品，帮助企业、个人快速建立互联网教育网站。本开源软件简洁易用，定制性强，是开展互联网教学、销售、推广的最好的选择。
 
@@ -30,3 +29,4 @@ EduSoho是杭州阔知网络科技有限公司推出的开源、免费的互联�
 
 * [官网招聘页](http://www.edusoho.com/abouts/joinus)
 * [拉勾网招聘页](http://www.lagou.com/gongsi/7868.html)
+
